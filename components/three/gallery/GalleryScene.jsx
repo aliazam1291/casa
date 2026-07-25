@@ -822,6 +822,7 @@ const GalleryScene = forwardRef(function GalleryScene({ onRoomChange, onFloorCha
       const velvetTerraB = getSurfBundle('velvet', 0xb85d43, 2, 2);
       const velvetForB = getSurfBundle('velvet', 0x2e3d30, 2, 2);
       const velvetNavyB = getSurfBundle('velvet', 0x1e2a3a, 2, 2);
+      const velvetCaramelB = getSurfBundle('velvet', 0x986a3b, 2, 2);
       const linenB = getSurfBundle('linen', 0xe8ddd0, 3, 3);
 
       sharedMats.current = {
@@ -842,6 +843,7 @@ const GalleryScene = forwardRef(function GalleryScene({ onRoomChange, onFloorCha
         velvetTerracotta: new THREE.MeshPhysicalMaterial({ color: 0xffffff, map: velvetTerraB.map, normalMap: velvetTerraB.normalMap, roughnessMap: velvetTerraB.roughnessMap, normalScale: new THREE.Vector2(0.9, 0.9), roughness: 1.0, sheen: 1.0, sheenRoughness: 0.4, sheenColor: new THREE.Color(0xe6a683) }),
         velvetForest: new THREE.MeshPhysicalMaterial({ color: 0xffffff, map: velvetForB.map, normalMap: velvetForB.normalMap, roughnessMap: velvetForB.roughnessMap, normalScale: new THREE.Vector2(0.9, 0.9), roughness: 1.0, sheen: 1.0, sheenRoughness: 0.4, sheenColor: new THREE.Color(0x8fae8c) }),
         velvetNavy: new THREE.MeshPhysicalMaterial({ color: 0xffffff, map: velvetNavyB.map, normalMap: velvetNavyB.normalMap, roughnessMap: velvetNavyB.roughnessMap, normalScale: new THREE.Vector2(0.9, 0.9), roughness: 1.0, sheen: 1.0, sheenRoughness: 0.4, sheenColor: new THREE.Color(0x8093b8) }),
+        velvetCaramel: new THREE.MeshPhysicalMaterial({ color: 0xffffff, map: velvetCaramelB.map, normalMap: velvetCaramelB.normalMap, roughnessMap: velvetCaramelB.roughnessMap, normalScale: new THREE.Vector2(0.9, 0.9), roughness: 1.0, sheen: 1.0, sheenRoughness: 0.4, sheenColor: new THREE.Color(0xd8a86a) }),
         leatherCognac: new THREE.MeshPhysicalMaterial({ color: 0xffffff, map: leatherB.map, normalMap: leatherB.normalMap, roughnessMap: leatherB.roughnessMap, normalScale: new THREE.Vector2(0.7, 0.7), roughness: 1.0, metalness: 0.04, clearcoat: 0.3, clearcoatRoughness: 0.4 }),
         linen: new THREE.MeshStandardMaterial({ color: 0xffffff, map: linenB.map, normalMap: linenB.normalMap, roughnessMap: linenB.roughnessMap, normalScale: new THREE.Vector2(0.8, 0.8), roughness: 1.0 }),
         metal: new THREE.MeshStandardMaterial({ color: 0xd4af37, roughness: 0.15, metalness: 0.92, envMapIntensity: 2.0 }),
@@ -892,13 +894,14 @@ const GalleryScene = forwardRef(function GalleryScene({ onRoomChange, onFloorCha
     rugBorder.position.set(-0.5, 0.004, 0.2);
     group.add(rugBorder);
 
-    // Organic stone poufs on rug
+    // Upholstered ottomans on the rug — warm taupe boucle with a forest accent
     const poufGeo = new THREE.SphereGeometry(0.42, 18, 12);
+    const poufMats = [sm.velvetForest, sm.fabricDark, sm.fabricDark];
     const cx = side * (2.0 + rnd() * 0.6);
     const cz = 1.8 + (rnd() - 0.5) * 0.8;
     for (let i = 0; i < 3; i++) {
       const s = (0.34 + rnd() * 0.18) / 0.42;
-      const p = new THREE.Mesh(poufGeo, sm.pebble);
+      const p = new THREE.Mesh(poufGeo, poufMats[i % poufMats.length]);
       p.scale.set(s, s * 0.55, s);
       p.position.set(cx + (rnd() - 0.5) * 1.6, s * 0.42 * 0.55, cz + (rnd() - 0.5) * 1.4);
       p.castShadow = true; p.receiveShadow = true;
@@ -1079,44 +1082,59 @@ const GalleryScene = forwardRef(function GalleryScene({ onRoomChange, onFloorCha
   // --- Luxury Multi-Textured Furniture & Decor Generators ---
 
   function addHallFurniture(group, sm, matAccent, W, H, D) {
-    // Curved Bouclé Sectional Sofa with Multi-Toned Throw Cushions & Brass Tapered Feet
+    // Caramel Velvet Sectional — tailored seat & back cushions, track arms,
+    // contrast lumbar pillows and tapered brass feet.
     const sofaGroup = new THREE.Group();
+    const body = sm.velvetCaramel;
 
-    const mainSeat = new THREE.Mesh(createRoundedBoxGeometry(3.2, 0.42, 1.2, 0.12, 5), sm.boucle);
-    mainSeat.position.set(-1.2, 0.21, -0.8);
-    mainSeat.castShadow = true; mainSeat.receiveShadow = true;
-    sofaGroup.add(mainSeat);
+    // Upholstered plinth base
+    const base = new THREE.Mesh(createRoundedBoxGeometry(3.35, 0.24, 1.28, 0.06, 4), body);
+    base.position.set(-1.2, 0.18, -0.8);
+    base.castShadow = true; base.receiveShadow = true;
+    sofaGroup.add(base);
 
-    const backrest = new THREE.Mesh(createRoundedBoxGeometry(3.2, 0.48, 0.28, 0.1, 4), sm.boucle);
-    backrest.position.set(-1.2, 0.62, -1.32);
-    backrest.castShadow = true;
-    sofaGroup.add(backrest);
-
-    const chaise = new THREE.Mesh(createRoundedBoxGeometry(1.2, 0.42, 1.4, 0.12, 5), sm.boucle);
-    chaise.position.set(-2.2, 0.21, -0.3);
-    chaise.castShadow = true;
-    sofaGroup.add(chaise);
-
-    // Terracotta & Forest Velvet Lumbar Pillows
-    const pMats = [sm.velvetTerracotta, sm.velvetForest, sm.velvetTerracotta];
+    // Three tailored seat cushions with a slight gap between them
     for (let i = 0; i < 3; i++) {
-      const pillow = new THREE.Mesh(createRoundedBoxGeometry(0.55, 0.35, 0.15, 0.06, 4), pMats[i]);
-      pillow.position.set(-2.4 + i * 0.85, 0.52, -1.15);
-      pillow.rotation.y = (i - 1) * 0.15;
+      const seat = new THREE.Mesh(createRoundedBoxGeometry(0.96, 0.22, 1.02, 0.09, 4), body);
+      seat.position.set(-2.32 + i * 1.04, 0.39, -0.74);
+      seat.castShadow = true; seat.receiveShadow = true;
+      sofaGroup.add(seat);
+    }
+    // Three plush back cushions
+    for (let i = 0; i < 3; i++) {
+      const back = new THREE.Mesh(createRoundedBoxGeometry(0.96, 0.52, 0.28, 0.11, 4), body);
+      back.position.set(-2.32 + i * 1.04, 0.62, -1.2);
+      back.castShadow = true;
+      sofaGroup.add(back);
+    }
+    // Track arms
+    for (const ax of [-2.98, 0.58]) {
+      const arm = new THREE.Mesh(createRoundedBoxGeometry(0.26, 0.54, 1.24, 0.1, 4), body);
+      arm.position.set(ax, 0.44, -0.8);
+      arm.castShadow = true;
+      sofaGroup.add(arm);
+    }
+
+    // Contrast lumbar pillows — cream linen + terracotta velvet
+    const pMats = [sm.linen, sm.velvetTerracotta, sm.linen];
+    for (let i = 0; i < 3; i++) {
+      const pillow = new THREE.Mesh(createRoundedBoxGeometry(0.5, 0.34, 0.16, 0.07, 4), pMats[i]);
+      pillow.position.set(-2.15 + i * 0.98, 0.56, -1.02);
+      pillow.rotation.y = (i - 1) * 0.16;
       pillow.castShadow = true;
       sofaGroup.add(pillow);
     }
 
-    // Tapered Brass Feet
-    const feetCoords = [[-2.7, -1.3], [-0.3, -1.3], [-2.7, 0.3], [-0.3, 0.3]];
+    // Tapered brass feet
+    const feetCoords = [[-2.82, -1.32], [-0.35, -1.32], [-2.82, -0.28], [-0.35, -0.28]];
     feetCoords.forEach(([fx, fz]) => {
-      const foot = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.012, 0.1, 8), sm.metal);
-      foot.position.set(fx, 0.05, fz);
+      const foot = new THREE.Mesh(new THREE.CylinderGeometry(0.026, 0.014, 0.16, 10), sm.metal);
+      foot.position.set(fx, 0.08, fz);
       sofaGroup.add(foot);
     });
 
     group.add(sofaGroup);
-    addContactShadow(group, -1.2, -0.7, 3.6, 2.2, 0.55);
+    addContactShadow(group, -1.2, -0.7, 3.7, 2.3, 0.6);
 
     // Fluted Marble Coffee Table with Brass Lip Trim & Walnut Pedestal
     const tableGroup = new THREE.Group();
