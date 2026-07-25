@@ -445,12 +445,12 @@ const GalleryScene = forwardRef(function GalleryScene({ onRoomChange, onFloorCha
         glow: new THREE.MeshBasicMaterial({ color: 0xfffaee, transparent: true, opacity: 0.8 }),
         glowDim: new THREE.MeshBasicMaterial({ color: 0xfff8e8, transparent: true, opacity: 0.4 }),
         fixtureGlow: new THREE.MeshBasicMaterial({ color: 0xfffaee }),
-        darkWood: new THREE.MeshStandardMaterial({ color: 0x4a3828, roughness: 0.4, metalness: 0.02 }),
-        marble: new THREE.MeshStandardMaterial({ color: 0xe8ddd0, roughness: 0.2, metalness: 0.06 }),
+        darkWood: new THREE.MeshStandardMaterial({ color: 0xffffff, map: getSurfTexture('wood', 0x4a3828, 1.5, 1.5), roughness: 0.4, metalness: 0.02 }),
+        marble: new THREE.MeshStandardMaterial({ color: 0xffffff, map: getSurfTexture('marble', 0xe8ddd0, 1, 1), roughness: 0.18, metalness: 0.08, envMapIntensity: 1.2 }),
         metal: new THREE.MeshStandardMaterial({ color: 0xa09080, roughness: 0.25, metalness: 0.75 }),
         metalDark: new THREE.MeshStandardMaterial({ color: 0x605040, roughness: 0.3, metalness: 0.8 }),
-        fabric: new THREE.MeshStandardMaterial({ color: 0xe0d5c4, roughness: 0.85 }),
-        fabricDark: new THREE.MeshStandardMaterial({ color: 0xb5a490, roughness: 0.8 }),
+        fabric: new THREE.MeshStandardMaterial({ color: 0xffffff, map: getSurfTexture('plaster', 0xe0d5c4, 2, 2), roughness: 0.9 }),
+        fabricDark: new THREE.MeshStandardMaterial({ color: 0xffffff, map: getSurfTexture('plaster', 0xb5a490, 2, 2), roughness: 0.85 }),
         glass: new THREE.MeshStandardMaterial({ color: 0xd0d8d5, roughness: 0.05, metalness: 0.9, transparent: true, opacity: 0.6 }),
         ledge: new THREE.MeshStandardMaterial({ color: 0xd4caba, roughness: 0.5, metalness: 0.03 }),
         rugMat: new THREE.MeshStandardMaterial({ color: 0xc8baa0, roughness: 0.9, transparent: true, opacity: 0.45 }),
@@ -1295,6 +1295,18 @@ const GalleryScene = forwardRef(function GalleryScene({ onRoomChange, onFloorCha
     dirFill.position.set(-4, 4, 3);
     scene.add(dirFill);
 
+    // Warm recessed ceiling spots that wash the back wall in soft light pools
+    // — the signature ICG look. They follow the active room in the tick loop.
+    const spotOffsets = [-3.6, -1.2, 1.2, 3.6];
+    const spots = spotOffsets.map((ox) => {
+      const sp = new THREE.SpotLight(0xfff1d8, 22, 13, Math.PI * 0.24, 0.7, 1.3);
+      sp.position.set(ox, 4.3, -3.2);
+      sp.target.position.set(ox, 1.1, -5.2);
+      scene.add(sp);
+      scene.add(sp.target);
+      return sp;
+    });
+
     const roomsGroup = new THREE.Group();
     scene.add(roomsGroup);
 
@@ -1464,6 +1476,10 @@ const GalleryScene = forwardRef(function GalleryScene({ onRoomChange, onFloorCha
       dirRim.position.set(s.cameraX - 3, 5, -4);
       dirRim.target.position.set(s.cameraX, 1.4, -1);
       dirFill.position.set(s.cameraX - 4, 4, 3);
+      for (let i = 0; i < spots.length; i++) {
+        spots[i].position.x = s.cameraX + spotOffsets[i];
+        spots[i].target.position.x = s.cameraX + spotOffsets[i];
+      }
 
       // look toward the room we're settling into, easing the gaze down as we descend
       camera.lookAt(s.cameraX + s.pointerX * 0.1 * par + idleTx, 1.5 - lift * 0.12, 0);
