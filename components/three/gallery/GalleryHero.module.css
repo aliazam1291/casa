@@ -312,9 +312,40 @@
     display: none;
   }
   .minimap {
+    width: 110px;
+    height: 110px;
+    top: 85px;
+    right: 14px;
+    padding: 6px;
+  }
+  .roomName {
+    font-size: clamp(24px, 6.5vw, 42px);
+    bottom: 11vh;
+  }
+  .arrow {
+    width: 40px;
+    height: 40px;
+  }
+  .arrow svg {
+    width: 18px;
+    height: 18px;
+  }
+  .floors {
+    bottom: 20px;
+    left: 16px;
+  }
+  .bars {
+    bottom: 22px;
+    right: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .minimap {
     display: none;
   }
 }
+
 
 /* ---- 3D Spatial Minimap HUD ---- */
 .minimap {
