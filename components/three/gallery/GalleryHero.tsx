@@ -30,7 +30,8 @@ const GalleryScene = dynamic(() => import("./GalleryScene"), {
   ssr: false,
 }) as unknown as ForwardRefExoticComponent<GallerySceneProps & RefAttributes<SceneHandle>>;
 
-type Floor = { name: string; level: string; rooms: { name: string }[] };
+type Room = { name: string; pos?: { x: number; z: number } };
+type Floor = { name: string; level: string; rooms: Room[] };
 const FLOOR_LIST = FLOORS as Floor[];
 
 function Chevron({ dir }: { dir: "left" | "right" }) {
@@ -190,7 +191,7 @@ export function GalleryHero() {
               <div className={styles.minimapTitle}>Villa Spatial Plan</div>
               <svg viewBox="-25 -25 50 50" className={styles.blueprintSvg}>
                 <polygon points="-22,-22 22,-22 22,22 -22,22" fill="none" stroke="rgba(140, 120, 100, 0.25)" strokeWidth="0.6" strokeDasharray="1.5 1.5" />
-                {floor.rooms.map((r: any, idx: number) => {
+                {floor.rooms.map((r, idx) => {
                   const pos = r.pos || { x: idx * 12, z: 0 };
                   const mapX = (pos.x / 24) * 20;
                   const mapZ = (pos.z / 24) * 20;
