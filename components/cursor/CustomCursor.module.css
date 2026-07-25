@@ -1,0 +1,79 @@
+.dot,
+.ring {
+  position: fixed;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%, -50%);
+  mix-blend-mode: difference;
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  background: #fff;
+  border-radius: 50%;
+  transition:
+    width 0.3s,
+    height 0.3s,
+    background 0.3s;
+}
+
+.ring {
+  width: 36px;
+  height: 36px;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 50%;
+  transition:
+    width 0.35s cubic-bezier(0.2, 0.9, 0.3, 1.4),
+    height 0.35s cubic-bezier(0.2, 0.9, 0.3, 1.4),
+    border-color 0.3s;
+}
+
+.dot.hover {
+  width: 0;
+  height: 0;
+}
+.ring.hover {
+  width: 70px;
+  height: 70px;
+  border-color: #fff;
+}
+
+.ring.drag {
+  width: 90px;
+  height: 90px;
+  border-color: #fff;
+  background: rgba(255, 255, 255, 0.05);
+}
+.dot.drag {
+  width: 2px;
+  height: 2px;
+}
+
+.ring.threeD {
+  width: 120px;
+  height: 120px;
+  border: 1px dashed rgba(255, 255, 255, 0.7);
+}
+
+.label {
+  position: fixed;
+  pointer-events: none;
+  z-index: 9998;
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #fff;
+  mix-blend-mode: difference;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  transition: opacity 0.3s;
+  white-space: nowrap;
+}
+
+.labelVisible {
+  opacity: 1;
+}

@@ -1,0 +1,947 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Wolf Casa — Way of Light & Form</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,200;0,9..144,300;0,9..144,400;1,9..144,200;1,9..144,300&family=IBM+Plex+Mono:wght@300;400;500&display=swap');
+
+  :root{
+    --bg:#0A0A0A;
+    --bg-2:#111;
+    --fg:#F5F5F0;
+    --fg-dim:rgba(245,245,240,.5);
+    --fg-faint:rgba(245,245,240,.22);
+    --line:rgba(245,245,240,.14);
+    --serif:'Fraunces', serif;
+    --mono:'IBM Plex Mono', ui-monospace, monospace;
+  }
+  *{box-sizing:border-box; margin:0; padding:0; -webkit-font-smoothing:antialiased;}
+  html,body{background:var(--bg); color:var(--fg); font-family:var(--mono); font-weight:300;}
+  body{overflow-x:hidden; cursor:none;}
+  a{color:inherit; text-decoration:none;}
+  img{max-width:100%; display:block;}
+
+  /* ============ CUSTOM CURSOR ============ */
+  .cursor-dot, .cursor-ring{
+    position:fixed; top:0; left:0; pointer-events:none; z-index:9999;
+    transform:translate(-50%,-50%); mix-blend-mode:difference;
+  }
+  .cursor-dot{
+    width:6px; height:6px; background:#fff; border-radius:50%;
+    transition:width .3s, height .3s, background .3s;
+  }
+  .cursor-ring{
+    width:36px; height:36px; border:1px solid rgba(255,255,255,.5);
+    border-radius:50%; transition:width .35s cubic-bezier(.2,.9,.3,1.4), height .35s cubic-bezier(.2,.9,.3,1.4), border-color .3s;
+  }
+  body.cursor-hover .cursor-dot{width:0; height:0;}
+  body.cursor-hover .cursor-ring{width:70px; height:70px; border-color:#fff;}
+  body.cursor-drag .cursor-ring{width:90px; height:90px; border-color:#fff; background:rgba(255,255,255,.05);}
+  body.cursor-drag .cursor-dot{width:2px; height:2px;}
+  body.cursor-3d .cursor-ring{width:120px; height:120px; border:1px dashed rgba(255,255,255,.7);}
+  .cursor-label{
+    position:fixed; pointer-events:none; z-index:9998;
+    font-family:var(--mono); font-size:9px; letter-spacing:.2em; text-transform:uppercase;
+    color:#fff; mix-blend-mode:difference; transform:translate(-50%,-50%);
+    opacity:0; transition:opacity .3s;
+  }
+  body.cursor-hover .cursor-label{opacity:1;}
+  @media (hover:none){ body{cursor:auto;} .cursor-dot,.cursor-ring,.cursor-label{display:none;} }
+
+  /* ============ NAV ============ */
+  nav{
+    position:fixed; top:0; left:0; right:0; z-index:100;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:24px 32px; mix-blend-mode:difference; color:#fff;
+    font-family:var(--mono); font-size:11px; letter-spacing:.14em; text-transform:uppercase;
+  }
+  .wordmark{font-family:var(--serif); font-weight:300; font-size:20px; letter-spacing:.02em; text-transform:none;}
+  .nav-links{display:flex; gap:32px;}
+  .nav-links a{opacity:.85;}
+  .magnetic{display:inline-block; transition:transform .18s ease-out;}
+  .nav-cta{border:1px solid currentColor; padding:10px 18px;}
+  @media (max-width:900px){ .nav-links{display:none;} }
+
+  /* ============ HERO ============ */
+  .hero{
+    position:relative; height:100vh; width:100vw; overflow:hidden;
+    display:flex; flex-direction:column;
+  }
+  .hero-bg{
+    position:absolute; inset:0; z-index:0;
+    background:
+      radial-gradient(ellipse at 30% 40%, #1a1613 0%, #0A0A0A 60%),
+      #0A0A0A;
+  }
+  .hero-bg::before{
+    content:''; position:absolute; inset:0;
+    background-image:url('https://images.unsplash.com/photo-1618221118493-9cfa1a1c00da?auto=format&fit=crop&w=2400&q=85');
+    background-size:cover; background-position:center;
+    opacity:.35; mix-blend-mode:screen;
+    filter:blur(2px);
+  }
+  #hero-3d{position:absolute; inset:0; z-index:1;}
+
+  .hero-vignette{
+    position:absolute; inset:0; z-index:2; pointer-events:none;
+    background:
+      radial-gradient(ellipse at 50% 50%, transparent 20%, rgba(0,0,0,.7) 100%),
+      linear-gradient(180deg, rgba(0,0,0,.4) 0%, transparent 15%, transparent 80%, rgba(0,0,0,.9) 100%);
+  }
+
+  .hero-index{
+    position:absolute; top:50%; right:32px; transform:translateY(-50%);
+    display:flex; flex-direction:column; gap:8px; z-index:5;
+  }
+  .hero-index button{
+    background:none; border:none; color:var(--fg-dim); cursor:none;
+    padding:6px 0; text-align:right; font-family:var(--mono); font-size:10px;
+    letter-spacing:.14em; text-transform:uppercase; transition:color .4s ease;
+    display:flex; align-items:center; gap:12px; justify-content:flex-end;
+  }
+  .hero-index button::before{
+    content:''; width:20px; height:1px; background:currentColor; transition:width .4s ease;
+  }
+  .hero-index button.active{color:var(--fg);}
+  .hero-index button.active::before{width:48px;}
+
+  .hero-content{
+    position:relative; z-index:3; flex:1;
+    display:flex; flex-direction:column; justify-content:space-between;
+    padding:120px 32px 40px;
+  }
+  .hero-lead{max-width:1200px; margin:auto; text-align:center;}
+  .hero-eyebrow{
+    font-size:11px; letter-spacing:.28em; text-transform:uppercase;
+    color:var(--fg); margin-bottom:32px; display:block;
+  }
+  .hero-title{
+    font-family:var(--serif); font-weight:200; font-style:italic;
+    font-size:clamp(56px, 11vw, 172px); line-height:.9; letter-spacing:-.035em;
+  }
+  .hero-title .upright{font-style:normal; font-weight:200;}
+  .hero-sub{
+    font-family:var(--mono); font-size:12px; letter-spacing:.2em; text-transform:uppercase;
+    color:var(--fg-dim); margin-top:36px; line-height:1.9;
+  }
+
+  .hero-footer{
+    display:flex; justify-content:space-between; align-items:flex-end;
+    font-family:var(--mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--fg-dim);
+  }
+  .hero-footer .active-world{
+    display:block; font-family:var(--serif); font-style:italic; font-weight:300;
+    font-size:22px; color:var(--fg); text-transform:none; letter-spacing:0; margin-top:6px;
+  }
+  .scroll-cue{
+    position:absolute; left:50%; bottom:28px; transform:translateX(-50%);
+    font-family:var(--mono); font-size:10px; letter-spacing:.24em; color:var(--fg-dim);
+    text-transform:uppercase; z-index:4;
+  }
+  .scroll-cue::after{
+    content:''; display:block; width:1px; height:32px; background:var(--fg-dim); margin:12px auto 0;
+    animation:scrolldrop 2s ease-in-out infinite;
+  }
+  @keyframes scrolldrop{
+    0%{transform:scaleY(0); transform-origin:top;}
+    50%{transform:scaleY(1); transform-origin:top;}
+    51%{transform:scaleY(1); transform-origin:bottom;}
+    100%{transform:scaleY(0); transform-origin:bottom;}
+  }
+
+  .hero-3d-hint{
+    position:absolute; z-index:4; top:50%; left:32px; transform:translateY(-50%);
+    font-family:var(--mono); font-size:10px; letter-spacing:.2em; text-transform:uppercase;
+    color:var(--fg-dim); writing-mode:vertical-rl;
+  }
+
+  /* ============ SECTION TRANSITIONS ============ */
+  section{position:relative;}
+  .curtain{
+    position:absolute; top:-1px; left:0; right:0; height:120px; z-index:5;
+    background:linear-gradient(180deg, transparent 0%, var(--bg) 100%);
+    pointer-events:none;
+  }
+
+  /* ============ MANIFESTO ============ */
+  .manifesto{
+    padding:22vh 32px; text-align:center; border-bottom:1px solid var(--line);
+    position:relative;
+  }
+  .manifesto .num{
+    font-family:var(--mono); font-size:10px; letter-spacing:.28em; color:var(--fg-dim);
+    text-transform:uppercase; margin-bottom:80px; display:block;
+  }
+  .manifesto h2{
+    font-family:var(--serif); font-weight:200; font-style:italic;
+    font-size:clamp(40px, 6vw, 88px); line-height:1.08; letter-spacing:-.02em;
+    max-width:1000px; margin:0 auto;
+  }
+  .manifesto h2 span.up{font-style:normal;}
+
+  /* ============ STATS (hover-reveal ticking numbers) ============ */
+  .stats{
+    display:grid; grid-template-columns:repeat(4,1fr); border-top:1px solid var(--line);
+    border-bottom:1px solid var(--line);
+  }
+  .stat{
+    padding:60px 32px; border-right:1px solid var(--line);
+    position:relative; overflow:hidden; cursor:none;
+  }
+  .stat:last-child{border-right:none;}
+  .stat .val{
+    font-family:var(--serif); font-weight:200; font-size:clamp(48px,7vw,96px);
+    line-height:1; letter-spacing:-.03em;
+  }
+  .stat .val em{font-style:italic;}
+  .stat .lbl{
+    margin-top:20px; font-family:var(--mono); font-size:10px;
+    letter-spacing:.24em; text-transform:uppercase; color:var(--fg-dim);
+  }
+  .stat::after{
+    content:''; position:absolute; inset:0; background:#fff; transform:scaleY(0);
+    transform-origin:bottom; transition:transform .6s cubic-bezier(.7,0,.3,1); z-index:0;
+  }
+  .stat:hover::after{transform:scaleY(1); transform-origin:top;}
+  .stat .val, .stat .lbl{position:relative; z-index:1; transition:color .4s ease .1s;}
+  .stat:hover .val, .stat:hover .lbl{color:var(--bg);}
+  @media (max-width:900px){ .stats{grid-template-columns:1fr 1fr;} .stat:nth-child(2){border-right:none;} }
+
+  /* ============ WORLDS LIST ============ */
+  .worlds{padding:16vh 0 0;}
+  .section-mark{
+    display:flex; justify-content:space-between; padding:0 32px; margin-bottom:100px;
+    font-family:var(--mono); font-size:10px; letter-spacing:.24em; text-transform:uppercase;
+    color:var(--fg-dim);
+  }
+  .section-mark h3{
+    font-family:var(--serif); font-weight:200; font-style:italic;
+    font-size:clamp(28px,3.6vw,52px); color:var(--fg); letter-spacing:-.01em;
+    max-width:640px; text-transform:none;
+  }
+  .section-mark .meta{text-align:right; line-height:2;}
+
+  .world-row{
+    display:grid; grid-template-columns:80px 1.2fr 1fr 240px;
+    align-items:center; padding:36px 32px;
+    border-top:1px solid var(--line);
+    transition:padding .5s ease, background .5s ease;
+    cursor:none; position:relative; overflow:hidden;
+  }
+  .world-row:last-child{border-bottom:1px solid var(--line);}
+  .world-row .rowbg{
+    position:absolute; inset:0; z-index:0; opacity:0; transition:opacity .8s ease;
+    background-size:cover; background-position:center;
+  }
+  .world-row::before{
+    content:''; position:absolute; inset:0; z-index:1; background:linear-gradient(90deg, rgba(10,10,10,.94) 0%, rgba(10,10,10,.7) 60%, rgba(10,10,10,.9) 100%);
+    opacity:0; transition:opacity .6s ease;
+  }
+  .world-row:hover .rowbg{opacity:.55;}
+  .world-row:hover::before{opacity:1;}
+  .world-row:hover{padding-left:56px;}
+  .world-row > *{position:relative; z-index:2;}
+  .world-row .idx{font-family:var(--mono); font-size:10px; letter-spacing:.2em; color:var(--fg-dim);}
+  .world-row .name{
+    font-family:var(--serif); font-weight:200; font-style:italic;
+    font-size:clamp(28px,3.4vw,48px); letter-spacing:-.02em;
+  }
+  .world-row .name .up{font-style:normal;}
+  .world-row .desc{
+    font-family:var(--mono); font-size:12px; letter-spacing:.06em; color:var(--fg-dim);
+    line-height:1.8; max-width:340px;
+  }
+  .world-row .arr{
+    text-align:right; font-family:var(--mono); font-size:11px; letter-spacing:.2em;
+    text-transform:uppercase; color:var(--fg-dim); transition:transform .4s;
+  }
+  .world-row:hover .arr{transform:translateX(-12px); color:var(--fg);}
+  @media (max-width:1000px){
+    .world-row{grid-template-columns:60px 1fr; gap:12px 20px;}
+    .world-row .desc, .world-row .arr{grid-column:1/-1; padding-left:60px;}
+  }
+
+  /* ============ HORIZONTAL DRAG GALLERY ============ */
+  .gallery-section{padding:20vh 0; overflow:hidden;}
+  .gallery-head{padding:0 32px; margin-bottom:80px;}
+  .gallery-head .num{font-family:var(--mono); font-size:10px; letter-spacing:.28em; text-transform:uppercase; color:var(--fg-dim); display:block; margin-bottom:24px;}
+  .gallery-head h2{
+    font-family:var(--serif); font-weight:200; font-style:italic;
+    font-size:clamp(48px,7vw,108px); line-height:.95; letter-spacing:-.03em;
+  }
+  .gallery-head h2 .up{font-style:normal;}
+  .gallery-drag{
+    display:flex; gap:32px; padding:0 32px; cursor:none; user-select:none;
+    will-change:transform;
+  }
+  .g-card{
+    flex:0 0 auto; width:520px;
+  }
+  .g-card .g-img{
+    width:100%; aspect-ratio:4/5; overflow:hidden; margin-bottom:16px;
+    background:#141414; position:relative;
+  }
+  .g-card .g-img img{
+    width:100%; height:100%; object-fit:cover;
+    transition:transform 1s ease; will-change:transform;
+    pointer-events:none;
+  }
+  .g-card .g-num{
+    font-family:var(--mono); font-size:10px; letter-spacing:.2em; text-transform:uppercase;
+    color:var(--fg-dim); display:block; margin-bottom:8px;
+  }
+  .g-card .g-t{
+    font-family:var(--serif); font-weight:300; font-style:italic; font-size:24px;
+    letter-spacing:-.01em;
+  }
+  .gallery-progress{
+    max-width:1400px; margin:60px auto 0; padding:0 32px;
+    display:flex; justify-content:space-between; align-items:center;
+    font-family:var(--mono); font-size:10px; letter-spacing:.2em; text-transform:uppercase;
+    color:var(--fg-dim);
+  }
+  .gp-bar{
+    flex:1; height:1px; background:var(--line); margin:0 32px; position:relative;
+  }
+  .gp-fill{position:absolute; top:0; left:0; height:100%; background:var(--fg); width:0;}
+
+  /* ============ SCROLL-SCRUB SEQUENCE ============ */
+  .scrub{
+    height:300vh; position:relative;
+  }
+  .scrub-sticky{
+    position:sticky; top:0; height:100vh; overflow:hidden;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .scrub-frame{
+    position:absolute; inset:0; background-size:cover; background-position:center;
+    opacity:0; transition:opacity .4s ease;
+  }
+  .scrub-frame.active{opacity:1;}
+  .scrub-vignette{
+    position:absolute; inset:0;
+    background:radial-gradient(ellipse at center, transparent 30%, rgba(0,0,0,.6) 100%),
+               linear-gradient(180deg, rgba(0,0,0,.4), transparent 30%, transparent 70%, rgba(0,0,0,.6));
+  }
+  .scrub-text{
+    position:relative; z-index:2; text-align:center; max-width:900px; padding:0 32px;
+  }
+  .scrub-text .step{
+    font-family:var(--mono); font-size:10px; letter-spacing:.28em; text-transform:uppercase;
+    color:var(--fg-dim); margin-bottom:32px; display:block;
+  }
+  .scrub-text h2{
+    font-family:var(--serif); font-weight:200; font-style:italic;
+    font-size:clamp(40px,6vw,88px); line-height:1; letter-spacing:-.03em;
+  }
+  .scrub-text h2 .up{font-style:normal;}
+  .scrub-progress{
+    position:absolute; bottom:40px; left:50%; transform:translateX(-50%);
+    display:flex; gap:14px; z-index:3;
+  }
+  .scrub-progress span{
+    width:36px; height:1px; background:var(--fg-faint); transition:background .4s;
+  }
+  .scrub-progress span.on{background:var(--fg);}
+
+  /* ============ TICKER ============ */
+  .ticker{
+    padding:14vh 0; border-top:1px solid var(--line); border-bottom:1px solid var(--line);
+    overflow:hidden; white-space:nowrap;
+  }
+  .ticker-inner{
+    display:inline-block; font-family:var(--serif); font-weight:200; font-style:italic;
+    font-size:clamp(60px,10vw,180px); line-height:1;
+    animation:tick 42s linear infinite;
+  }
+  .ticker-inner .up{font-style:normal;}
+  .ticker-inner .dot{color:var(--fg-dim); font-style:normal; margin:0 40px;}
+  @keyframes tick{ 0%{transform:translateX(0);} 100%{transform:translateX(-50%);} }
+
+  /* ============ JOURNAL ============ */
+  .journal{padding:20vh 32px; border-top:1px solid var(--line);}
+  .journal-inner{max-width:1400px; margin:0 auto;}
+  .journal-head{
+    display:flex; justify-content:space-between; align-items:flex-end;
+    margin-bottom:80px; gap:40px; flex-wrap:wrap;
+  }
+  .journal-head h2{
+    font-family:var(--serif); font-weight:200; font-style:italic;
+    font-size:clamp(48px,7vw,108px); line-height:.95; letter-spacing:-.03em;
+  }
+  .journal-head h2 .up{font-style:normal;}
+  .journal-head .mm{
+    font-family:var(--mono); font-size:11px; letter-spacing:.24em; text-transform:uppercase;
+    color:var(--fg-dim); line-height:1.9;
+  }
+  .j-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:32px;}
+  .j-item{cursor:none;}
+  .j-thumb{
+    aspect-ratio:4/5; overflow:hidden; margin-bottom:20px; position:relative;
+    background:#141414;
+  }
+  .j-thumb img{width:100%; height:100%; object-fit:cover; transition:transform 1.2s ease; will-change:transform;}
+  .j-item:hover .j-thumb img{transform:scale(1.06);}
+  .j-num{font-family:var(--mono); font-size:10px; letter-spacing:.2em; text-transform:uppercase; color:var(--fg-dim);}
+  .j-title{font-family:var(--serif); font-weight:300; font-style:italic; font-size:22px; line-height:1.3; margin-top:12px; letter-spacing:-.01em;}
+  @media (max-width:900px){ .j-grid{grid-template-columns:1fr;} }
+
+  /* ============ FOOTER ============ */
+  footer{padding:14vh 32px 40px; border-top:1px solid var(--line);}
+  .foot-inner{max-width:1400px; margin:0 auto;}
+  .foot-hero{
+    font-family:var(--serif); font-weight:200; font-style:italic;
+    font-size:clamp(48px,8vw,148px); line-height:.95; letter-spacing:-.03em;
+    margin-bottom:100px;
+  }
+  .foot-hero .up{font-style:normal;}
+  .foot-grid{
+    display:grid; grid-template-columns:2fr 1fr 1fr 1fr; gap:60px;
+    padding-top:60px; border-top:1px solid var(--line);
+  }
+  .foot-grid h4{
+    font-family:var(--mono); font-size:10px; letter-spacing:.24em; text-transform:uppercase;
+    color:var(--fg-dim); margin-bottom:24px; font-weight:400;
+  }
+  .foot-grid a{display:block; font-size:13px; margin-bottom:12px; font-family:var(--mono); letter-spacing:.04em; opacity:.7;}
+  .foot-brand p{font-family:var(--serif); font-weight:300; font-style:italic; font-size:17px; line-height:1.55; max-width:340px; margin-top:16px; color:var(--fg-dim);}
+  .foot-bottom{
+    display:flex; justify-content:space-between; margin-top:80px; padding-top:32px;
+    border-top:1px solid var(--line);
+    font-family:var(--mono); font-size:10px; letter-spacing:.2em; text-transform:uppercase;
+    color:var(--fg-dim); flex-wrap:wrap; gap:12px;
+  }
+  @media (max-width:900px){ .foot-grid{grid-template-columns:1fr 1fr;} }
+
+  .reveal{opacity:0; transform:translateY(28px); transition:opacity 1s ease, transform 1s ease;}
+  .reveal.in{opacity:1; transform:translateY(0);}
+
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{animation:none !important; transition:none !important;}
+    body{cursor:auto;}
+  }
+</style>
+</head>
+<body>
+
+<!-- Custom cursor -->
+<div class="cursor-ring" id="cursor-ring"></div>
+<div class="cursor-dot" id="cursor-dot"></div>
+<div class="cursor-label" id="cursor-label">View</div>
+
+<nav>
+  <div class="wordmark">Wolf Casa</div>
+  <div class="nav-links">
+    <a href="#worlds" class="hover-item" data-cursor="Enter"><span class="magnetic">Worlds</span></a>
+    <a href="#sojourn" class="hover-item" data-cursor="Enter"><span class="magnetic">Sojourn</span></a>
+    <a href="#journal" class="hover-item" data-cursor="Read"><span class="magnetic">Journal</span></a>
+    <a href="#" class="hover-item" data-cursor="Visit"><span class="magnetic">Visit</span></a>
+  </div>
+  <a href="#" class="nav-cta hover-item" data-cursor="Book"><span class="magnetic">Consultation</span></a>
+</nav>
+
+<!-- ============ HERO ============ -->
+<section class="hero" id="hero" data-cursor-zone="3d">
+  <div class="hero-bg"></div>
+  <div id="hero-3d"></div>
+  <div class="hero-vignette"></div>
+
+  <div class="hero-3d-hint">Drag to compose &mdash; light &amp; form</div>
+
+  <div class="hero-index" id="hero-index"></div>
+
+  <div class="hero-content">
+    <div></div>
+    <div class="hero-lead">
+      <span class="hero-eyebrow">— Vol. I / 2026 —</span>
+      <h1 class="hero-title">
+        A home is not<br>
+        furnished. <span class="upright">It is</span><br>
+        <em>composed.</em>
+      </h1>
+      <p class="hero-sub">Way of Light &amp; Form &mdash; Modern Indian Living, carefully composed</p>
+    </div>
+    <div class="hero-footer">
+      <div>
+        <span>Currently viewing</span>
+        <span class="active-world" id="active-world-name">The Heirloom Way</span>
+      </div>
+      <div style="text-align:right;">
+        <span>15 years · 40,000 sq ft · 110 hands</span><br>
+        <span>Indore &mdash; Central India</span>
+      </div>
+    </div>
+  </div>
+  <div class="scroll-cue">Enter</div>
+</section>
+
+<!-- ============ MANIFESTO ============ -->
+<section class="manifesto reveal">
+  <div class="curtain"></div>
+  <span class="num">§ 01 &mdash; The Doctrine</span>
+  <h2>Luxury is not excess.<br><span class="up">It is precision.</span> <em>It is restraint.</em></h2>
+</section>
+
+<!-- ============ STATS (hover-reveal / ticking) ============ -->
+<div class="stats">
+  <div class="stat" data-count="15" data-suffix="yrs">
+    <div class="val" data-target="15">0<em>yrs</em></div>
+    <div class="lbl">Of craft &amp; built legacy</div>
+  </div>
+  <div class="stat" data-count="40" data-suffix="k ft²">
+    <div class="val" data-target="40">0<em>k ft²</em></div>
+    <div class="lbl">In-house manufacturing</div>
+  </div>
+  <div class="stat" data-count="110" data-suffix="+">
+    <div class="val" data-target="110">0<em>+</em></div>
+    <div class="lbl">Hands behind the house</div>
+  </div>
+  <div class="stat" data-count="12" data-suffix="">
+    <div class="val" data-target="12">0</div>
+    <div class="lbl">Named objects composed</div>
+  </div>
+</div>
+
+<!-- ============ WORLDS LIST ============ -->
+<section class="worlds" id="worlds">
+  <div class="section-mark reveal">
+    <h3>Five worlds. <em>One doctrine.</em></h3>
+    <div class="meta">§ 02<br>The Wolf Way<br>&mdash;</div>
+  </div>
+  <div class="world-list" id="world-list"></div>
+</section>
+
+<!-- ============ HORIZONTAL DRAG GALLERY ============ -->
+<section class="gallery-section" data-cursor-zone="drag">
+  <div class="gallery-head reveal">
+    <span class="num">§ 03 &mdash; Named Objects</span>
+    <h2><span class="up">Twelve</span> <em>heirlooms.</em></h2>
+  </div>
+  <div class="gallery-drag" id="gallery">
+    <!-- injected -->
+  </div>
+  <div class="gallery-progress">
+    <span>Drag to explore</span>
+    <div class="gp-bar"><div class="gp-fill" id="gp-fill"></div></div>
+    <span id="gp-count">01 / 06</span>
+  </div>
+</section>
+
+<!-- ============ SCROLL-SCRUB SEQUENCE (Casa Sojourn) ============ -->
+<section class="scrub" id="sojourn">
+  <div class="scrub-sticky">
+    <div class="scrub-frame" id="frame-1" style="background-image:url('https://images.unsplash.com/photo-1519643381401-22c77e60520e?auto=format&fit=crop&w=2400&q=85')"></div>
+    <div class="scrub-frame" id="frame-2" style="background-image:url('https://images.unsplash.com/photo-1554995207-c18c203602cb?auto=format&fit=crop&w=2400&q=85')"></div>
+    <div class="scrub-frame" id="frame-3" style="background-image:url('https://images.unsplash.com/photo-1567016432779-094069958ea5?auto=format&fit=crop&w=2400&q=85')"></div>
+    <div class="scrub-frame" id="frame-4" style="background-image:url('https://images.unsplash.com/photo-1615529182904-14819c35db37?auto=format&fit=crop&w=2400&q=85')"></div>
+    <div class="scrub-vignette"></div>
+    <div class="scrub-text">
+      <span class="step" id="scrub-step">§ 04 &mdash; Casa Sojourn / 01 of 04</span>
+      <h2 id="scrub-title"><span class="up">Sourced across</span><br>the <em>world.</em></h2>
+    </div>
+    <div class="scrub-progress" id="scrub-progress">
+      <span class="on"></span><span></span><span></span><span></span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TICKER ============ -->
+<section class="ticker" aria-hidden="true">
+  <div class="ticker-inner">
+    <em>Composed</em><span class="dot">·</span><span class="up">Edited</span><span class="dot">·</span><em>Remembered</em><span class="dot">·</span><span class="up">Inherited</span><span class="dot">·</span><em>Composed</em><span class="dot">·</span><span class="up">Edited</span><span class="dot">·</span><em>Remembered</em><span class="dot">·</span><span class="up">Inherited</span><span class="dot">·</span>
+  </div>
+</section>
+
+<!-- ============ JOURNAL ============ -->
+<section class="journal" id="journal">
+  <div class="journal-inner">
+    <div class="journal-head reveal">
+      <h2><span class="up">The</span> <em>Journal.</em></h2>
+      <div class="mm">§ 05<br>Teaching taste,<br>before selling product</div>
+    </div>
+    <div class="j-grid reveal">
+      <div class="j-item hover-item" data-cursor="Read">
+        <div class="j-thumb"><img src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1200&q=85" alt="" /></div>
+        <span class="j-num">01 · Way of Light</span>
+        <h3 class="j-title">Why light is the material you never pay for.</h3>
+      </div>
+      <div class="j-item hover-item" data-cursor="Read">
+        <div class="j-thumb"><img src="https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&w=1200&q=85" alt="" /></div>
+        <span class="j-num">02 · Material Intelligence</span>
+        <h3 class="j-title">Reading stone, wood and leather as evidence.</h3>
+      </div>
+      <div class="j-item hover-item" data-cursor="Read">
+        <div class="j-thumb"><img src="https://images.unsplash.com/photo-1615529182904-14819c35db37?auto=format&fit=crop&w=1200&q=85" alt="" /></div>
+        <span class="j-num">03 · The Signature Reveal</span>
+        <h3 class="j-title">Inside a completed home, Indore, 2026.</h3>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer>
+  <div class="foot-inner">
+    <div class="foot-hero reveal">
+      <em>Homes</em> <span class="up">with</span><br>
+      <em>Quiet</em> <span class="up">Signatures.</span>
+    </div>
+    <div class="foot-grid">
+      <div class="foot-brand">
+        <div class="wordmark">Wolf Casa</div>
+        <p>Modern Indian living, carefully composed. Indore, Central India &mdash; 2011 to now.</p>
+      </div>
+      <div>
+        <h4>The House</h4>
+        <a href="#" class="hover-item" data-cursor="→"><span class="magnetic">Way of Light &amp; Form</span></a>
+        <a href="#" class="hover-item" data-cursor="→"><span class="magnetic">The Wolf Way</span></a>
+        <a href="#" class="hover-item" data-cursor="→"><span class="magnetic">The Foundation</span></a>
+        <a href="#" class="hover-item" data-cursor="→"><span class="magnetic">Directors</span></a>
+      </div>
+      <div>
+        <h4>Experiences</h4>
+        <a href="#" class="hover-item" data-cursor="→"><span class="magnetic">Consultation</span></a>
+        <a href="#" class="hover-item" data-cursor="→"><span class="magnetic">Casa Sojourn</span></a>
+        <a href="#" class="hover-item" data-cursor="→"><span class="magnetic">Materials Library</span></a>
+        <a href="#" class="hover-item" data-cursor="→"><span class="magnetic">Signature Evenings</span></a>
+      </div>
+      <div>
+        <h4>Visit</h4>
+        <a href="#" class="hover-item" data-cursor="→"><span class="magnetic">Trade Desk</span></a>
+        <a href="#" class="hover-item" data-cursor="→"><span class="magnetic">Indore Showroom</span></a>
+        <a href="#" class="hover-item" data-cursor="→"><span class="magnetic">Contact</span></a>
+        <a href="#" class="hover-item" data-cursor="→"><span class="magnetic">WhatsApp</span></a>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>&copy; 2026 &mdash; Wolf Casa</span>
+      <span>Way of Light &amp; Form &mdash; Vol. I</span>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+/* ==================== WORLD DATA ==================== */
+const WORLDS = [
+  { name:"The Heirloom Way",  desc:"Modern heritage, permanence, inheritance.",       img:"https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=2400&q=85", accent:0xC9963F, emissive:0x3a2410 },
+  { name:"The Low House Way", desc:"Grounded living, horizontal calm, close to the earth.", img:"https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=2400&q=85", accent:0x8B4A34, emissive:0x2c1610 },
+  { name:"The Courtyard Way", desc:"Air, light, stone, water. The home breathes here.", img:"https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=2400&q=85", accent:0x6E7A5C, emissive:0x1e2418 },
+  { name:"The Monastic Way",  desc:"Restraint, silence, discipline. Essential form.",   img:"https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&w=2400&q=85", accent:0xD8D2C4, emissive:0x1a1815 },
+  { name:"The Ritual Way",    desc:"Daily use, lived rhythm, quiet purpose.",           img:"https://images.unsplash.com/photo-1567016432779-094069958ea5?auto=format&fit=crop&w=2400&q=85", accent:0xB8813C, emissive:0x33220f },
+];
+
+/* ==================== CUSTOM CURSOR ==================== */
+const dot = document.getElementById('cursor-dot');
+const ring = document.getElementById('cursor-ring');
+const label = document.getElementById('cursor-label');
+let cx=0, cy=0, rx=0, ry=0, mx=0, my=0;
+window.addEventListener('mousemove', e=>{
+  mx = e.clientX; my = e.clientY;
+  dot.style.transform = `translate(${mx}px, ${my}px) translate(-50%,-50%)`;
+  label.style.transform = `translate(${mx}px, ${my+40}px) translate(-50%,-50%)`;
+});
+function tick(){
+  rx += (mx - rx) * 0.18;
+  ry += (my - ry) * 0.18;
+  ring.style.transform = `translate(${rx}px, ${ry}px) translate(-50%,-50%)`;
+  requestAnimationFrame(tick);
+}
+tick();
+
+document.querySelectorAll('.hover-item').forEach(el=>{
+  el.addEventListener('mouseenter', ()=>{
+    document.body.classList.add('cursor-hover');
+    label.textContent = el.dataset.cursor || 'View';
+  });
+  el.addEventListener('mouseleave', ()=> document.body.classList.remove('cursor-hover'));
+});
+
+/* zone-specific cursor state */
+const heroZone = document.querySelector('[data-cursor-zone="3d"]');
+if(heroZone){
+  heroZone.addEventListener('mouseenter', ()=> document.body.classList.add('cursor-3d'));
+  heroZone.addEventListener('mouseleave', ()=> document.body.classList.remove('cursor-3d'));
+}
+const dragZone = document.querySelector('[data-cursor-zone="drag"]');
+if(dragZone){
+  dragZone.addEventListener('mouseenter', ()=>{ label.textContent = 'Drag'; document.body.classList.add('cursor-hover'); });
+  dragZone.addEventListener('mouseleave', ()=> document.body.classList.remove('cursor-hover'));
+}
+
+/* ==================== MAGNETIC BUTTONS ==================== */
+document.querySelectorAll('.magnetic').forEach(el=>{
+  const parent = el.parentElement;
+  parent.addEventListener('mousemove', e=>{
+    const r = parent.getBoundingClientRect();
+    const dx = (e.clientX - (r.left + r.width/2)) * 0.4;
+    const dy = (e.clientY - (r.top + r.height/2)) * 0.4;
+    el.style.transform = `translate(${dx}px, ${dy}px)`;
+  });
+  parent.addEventListener('mouseleave', ()=>{
+    el.style.transform = 'translate(0,0)';
+  });
+});
+
+/* ==================== HERO 3D — rotating vase/lamp ==================== */
+const heroMount = document.getElementById('hero-3d');
+const scene = new THREE.Scene();
+scene.fog = new THREE.FogExp2(0x0A0A0A, 0.08);
+
+const camera = new THREE.PerspectiveCamera(35, window.innerWidth/window.innerHeight, 0.1, 100);
+camera.position.set(0, 0.4, 5);
+
+const renderer = new THREE.WebGLRenderer({ antialias:true, alpha:true });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.setSize(window.innerWidth, window.innerHeight);
+heroMount.appendChild(renderer.domElement);
+
+/* light */
+scene.add(new THREE.AmbientLight(0x1a1512, 0.5));
+const keyLight = new THREE.PointLight(0xC9963F, 3.2, 10, 2);
+keyLight.position.set(1.8, 1.6, 2);
+scene.add(keyLight);
+const fillLight = new THREE.PointLight(0x6a5a4a, 0.9, 8, 2);
+fillLight.position.set(-2, -0.5, 1);
+scene.add(fillLight);
+const rimLight = new THREE.DirectionalLight(0xffffff, 0.15);
+rimLight.position.set(-2, 3, -2);
+scene.add(rimLight);
+
+/* build a sculpted vase via LatheGeometry — feels expensive with primitives */
+const vasePoints = [];
+const profile = [
+  [0.0, -1.2],[0.35,-1.2],[0.45,-1.15],[0.5,-1.0],
+  [0.55,-0.7],[0.62,-0.3],[0.68,0.1],[0.7,0.45],
+  [0.65,0.7],[0.55,0.9],[0.48,1.05],[0.5,1.15],
+  [0.55,1.22],[0.55,1.28],[0.0,1.28]
+];
+profile.forEach(p=> vasePoints.push(new THREE.Vector2(p[0], p[1])));
+const vaseGeo = new THREE.LatheGeometry(vasePoints, 96);
+const vaseMat = new THREE.MeshStandardMaterial({
+  color:0x1a1512,
+  roughness:0.35,
+  metalness:0.75,
+  emissive:0x3a2410,
+  emissiveIntensity:0.15,
+});
+const vase = new THREE.Mesh(vaseGeo, vaseMat);
+vase.scale.set(0.9, 0.9, 0.9);
+scene.add(vase);
+
+/* thin base ring */
+const ringGeo = new THREE.TorusGeometry(0.55, 0.008, 12, 96);
+const ringMat = new THREE.MeshStandardMaterial({ color:0x2a2a2a, roughness:0.4, metalness:0.9 });
+const baseRing = new THREE.Mesh(ringGeo, ringMat);
+baseRing.rotation.x = Math.PI/2;
+baseRing.position.y = -1.09;
+scene.add(baseRing);
+
+/* floating particles for atmosphere */
+const particleGeo = new THREE.BufferGeometry();
+const pCount = 60;
+const positions = new Float32Array(pCount*3);
+for(let i=0;i<pCount;i++){
+  positions[i*3]   = (Math.random()-0.5)*8;
+  positions[i*3+1] = (Math.random()-0.5)*6;
+  positions[i*3+2] = (Math.random()-0.5)*4;
+}
+particleGeo.setAttribute('position', new THREE.BufferAttribute(positions,3));
+const particleMat = new THREE.PointsMaterial({ color:0xC9963F, size:0.015, transparent:true, opacity:0.6, sizeAttenuation:true });
+const particles = new THREE.Points(particleGeo, particleMat);
+scene.add(particles);
+
+/* drag rotation */
+let dragging=false, lastX=0, lastY=0, rotY=0, rotX=0, targetRotY=0, targetRotX=0, autoSpin=0.003;
+heroMount.addEventListener('pointerdown', e=>{
+  dragging = true; lastX = e.clientX; lastY = e.clientY;
+  document.body.classList.add('cursor-drag');
+});
+window.addEventListener('pointerup', ()=>{ dragging=false; document.body.classList.remove('cursor-drag'); });
+window.addEventListener('pointermove', e=>{
+  if(!dragging) return;
+  targetRotY += (e.clientX - lastX) * 0.008;
+  targetRotX += (e.clientY - lastY) * 0.005;
+  targetRotX = Math.max(-0.6, Math.min(0.6, targetRotX));
+  lastX = e.clientX; lastY = e.clientY;
+});
+
+/* mood target colors */
+const targetAccent = new THREE.Color(WORLDS[0].accent);
+const targetEmissive = new THREE.Color(WORLDS[0].emissive);
+
+function animate(){
+  requestAnimationFrame(animate);
+  if(!dragging) targetRotY += autoSpin;
+  rotY += (targetRotY - rotY) * 0.08;
+  rotX += (targetRotX - rotX) * 0.08;
+  vase.rotation.y = rotY;
+  vase.rotation.x = rotX;
+  baseRing.rotation.z = rotY * 0.5;
+
+  particles.rotation.y += 0.0005;
+  particles.rotation.x += 0.0002;
+
+  keyLight.color.lerp(targetAccent, 0.04);
+  vaseMat.emissive.lerp(targetEmissive, 0.04);
+
+  renderer.render(scene, camera);
+}
+animate();
+
+window.addEventListener('resize', ()=>{
+  camera.aspect = window.innerWidth/window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+});
+
+/* ==================== WORLD SWITCHING (hero index + list) ==================== */
+const idxEl = document.getElementById('hero-index');
+WORLDS.forEach((w,i)=>{
+  const b = document.createElement('button');
+  b.className = 'hover-item ' + (i===0 ? 'active' : '');
+  b.dataset.cursor = 'Set';
+  b.textContent = String(i+1).padStart(2,'0');
+  b.onmouseenter = ()=>{ setWorld(i); document.body.classList.add('cursor-hover'); label.textContent='Set'; };
+  b.onmouseleave = ()=> document.body.classList.remove('cursor-hover');
+  idxEl.appendChild(b);
+});
+function setWorld(i){
+  document.getElementById('active-world-name').textContent = WORLDS[i].name;
+  targetAccent.setHex(WORLDS[i].accent);
+  targetEmissive.setHex(WORLDS[i].emissive);
+  document.querySelectorAll('.hero-index button').forEach((b,idx)=> b.classList.toggle('active', idx===i));
+}
+window.addEventListener('keydown', e=>{
+  const n = parseInt(e.key,10); if(n>=1&&n<=5) setWorld(n-1);
+});
+
+/* ==================== WORLD ROWS ==================== */
+const listEl = document.getElementById('world-list');
+WORLDS.forEach((w,i)=>{
+  const row = document.createElement('div');
+  row.className = 'world-row hover-item';
+  row.dataset.cursor = 'Enter';
+  row.innerHTML = `
+    <div class="rowbg" style="background-image:url('${w.img}')"></div>
+    <div class="idx">${String(i+1).padStart(2,'0')} / 05</div>
+    <div class="name">${w.name.replace('The ','<span class="up">The </span>')}</div>
+    <div class="desc">${w.desc}</div>
+    <div class="arr">Enter →</div>`;
+  row.onmouseenter = ()=>{
+    setWorld(i);
+    document.body.classList.add('cursor-hover');
+    label.textContent = 'Enter';
+  };
+  row.onmouseleave = ()=> document.body.classList.remove('cursor-hover');
+  listEl.appendChild(row);
+});
+
+/* ==================== STATS: count-up on scroll ==================== */
+const statsIO = new IntersectionObserver(entries=>{
+  entries.forEach(en=>{
+    if(!en.isIntersecting) return;
+    en.target.querySelectorAll('.val').forEach(el=>{
+      if(el.dataset.done) return; el.dataset.done = '1';
+      const target = parseInt(el.dataset.target,10);
+      const suffix = el.querySelector('em')?.outerHTML || '';
+      let n=0;
+      const step = Math.max(1, Math.round(target/40));
+      const iv = setInterval(()=>{
+        n += step; if(n>=target){ n=target; clearInterval(iv); }
+        el.innerHTML = n + suffix;
+      }, 30);
+    });
+  });
+},{ threshold:0.4 });
+document.querySelectorAll('.stats').forEach(el=> statsIO.observe(el));
+
+/* ==================== HORIZONTAL DRAG GALLERY ==================== */
+const OBJECTS = [
+  { n:"01", t:"The Low Sofa", img:"https://images.unsplash.com/photo-1567538096630-e0c55bd6374c?auto=format&fit=crop&w=1200&q=85" },
+  { n:"02", t:"The Heirloom Table", img:"https://images.unsplash.com/photo-1615873968403-89e068629265?auto=format&fit=crop&w=1200&q=85" },
+  { n:"03", t:"The Shadow Lamp", img:"https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?auto=format&fit=crop&w=1200&q=85" },
+  { n:"04", t:"The Monastic Bed", img:"https://images.unsplash.com/photo-1616627561950-9f746e330187?auto=format&fit=crop&w=1200&q=85" },
+  { n:"05", t:"The Quiet Wardrobe", img:"https://images.unsplash.com/photo-1595428774223-ef52624120d2?auto=format&fit=crop&w=1200&q=85" },
+  { n:"06", t:"The Hearth Kitchen", img:"https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?auto=format&fit=crop&w=1200&q=85" },
+];
+const gallery = document.getElementById('gallery');
+OBJECTS.forEach(o=>{
+  const card = document.createElement('div');
+  card.className = 'g-card';
+  card.innerHTML = `
+    <div class="g-img"><img src="${o.img}" draggable="false" alt=""></div>
+    <span class="g-num">${o.n} · Named Object</span>
+    <div class="g-t">${o.t}</div>`;
+  gallery.appendChild(card);
+});
+
+/* drag physics */
+let gDragging=false, gStartX=0, gCurrent=0, gTarget=0;
+gallery.addEventListener('pointerdown', e=>{
+  gDragging=true; gStartX = e.clientX - gCurrent;
+  document.body.classList.add('cursor-drag');
+});
+window.addEventListener('pointerup', ()=>{ gDragging=false; document.body.classList.remove('cursor-drag'); });
+window.addEventListener('pointermove', e=>{
+  if(!gDragging) return;
+  gTarget = e.clientX - gStartX;
+  const maxDrag = -(gallery.scrollWidth - window.innerWidth + 32);
+  gTarget = Math.min(0, Math.max(maxDrag, gTarget));
+});
+function gTick(){
+  gCurrent += (gTarget - gCurrent) * 0.1;
+  gallery.style.transform = `translateX(${gCurrent}px)`;
+  const max = -(gallery.scrollWidth - window.innerWidth + 32);
+  const prog = max ? Math.abs(gCurrent) / Math.abs(max) : 0;
+  const fill = document.getElementById('gp-fill');
+  if(fill) fill.style.width = (prog*100)+'%';
+  const idx = Math.min(OBJECTS.length, Math.floor(prog * OBJECTS.length) + 1);
+  const gc = document.getElementById('gp-count');
+  if(gc) gc.textContent = String(idx).padStart(2,'0') + ' / ' + String(OBJECTS.length).padStart(2,'0');
+  requestAnimationFrame(gTick);
+}
+gTick();
+
+/* ==================== SCROLL SCRUB ==================== */
+const scrubSection = document.getElementById('sojourn');
+const frames = document.querySelectorAll('.scrub-frame');
+const scrubProgress = document.getElementById('scrub-progress').children;
+const scrubStep = document.getElementById('scrub-step');
+const scrubTitle = document.getElementById('scrub-title');
+const scrubCopy = [
+  { s:"§ 04 &mdash; Casa Sojourn / 01 of 04", t:'<span class="up">Sourced across</span><br>the <em>world.</em>' },
+  { s:"§ 04 &mdash; Casa Sojourn / 02 of 04", t:'<em>Factory</em> <span class="up">visits,</span><br>hand-selected.' },
+  { s:"§ 04 &mdash; Casa Sojourn / 03 of 04", t:'<span class="up">The final lock,</span><br>and the <em>return.</em>' },
+  { s:"§ 04 &mdash; Casa Sojourn / 04 of 04", t:'<span class="up">Composed</span><br>in <em>your home.</em>' },
+];
+function updateScrub(){
+  const rect = scrubSection.getBoundingClientRect();
+  const total = rect.height - window.innerHeight;
+  const passed = Math.min(1, Math.max(0, -rect.top / total));
+  const step = Math.min(frames.length-1, Math.floor(passed * frames.length));
+  frames.forEach((f,i)=> f.classList.toggle('active', i===step));
+  Array.from(scrubProgress).forEach((s,i)=> s.classList.toggle('on', i===step));
+  scrubStep.innerHTML = scrubCopy[step].s;
+  scrubTitle.innerHTML = scrubCopy[step].t;
+}
+updateScrub();
+window.addEventListener('scroll', updateScrub, {passive:true});
+
+/* ==================== SCROLL REVEAL ==================== */
+const io = new IntersectionObserver(entries=>{
+  entries.forEach(en=>{ if(en.isIntersecting) en.target.classList.add('in'); });
+},{ threshold:0.12 });
+document.querySelectorAll('.reveal').forEach(el=> io.observe(el));
+
+/* ==================== NAV BLEND ON SCROLL ==================== */
+window.addEventListener('scroll', ()=>{
+  const scrolled = window.scrollY > window.innerHeight * 0.5;
+  document.querySelector('nav').style.mixBlendMode = scrolled ? 'normal' : 'difference';
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,123 @@
+.worlds {
+  padding: 16vh 0 0;
+}
+
+.sectionMark {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 32px;
+  margin-bottom: 100px;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--fg-dim);
+}
+.sectionMark h3 {
+  font-family: var(--serif);
+  font-weight: 200;
+  font-style: italic;
+  font-size: clamp(28px, 3.6vw, 52px);
+  color: var(--fg);
+  letter-spacing: -0.01em;
+  max-width: 640px;
+  text-transform: none;
+}
+.sectionMark .meta {
+  text-align: right;
+  line-height: 2;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 80px 1.2fr 1fr 240px;
+  align-items: center;
+  padding: 36px 32px;
+  border-top: 1px solid var(--line);
+  transition:
+    padding 0.5s ease,
+    background 0.5s ease;
+  cursor: none;
+  position: relative;
+  overflow: hidden;
+}
+.row:last-child {
+  border-bottom: 1px solid var(--line);
+}
+.rowBg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  opacity: 0;
+  transition: opacity 0.8s ease;
+  background-size: cover;
+  background-position: center;
+}
+.row::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(90deg, rgba(10, 10, 10, 0.94) 0%, rgba(10, 10, 10, 0.7) 60%, rgba(10, 10, 10, 0.9) 100%);
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+.row:hover .rowBg {
+  opacity: 0.55;
+}
+.row:hover::before {
+  opacity: 1;
+}
+.row:hover {
+  padding-left: 56px;
+}
+.row > * {
+  position: relative;
+  z-index: 2;
+}
+.idx {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  color: var(--fg-dim);
+}
+.name {
+  font-family: var(--serif);
+  font-weight: 200;
+  font-style: italic;
+  font-size: clamp(28px, 3.4vw, 48px);
+  letter-spacing: -0.02em;
+}
+.desc {
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  color: var(--fg-dim);
+  line-height: 1.8;
+  max-width: 340px;
+}
+.arr {
+  text-align: right;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--fg-dim);
+  transition: transform 0.4s;
+}
+.row:hover .arr {
+  transform: translateX(-12px);
+  color: var(--fg);
+}
+
+@media (max-width: 1000px) {
+  .row {
+    grid-template-columns: 60px 1fr;
+    gap: 12px 20px;
+  }
+  .desc,
+  .arr {
+    grid-column: 1 / -1;
+    padding-left: 60px;
+  }
+}

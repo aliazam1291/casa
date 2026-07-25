@@ -1,0 +1,56 @@
+.nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px 32px;
+  mix-blend-mode: difference;
+  color: #fff;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+/*
+ * The prototype flips this to `normal` past 50vh (wolf-casa-homepage-v3.html
+ * ~line 940). Left as-is that makes the nav invisible over the Composed
+ * Room's cream stage (off-white text on cream bg). So: stay on `difference`
+ * whenever a light stage is active, regardless of scroll position.
+ */
+.nav.solid {
+  mix-blend-mode: normal;
+  background: transparent;
+}
+
+.wordmark {
+  font-family: var(--serif);
+  font-weight: 300;
+  font-size: 20px;
+  letter-spacing: 0.02em;
+  text-transform: none;
+}
+
+.links {
+  display: flex;
+  gap: 32px;
+}
+
+.links a {
+  opacity: 0.85;
+}
+
+@media (max-width: 900px) {
+  .links {
+    display: none;
+  }
+}
+
+.cta {
+  border: 1px solid currentColor;
+  padding: 10px 18px;
+}
