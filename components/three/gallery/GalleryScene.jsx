@@ -1576,7 +1576,7 @@ const GalleryScene = forwardRef(function GalleryScene({ onRoomChange, onFloorCha
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.setSize(W, H);
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.15;
+    renderer.toneMappingExposure = 1.02;
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
@@ -1591,20 +1591,23 @@ const GalleryScene = forwardRef(function GalleryScene({ onRoomChange, onFloorCha
     const pmrem = new THREE.PMREMGenerator(renderer);
     const envRT = pmrem.fromScene(new RoomEnvironment(), 0.04);
     scene.environment = envRT.texture;
-    scene.environmentIntensity = 1.25;
+    // Lower env intensity: the IBL should give reflections and gentle fill,
+    // not flood the room evenly — that flat flooding is what kills contrast.
+    scene.environmentIntensity = 0.7;
 
     const camera = new THREE.PerspectiveCamera(48, W / H, 0.1, 140);
     const initialCam = getRoomCamAnchor(1, 0);
     camera.position.set(...initialCam.p);
 
-    // Quiet-Luxury Lighting Rig
-    const ambient = new THREE.AmbientLight(0xfff1dc, 0.22);
+    // Quiet-Luxury Lighting Rig — low ambient so the key light creates real
+    // shape and shadow instead of a flat, evenly-lit clay look.
+    const ambient = new THREE.AmbientLight(0xfff1dc, 0.06);
     scene.add(ambient);
 
-    const hemi = new THREE.HemisphereLight(0xfff6e6, 0xb8a890, 0.6);
+    const hemi = new THREE.HemisphereLight(0xfff6e6, 0xb8a890, 0.24);
     scene.add(hemi);
 
-    const dirKey = new THREE.DirectionalLight(0xfff0d4, 1.85);
+    const dirKey = new THREE.DirectionalLight(0xfff0d4, 2.9);
     dirKey.position.set(4, 9, 5);
     dirKey.castShadow = true;
     dirKey.shadow.mapSize.set(2048, 2048);
@@ -1616,22 +1619,23 @@ const GalleryScene = forwardRef(function GalleryScene({ onRoomChange, onFloorCha
     dirKey.shadow.camera.bottom = -7;
     dirKey.shadow.bias = -0.0004;
     dirKey.shadow.normalBias = 0.02;
-    dirKey.shadow.radius = 4;
+    dirKey.shadow.radius = 3;
     scene.add(dirKey);
     scene.add(dirKey.target);
 
-    const dirRim = new THREE.DirectionalLight(0xffd9a8, 0.75);
+    const dirRim = new THREE.DirectionalLight(0xffd9a8, 0.55);
     dirRim.position.set(-3, 5, -4);
     scene.add(dirRim);
     scene.add(dirRim.target);
 
-    const dirFill = new THREE.DirectionalLight(0xe8edf2, 0.4);
+    const dirFill = new THREE.DirectionalLight(0xe8edf2, 0.22);
     dirFill.position.set(-4, 4, 3);
     scene.add(dirFill);
 
+    // Brighter, tighter recessed spots so they read as real light pools.
     const spotOffsets = [-3.6, -1.2, 1.2, 3.6];
     const spots = spotOffsets.map((ox) => {
-      const sp = new THREE.SpotLight(0xfff1d8, 24, 14, Math.PI * 0.24, 0.7, 1.3);
+      const sp = new THREE.SpotLight(0xfff1d8, 52, 14, Math.PI * 0.22, 0.5, 1.3);
       sp.position.set(ox, 4.3, -3.2);
       sp.target.position.set(ox, 1.1, -5.2);
       scene.add(sp);
