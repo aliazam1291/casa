@@ -75,6 +75,12 @@ export const FLOORS = [
         pos: { x: -15, y: 0, z: -4, ry: 0.4 },
         cam: { px: 0, py: 1.6, pz: 6.5, tx: 0, ty: 1.3, tz: -1.5 },
       },
+      {
+        name: 'Guest Bedroom',
+        wallColor: 0xeae6df, floorColor: 0xd2c5b8, panelColor: 0x5c4a3c, accent: 0x986a3b,
+        pos: { x: 0, y: 0, z: -16, ry: 0 },
+        cam: { px: 0, py: 1.6, pz: 6.5, tx: 0, ty: 1.3, tz: -1.5 },
+      },
     ],
   },
   {
