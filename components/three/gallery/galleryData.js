@@ -57,4 +57,6 @@ export const FLOORS = [
   },
 ];
 
-export const ROOM_SPACING = 16;
+// Room width (W=12) — bays tile edge-to-edge so each floor reads as one
+// continuous connected gallery rather than separate walled rooms.
+export const ROOM_SPACING = 12;

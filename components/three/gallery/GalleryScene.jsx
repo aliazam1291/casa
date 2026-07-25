@@ -481,6 +481,7 @@ const GalleryScene = forwardRef(function GalleryScene({ onRoomChange, onFloorCha
     const group = new THREE.Group();
     const sm = getSharedMats();
     const W = 12, H = 4.5, D = 10;
+    const lastIndex = FLOORS[floorIndex].rooms.length - 1;
 
     // Floor surface: marble for kitchen/bath/underground, wood elsewhere
     const type = roomIndex % 4;
@@ -493,9 +494,9 @@ const GalleryScene = forwardRef(function GalleryScene({ onRoomChange, onFloorCha
     const matFloor = new THREE.MeshStandardMaterial({
       color: 0xffffff,
       map: getSurfTexture(marbleFloor ? 'marble' : 'wood', def.floorColor, marbleFloor ? 1.5 : 2, marbleFloor ? 1.5 : 3),
-      roughness: marbleFloor ? 0.08 : 0.38,
-      metalness: marbleFloor ? 0.15 : 0.02,
-      envMapIntensity: marbleFloor ? 1.5 : 0.6,
+      roughness: marbleFloor ? 0.06 : 0.34,
+      metalness: marbleFloor ? 0.2 : 0.02,
+      envMapIntensity: marbleFloor ? 2.0 : 0.7,
     });
     const matPanel = new THREE.MeshStandardMaterial({
       color: 0xffffff,
@@ -541,15 +542,20 @@ const GalleryScene = forwardRef(function GalleryScene({ onRoomChange, onFloorCha
     backWall.receiveShadow = true;
     group.add(backWall);
 
-    const leftWall = new THREE.Mesh(new THREE.PlaneGeometry(D, H), matWall);
-    leftWall.rotation.y = Math.PI / 2;
-    leftWall.position.set(-W / 2, H / 2, 0);
-    group.add(leftWall);
-
-    const rightWall = new THREE.Mesh(new THREE.PlaneGeometry(D, H), matWall);
-    rightWall.rotation.y = -Math.PI / 2;
-    rightWall.position.set(W / 2, H / 2, 0);
-    group.add(rightWall);
+    // Only the outermost bays get end walls — interior bays stay open so the
+    // floor reads as one continuous enfilade you glide through.
+    if (roomIndex === 0) {
+      const leftWall = new THREE.Mesh(new THREE.PlaneGeometry(D, H), matWall);
+      leftWall.rotation.y = Math.PI / 2;
+      leftWall.position.set(-W / 2, H / 2, 0);
+      group.add(leftWall);
+    }
+    if (roomIndex === lastIndex) {
+      const rightWall = new THREE.Mesh(new THREE.PlaneGeometry(D, H), matWall);
+      rightWall.rotation.y = -Math.PI / 2;
+      rightWall.position.set(W / 2, H / 2, 0);
+      group.add(rightWall);
+    }
 
     // Even vertical wood slats on back wall — calm, refined feature wall
     {
@@ -629,10 +635,14 @@ const GalleryScene = forwardRef(function GalleryScene({ onRoomChange, onFloorCha
     }
 
     // Smaller framed artworks on side walls (face inward)
-    const leftTex = getArtTexture(`${floorIndex}-${roomIndex}-L`, floorIndex * 23 + roomIndex * 5 + 11);
-    addFramedArt(group, sm, leftTex, { x: -W / 2 + 0.06, y: 2.2, z: 1.5, w: 1.2, h: 1.5, ry: Math.PI / 2 });
-    const rightTex = getArtTexture(`${floorIndex}-${roomIndex}-R`, floorIndex * 31 + roomIndex * 7 + 19);
-    addFramedArt(group, sm, rightTex, { x: W / 2 - 0.06, y: 2.2, z: -2.5, w: 1.2, h: 1.5, ry: -Math.PI / 2 });
+    if (roomIndex === 0) {
+      const leftTex = getArtTexture(`${floorIndex}-${roomIndex}-L`, floorIndex * 23 + roomIndex * 5 + 11);
+      addFramedArt(group, sm, leftTex, { x: -W / 2 + 0.06, y: 2.2, z: 1.5, w: 1.2, h: 1.5, ry: Math.PI / 2 });
+    }
+    if (roomIndex === lastIndex) {
+      const rightTex = getArtTexture(`${floorIndex}-${roomIndex}-R`, floorIndex * 31 + roomIndex * 7 + 19);
+      addFramedArt(group, sm, rightTex, { x: W / 2 - 0.06, y: 2.2, z: -2.5, w: 1.2, h: 1.5, ry: -Math.PI / 2 });
+    }
 
     // Room contents: real GLTF models when defined, else procedural staging
     if (def.models && def.models.length) {
@@ -1158,7 +1168,7 @@ const GalleryScene = forwardRef(function GalleryScene({ onRoomChange, onFloorCha
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.setSize(W, H);
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.15;
+    renderer.toneMappingExposure = 1.2;
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     // Soft real shadows for grounded, photographed-looking renders.
     renderer.shadowMap.enabled = true;
@@ -1178,7 +1188,7 @@ const GalleryScene = forwardRef(function GalleryScene({ onRoomChange, onFloorCha
     const pmrem = new THREE.PMREMGenerator(renderer);
     const envRT = pmrem.fromScene(new RoomEnvironment(), 0.04);
     scene.environment = envRT.texture;
-    scene.environmentIntensity = 1.1;
+    scene.environmentIntensity = 1.3;
 
     const camera = new THREE.PerspectiveCamera(48, W / H, 0.1, 120);
     camera.position.set(0, 1.6, 7);
@@ -1242,7 +1252,9 @@ const GalleryScene = forwardRef(function GalleryScene({ onRoomChange, onFloorCha
       const toX = index * ROOM_SPACING;
       const dist = Math.abs(index - s.currentRoom);
       s.currentRoom = index;
-      s.transit = { fromX, toX, lift: 1.4 + dist * 0.6, pull: 2.2 + dist * 0.5, dur: 0.85 + dist * 0.12, t: 0 };
+      // Continuous glide: only a whisper of lift/pull now that there are no
+      // interior walls to rise over.
+      s.transit = { fromX, toX, lift: 0.12, pull: 0.5 + dist * 0.25, dur: 0.9 + dist * 0.14, t: 0 };
       onRoomChange?.(index);
     };
 
