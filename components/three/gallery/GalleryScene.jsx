@@ -454,6 +454,8 @@ const GalleryScene = forwardRef(function GalleryScene({ onRoomChange, onFloorCha
         glass: new THREE.MeshStandardMaterial({ color: 0xd0d8d5, roughness: 0.05, metalness: 0.9, transparent: true, opacity: 0.6 }),
         ledge: new THREE.MeshStandardMaterial({ color: 0xd4caba, roughness: 0.5, metalness: 0.03 }),
         rugMat: new THREE.MeshStandardMaterial({ color: 0xc8baa0, roughness: 0.9, transparent: true, opacity: 0.45 }),
+        pebble: new THREE.MeshStandardMaterial({ color: 0xbdb2a0, roughness: 0.92, metalness: 0.02 }),
+        foliage: new THREE.MeshStandardMaterial({ color: 0x4a5a3a, roughness: 0.85 }),
         shadowMat: new THREE.MeshStandardMaterial({ color: 0x000000, transparent: true, opacity: 0.06 }),
       };
     }
@@ -477,6 +479,70 @@ const GalleryScene = forwardRef(function GalleryScene({ onRoomChange, onFloorCha
     });
   }
 
+  // A shared pass of premium filler decor so no bay reads as empty — a
+  // cluster of stone poufs on a rug (echoing the ICG ground floor), a potted
+  // plant, a sculptural plinth, and a slim floor lamp. Seeded per room so
+  // each bay varies. Placed in the foreground/corners to avoid the primary
+  // staging furniture.
+  function addCommonDecor(group, sm, matAccent, W, H, D, seed) {
+    let st = (seed * 2654435761 + 12345) >>> 0;
+    const rnd = () => { st = (st * 1664525 + 1013904223) >>> 0; return st / 4294967296; };
+    const side = rnd() < 0.5 ? -1 : 1;
+
+    // Stone poufs cluster on a rug (camera-side, fills the empty foreground)
+    const poufGeo = new THREE.SphereGeometry(0.42, 18, 12);
+    const cx = side * (1.8 + rnd() * 0.7);
+    const cz = 1.8 + (rnd() - 0.5) * 0.8;
+    for (let i = 0; i < 4; i++) {
+      const s = (0.34 + rnd() * 0.18) / 0.42;
+      const p = new THREE.Mesh(poufGeo, sm.pebble);
+      p.scale.set(s, s * 0.6, s);
+      p.position.set(cx + (rnd() - 0.5) * 1.9, s * 0.42 * 0.6, cz + (rnd() - 0.5) * 1.6);
+      p.castShadow = true; p.receiveShadow = true;
+      group.add(p);
+    }
+    const rug = new THREE.Mesh(new THREE.PlaneGeometry(3.6, 2.7), sm.rugMat);
+    rug.rotation.x = -Math.PI / 2;
+    rug.position.set(cx, 0.006, cz);
+    group.add(rug);
+
+    // Potted plant in a corner
+    const px = -side * (W / 2 - 1.1);
+    const planter = new THREE.Mesh(new THREE.CylinderGeometry(0.26, 0.2, 0.6, 20), sm.marble);
+    planter.position.set(px, 0.3, -1.0);
+    planter.castShadow = true;
+    group.add(planter);
+    for (let l = 0; l < 7; l++) {
+      const blade = new THREE.Mesh(new THREE.ConeGeometry(0.06, 0.9 + rnd() * 0.6, 5), sm.foliage);
+      blade.position.set(px + (rnd() - 0.5) * 0.34, 0.85 + rnd() * 0.28, -1.0 + (rnd() - 0.5) * 0.34);
+      blade.rotation.z = (rnd() - 0.5) * 0.55;
+      group.add(blade);
+    }
+
+    // Sculptural plinth with a brass form
+    const plx = side * (W / 2 - 1.4);
+    const plinth = new THREE.Mesh(new THREE.BoxGeometry(0.5, 1.0, 0.5), sm.marble);
+    plinth.position.set(plx, 0.5, -2.4);
+    plinth.castShadow = true;
+    group.add(plinth);
+    const sculp = new THREE.Mesh(new THREE.TorusKnotGeometry(0.16, 0.055, 48, 8), matAccent);
+    sculp.position.set(plx, 1.2, -2.4);
+    sculp.castShadow = true;
+    group.add(sculp);
+
+    // Slim floor lamp (emissive shade)
+    const lx = -side * (2.6 + rnd());
+    const pole = new THREE.Mesh(new THREE.CylinderGeometry(0.015, 0.02, 1.7, 6), sm.metal);
+    pole.position.set(lx, 0.85, 2.8);
+    group.add(pole);
+    const shade = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.14, 0.2, 0.3, 16),
+      new THREE.MeshBasicMaterial({ color: 0xfff5e0, transparent: true, opacity: 0.55 })
+    );
+    shade.position.set(lx, 1.8, 2.8);
+    group.add(shade);
+  }
+
   function buildRoom(def, roomIndex, floorIndex) {
     const group = new THREE.Group();
     const sm = getSharedMats();
@@ -494,9 +560,9 @@ const GalleryScene = forwardRef(function GalleryScene({ onRoomChange, onFloorCha
     const matFloor = new THREE.MeshStandardMaterial({
       color: 0xffffff,
       map: getSurfTexture(marbleFloor ? 'marble' : 'wood', def.floorColor, marbleFloor ? 1.5 : 2, marbleFloor ? 1.5 : 3),
-      roughness: marbleFloor ? 0.06 : 0.34,
-      metalness: marbleFloor ? 0.2 : 0.02,
-      envMapIntensity: marbleFloor ? 2.0 : 0.7,
+      roughness: marbleFloor ? 0.08 : 0.36,
+      metalness: marbleFloor ? 0.15 : 0.02,
+      envMapIntensity: marbleFloor ? 1.5 : 0.6,
     });
     const matPanel = new THREE.MeshStandardMaterial({
       color: 0xffffff,
@@ -579,6 +645,10 @@ const GalleryScene = forwardRef(function GalleryScene({ onRoomChange, onFloorCha
     crown.position.set(0, H - 0.05, -D / 2 + 0.04);
     group.add(crown);
     for (const side of [-1, 1]) {
+      // Only the outermost bays keep side moldings — interior boundaries stay
+      // seamless so the floor reads as one continuous home, not walled rooms.
+      const isOuter = (side === -1 && roomIndex === 0) || (side === 1 && roomIndex === lastIndex);
+      if (!isOuter) continue;
       const sideBase = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.12, D - 0.2), sm.darkWood);
       sideBase.position.set(side * (W / 2 - 0.02), 0.06, 0);
       group.add(sideBase);
@@ -665,6 +735,9 @@ const GalleryScene = forwardRef(function GalleryScene({ onRoomChange, onFloorCha
       else if (n.includes('gallery') || n.includes('terrace') || n.includes('pop')) addGalleryFurniture(group, sm, matAccent, W, H, D);
       else addHallFurniture(group, sm, matAccent, W, H, D);
     }
+
+    // Every bay gets the shared premium decor so none reads as empty.
+    addCommonDecor(group, sm, matAccent, W, H, D, floorIndex * 10 + roomIndex);
 
     return group;
   }
@@ -1168,7 +1241,7 @@ const GalleryScene = forwardRef(function GalleryScene({ onRoomChange, onFloorCha
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.setSize(W, H);
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.2;
+    renderer.toneMappingExposure = 1.12;
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     // Soft real shadows for grounded, photographed-looking renders.
     renderer.shadowMap.enabled = true;
@@ -1188,7 +1261,7 @@ const GalleryScene = forwardRef(function GalleryScene({ onRoomChange, onFloorCha
     const pmrem = new THREE.PMREMGenerator(renderer);
     const envRT = pmrem.fromScene(new RoomEnvironment(), 0.04);
     scene.environment = envRT.texture;
-    scene.environmentIntensity = 1.3;
+    scene.environmentIntensity = 1.12;
 
     const camera = new THREE.PerspectiveCamera(48, W / H, 0.1, 120);
     camera.position.set(0, 1.6, 7);
