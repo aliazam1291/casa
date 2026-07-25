@@ -5,6 +5,7 @@
       "name": "wolf-casa-dev",
       "runtimeExecutable": "pnpm",
       "runtimeArgs": ["dev"],
+      "autoPort": true,
       "port": 3000
     }
   ]

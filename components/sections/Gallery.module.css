@@ -1,11 +1,11 @@
 .section {
-  padding: 20vh 0;
+  padding: 18vh 0;
   overflow: hidden;
 }
 
 .head {
-  padding: 0 32px;
-  margin-bottom: 80px;
+  padding: 0 var(--gutter);
+  margin-bottom: 64px;
 }
 .num {
   font-family: var(--mono);
@@ -23,12 +23,13 @@
   font-size: clamp(48px, 7vw, 108px);
   line-height: 0.95;
   letter-spacing: -0.03em;
+  margin-left: 16.66%;
 }
 
 .drag {
   display: flex;
-  gap: 32px;
-  padding: 0 32px;
+  gap: clamp(18px, 2.5vw, 40px);
+  padding: 0 var(--gutter);
   cursor: none;
   user-select: none;
   will-change: transform;
@@ -36,13 +37,13 @@
 
 .card {
   flex: 0 0 auto;
-  width: 520px;
+  width: min(56vw, 680px);
 }
 .img {
   width: 100%;
-  aspect-ratio: 4 / 5;
+  aspect-ratio: 16 / 10;
   overflow: hidden;
-  margin-bottom: 16px;
+  margin-bottom: 18px;
   background: #141414;
   position: relative;
 }
@@ -51,7 +52,10 @@
   height: 100%;
   object-fit: cover;
   pointer-events: none;
+  filter: saturate(0.72) contrast(1.06);
+  transition: transform 800ms ease, filter 800ms ease;
 }
+.card:hover .img img { transform: scale(1.035); filter: saturate(0.98) contrast(1.02); }
 .cardNum {
   font-family: var(--mono);
   font-size: 10px;
@@ -72,7 +76,7 @@
 .progress {
   max-width: 1400px;
   margin: 60px auto 0;
-  padding: 0 32px;
+  padding: 0 var(--gutter);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -95,4 +99,10 @@
   left: 0;
   height: 100%;
   background: var(--fg);
+}
+
+@media (max-width: 720px) {
+  .card { width: 82vw; }
+  .progress span:first-child { display: none; }
+  .heading { margin-left: 0; }
 }

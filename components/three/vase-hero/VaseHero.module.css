@@ -11,21 +11,16 @@
   position: absolute;
   inset: 0;
   z-index: 0;
-  background:
-    radial-gradient(ellipse at 30% 40%, #1a1613 0%, #0a0a0a 60%),
-    #0a0a0a;
+  background: #0a0a0a url("/images/wolf-casa-hero-v2.png") center / cover no-repeat;
 }
 
 .heroBg::before {
   content: "";
   position: absolute;
   inset: 0;
-  background-image: url("https://images.unsplash.com/photo-1618221118493-9cfa1a1c00da?auto=format&fit=crop&w=2400&q=85");
-  background-size: cover;
-  background-position: center;
-  opacity: 0.35;
-  mix-blend-mode: screen;
-  filter: blur(2px);
+  background:
+    linear-gradient(90deg, rgba(7, 7, 7, 0.88) 0%, rgba(7, 7, 7, 0.58) 42%, rgba(7, 7, 7, 0.12) 75%),
+    linear-gradient(180deg, rgba(7, 7, 7, 0.42), transparent 34%, rgba(7, 7, 7, 0.76));
 }
 
 .canvasMount {
@@ -40,14 +35,14 @@
   z-index: 2;
   pointer-events: none;
   background:
-    radial-gradient(ellipse at 50% 50%, transparent 20%, rgba(0, 0, 0, 0.7) 100%),
-    linear-gradient(180deg, rgba(0, 0, 0, 0.4) 0%, transparent 15%, transparent 80%, rgba(0, 0, 0, 0.9) 100%);
+    linear-gradient(90deg, rgba(0, 0, 0, 0.4), transparent 55%),
+    linear-gradient(180deg, rgba(0, 0, 0, 0.5) 0%, transparent 18%, transparent 74%, rgba(0, 0, 0, 0.92) 100%);
 }
 
 .index {
   position: absolute;
   top: 50%;
-  right: 32px;
+  right: var(--gutter);
   transform: translateY(-50%);
   display: flex;
   flex-direction: column;
@@ -95,13 +90,13 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding: 120px 32px 40px;
+  padding: 138px var(--gutter) 44px;
 }
 
 .lead {
-  max-width: 1200px;
-  margin: auto;
-  text-align: center;
+  width: min(760px, 62vw);
+  margin: auto auto auto 8.33%;
+  text-align: left;
 }
 
 .eyebrow {
@@ -109,7 +104,7 @@
   letter-spacing: 0.28em;
   text-transform: uppercase;
   color: var(--fg);
-  margin-bottom: 32px;
+  margin-bottom: 24px;
   display: block;
 }
 
@@ -117,8 +112,8 @@
   font-family: var(--serif);
   font-weight: 200;
   font-style: italic;
-  font-size: clamp(56px, 11vw, 172px);
-  line-height: 0.9;
+  font-size: clamp(58px, 8.5vw, 142px);
+  line-height: 0.88;
   letter-spacing: -0.035em;
 }
 
@@ -128,8 +123,9 @@
   letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--fg-dim);
-  margin-top: 36px;
-  line-height: 1.9;
+  max-width: 430px;
+  margin-top: 28px;
+  line-height: 1.75;
 }
 
 .footer {
@@ -137,7 +133,7 @@
   justify-content: space-between;
   align-items: flex-end;
   font-family: var(--mono);
-  font-size: 10px;
+  font-size: 9px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--fg-dim);
@@ -207,7 +203,7 @@
   position: absolute;
   z-index: 4;
   top: 50%;
-  left: 32px;
+  left: var(--gutter);
   transform: translateY(-50%);
   font-family: var(--mono);
   font-size: 10px;
@@ -221,4 +217,13 @@
   .hint {
     display: none;
   }
+}
+
+@media (max-width: 720px) {
+  .content { padding-top: 112px; }
+  .lead { width: 100%; margin: auto 0; }
+  .title { font-size: clamp(54px, 16vw, 88px); }
+  .footer > div:last-child, .hint, .index { display: none; }
+  .footer { align-items: flex-end; }
+  .scrollCue { bottom: 20px; }
 }

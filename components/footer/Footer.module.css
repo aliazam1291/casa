@@ -1,5 +1,5 @@
 .footer {
-  padding: 14vh 32px 40px;
+  padding: 16vh var(--gutter) 40px;
   border-top: 1px solid var(--line);
 }
 .inner {

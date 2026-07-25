@@ -1,6 +1,6 @@
 .manifesto {
-  padding: 22vh 32px;
-  text-align: center;
+  padding: 22vh var(--gutter);
+  text-align: left;
   border-bottom: 1px solid var(--line);
   position: relative;
 }
@@ -11,7 +11,7 @@
   letter-spacing: 0.28em;
   color: var(--fg-dim);
   text-transform: uppercase;
-  margin-bottom: 80px;
+  margin-bottom: 64px;
   display: block;
 }
 
@@ -22,6 +22,10 @@
   font-size: clamp(40px, 6vw, 88px);
   line-height: 1.08;
   letter-spacing: -0.02em;
-  max-width: 1000px;
-  margin: 0 auto;
+  max-width: 940px;
+  margin: 0 0 0 16.66%;
+}
+
+@media (max-width: 720px) {
+  .heading { margin-left: 0; }
 }

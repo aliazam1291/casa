@@ -8,7 +8,7 @@ export function Manifesto() {
   const { ref, inView } = useReveal<HTMLElement>();
 
   return (
-    <section ref={ref} className={`${styles.manifesto} reveal ${inView ? "in" : ""}`}>
+    <section id="manifesto" ref={ref} className={`${styles.manifesto} reveal ${inView ? "in" : ""}`}>
       <div className="curtain" />
       <span className={styles.num}>§ 01 — The Doctrine</span>
       <h2 className={styles.heading}>

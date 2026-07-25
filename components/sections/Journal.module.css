@@ -1,5 +1,5 @@
 .journal {
-  padding: 20vh 32px;
+  padding: 18vh var(--gutter);
   border-top: 1px solid var(--line);
 }
 .inner {
@@ -32,14 +32,15 @@
 }
 .grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: 1.3fr 1fr 1fr;
   gap: 32px;
 }
 .item {
   cursor: none;
 }
+.item:first-child { margin-top: 12vh; }
 .thumb {
-  aspect-ratio: 4 / 5;
+  aspect-ratio: 4 / 3;
   overflow: hidden;
   margin-bottom: 20px;
   position: relative;
@@ -51,9 +52,11 @@
   object-fit: cover;
   transition: transform 1.2s ease;
   will-change: transform;
+  filter: saturate(0.7) contrast(1.05);
 }
 .item:hover .thumb img {
   transform: scale(1.06);
+  filter: saturate(1) contrast(1);
 }
 .num {
   font-family: var(--mono);
@@ -76,4 +79,5 @@
   .grid {
     grid-template-columns: 1fr;
   }
+  .item:first-child { margin-top: 0; }
 }

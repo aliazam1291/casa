@@ -1,30 +1,32 @@
 import type { Metadata } from "next";
-import { Fraunces, IBM_Plex_Mono } from "next/font/google";
+import { Archivo, Cormorant } from "next/font/google";
 import "./globals.css";
 import { CursorProvider } from "@/components/cursor/CursorProvider";
 import { CustomCursor } from "@/components/cursor/CustomCursor";
 import { StageProvider } from "@/components/stage/StageProvider";
 import { StageBackground } from "@/components/stage/StageBackground";
+import { Spotlight } from "@/components/chrome/Spotlight";
 import { Nav } from "@/components/nav/Nav";
 
-const fraunces = Fraunces({
-  variable: "--font-fraunces",
+const archivo = Archivo({
+  variable: "--font-archivo",
   subsets: ["latin"],
-  style: ["normal", "italic"],
-  weight: ["200", "300", "400"],
+  weight: ["300", "400", "500", "600"],
   display: "swap",
 });
 
-const plexMono = IBM_Plex_Mono({
-  variable: "--font-plex-mono",
+const cormorant = Cormorant({
+  variable: "--font-cormorant",
   subsets: ["latin"],
+  style: ["normal", "italic"],
   weight: ["300", "400", "500"],
   display: "swap",
 });
 
 export const metadata: Metadata = {
   title: "Wolf Casa — Way of Light & Form",
-  description: "Modern Indian living, carefully composed. Indore, Central India.",
+  description:
+    "Luxury interiors, carefully composed. A gallery of light and form — Indore, India.",
 };
 
 export default function RootLayout({
@@ -33,7 +35,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${fraunces.variable} ${plexMono.variable}`}>
+    <html lang="en" className={`${archivo.variable} ${cormorant.variable}`}>
       <head>
         <link rel="preconnect" href="https://images.unsplash.com" crossOrigin="anonymous" />
       </head>
@@ -41,6 +43,8 @@ export default function RootLayout({
         <StageProvider>
           <CursorProvider>
             <StageBackground />
+            <div className="grain" aria-hidden />
+            <Spotlight />
             <CustomCursor />
             <Nav />
             {children}

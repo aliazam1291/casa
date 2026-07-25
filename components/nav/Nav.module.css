@@ -7,7 +7,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 24px 32px;
+  padding: 24px var(--gutter);
   mix-blend-mode: difference;
   color: #fff;
   font-family: var(--mono);
@@ -42,7 +42,9 @@
 
 .links a {
   opacity: 0.85;
+  transition: opacity 0.3s ease;
 }
+.links a:hover { opacity: 1; }
 
 @media (max-width: 900px) {
   .links {
@@ -53,4 +55,9 @@
 .cta {
   border: 1px solid currentColor;
   padding: 10px 18px;
+  transition: background 0.35s ease, color 0.35s ease;
+}
+.cta:hover {
+  background: currentColor;
+  color: var(--bg);
 }
