@@ -1085,7 +1085,7 @@ const GalleryScene = forwardRef(function GalleryScene({ onRoomChange, onFloorCha
     // Caramel Velvet Sectional — tailored seat & back cushions, track arms,
     // contrast lumbar pillows and tapered brass feet.
     const sofaGroup = new THREE.Group();
-    const body = sm.velvetCaramel;
+    const body = sm.leatherCognac;
 
     // Upholstered plinth base
     const base = new THREE.Mesh(createRoundedBoxGeometry(3.35, 0.24, 1.28, 0.06, 4), body);
@@ -1115,8 +1115,8 @@ const GalleryScene = forwardRef(function GalleryScene({ onRoomChange, onFloorCha
       sofaGroup.add(arm);
     }
 
-    // Contrast lumbar pillows — cream linen + terracotta velvet
-    const pMats = [sm.linen, sm.velvetTerracotta, sm.linen];
+    // Contrast lumbar pillows — cream linen + forest velvet (crisp against cognac leather)
+    const pMats = [sm.linen, sm.velvetForest, sm.linen];
     for (let i = 0; i < 3; i++) {
       const pillow = new THREE.Mesh(createRoundedBoxGeometry(0.5, 0.34, 0.16, 0.07, 4), pMats[i]);
       pillow.position.set(-2.15 + i * 0.98, 0.56, -1.02);
@@ -1136,24 +1136,38 @@ const GalleryScene = forwardRef(function GalleryScene({ onRoomChange, onFloorCha
     group.add(sofaGroup);
     addContactShadow(group, -1.2, -0.7, 3.7, 2.3, 0.6);
 
-    // Fluted Marble Coffee Table with Brass Lip Trim & Walnut Pedestal
+    // Fluted solid-marble drum coffee table with a Nero Marquina top & brass lip
     const tableGroup = new THREE.Group();
-    const coffeeTable = new THREE.Mesh(createFlutedCylinderGeometry(0.65, 0.36, 22), sm.walnutWood);
+    const coffeeTable = new THREE.Mesh(createFlutedCylinderGeometry(0.65, 0.36, 22), sm.marble);
     coffeeTable.position.set(0.6, 0.18, 0.3);
     coffeeTable.castShadow = true; coffeeTable.receiveShadow = true;
     tableGroup.add(coffeeTable);
 
-    const topSlab = new THREE.Mesh(new THREE.CylinderGeometry(0.68, 0.68, 0.04, 32), sm.marble);
-    topSlab.position.set(0.6, 0.38, 0.3);
+    const topSlab = new THREE.Mesh(new THREE.CylinderGeometry(0.68, 0.68, 0.05, 32), sm.marbleNero);
+    topSlab.position.set(0.6, 0.385, 0.3);
     topSlab.castShadow = true;
     tableGroup.add(topSlab);
 
-    const brassLip = new THREE.Mesh(new THREE.TorusGeometry(0.685, 0.01, 8, 32), sm.metal);
+    const brassLip = new THREE.Mesh(new THREE.TorusGeometry(0.685, 0.012, 8, 32), sm.metal);
     brassLip.rotation.x = Math.PI / 2;
-    brassLip.position.set(0.6, 0.395, 0.3);
+    brassLip.position.set(0.6, 0.4, 0.3);
     tableGroup.add(brassLip);
     group.add(tableGroup);
     addContactShadow(group, 0.6, 0.3, 1.5, 1.5, 0.5);
+
+    // Calacatta marble side table with a Nero top and a brass bowl
+    const sideBase = new THREE.Mesh(new THREE.CylinderGeometry(0.28, 0.3, 0.55, 28), sm.marble);
+    sideBase.position.set(-3.5, 0.275, -1.0);
+    sideBase.castShadow = true; sideBase.receiveShadow = true;
+    group.add(sideBase);
+    const sideTop = new THREE.Mesh(new THREE.CylinderGeometry(0.31, 0.31, 0.045, 28), sm.marbleNero);
+    sideTop.position.set(-3.5, 0.57, -1.0);
+    sideTop.castShadow = true;
+    group.add(sideTop);
+    const brassBowl = new THREE.Mesh(new THREE.SphereGeometry(0.12, 20, 12, 0, Math.PI * 2, 0, Math.PI * 0.55), sm.metal);
+    brassBowl.position.set(-3.5, 0.6, -1.0);
+    group.add(brassBowl);
+    addContactShadow(group, -3.5, -1.0, 0.95, 0.95, 0.4);
 
     // Styled Hardcover Book Stack (3 books with colored spines)
     const bookColors = [sm.velvetTerracotta, sm.walnutWood, sm.velvetNavy];
