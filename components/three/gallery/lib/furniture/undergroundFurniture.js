@@ -6,31 +6,43 @@ import { tagPiece } from '../interactive.js';
 
 function addWineCellarFurniture(group, sm, W, H, D) {
   // 1. Central Tasting Table (Walnut slab, brass/dark-metal legs)
+  const tableGroup = new THREE.Group();
   const table = new THREE.Mesh(createRoundedBoxGeometry(2.0, 0.06, 0.85, 0.02, 3), sm.walnutWood);
   table.position.set(0, 0.9, 0.5);
   table.castShadow = true;
-  group.add(table);
+  tableGroup.add(table);
 
-  const legGroup = new THREE.Group();
   for (const tx of [-0.8, 0.8]) {
     const leg = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.02, 0.9, 8), sm.metalDark);
     leg.position.set(tx, 0.45, 0.5);
-    legGroup.add(leg);
+    tableGroup.add(leg);
   }
-  group.add(legGroup);
+  tagPiece(tableGroup, {
+    name: 'The Tasting Table',
+    materials: ['Solid walnut', 'Blackened steel'],
+    description: 'A single walnut slab on blackened steel legs, sized for a bottle, two glasses and nothing else.',
+  });
+  group.add(tableGroup);
   addContactShadow(group, 0, 0.5, 2.2, 1.0, 0.45);
 
   // 2. Leather Tasting Stools (2)
+  const stoolSet = new THREE.Group();
   for (const sx of [-0.6, 0.6]) {
     const stool = new THREE.Mesh(createRoundedBoxGeometry(0.38, 0.06, 0.38, 0.03, 3), sm.leatherCognac);
     stool.position.set(sx, 0.62, 1.2);
     stool.castShadow = true;
-    group.add(stool);
+    stoolSet.add(stool);
     const sLeg = new THREE.Mesh(new THREE.CylinderGeometry(0.015, 0.015, 0.56, 8), sm.metalDark);
     sLeg.position.set(sx, 0.28, 1.2);
-    group.add(sLeg);
+    stoolSet.add(sLeg);
     addContactShadow(group, sx, 1.2, 0.5, 0.5, 0.35);
   }
+  tagPiece(stoolSet, {
+    name: 'The Tasting Stools',
+    materials: ['Cognac saddle leather', 'Blackened steel'],
+    description: 'A pair of backless stools in the same cognac hide as the house leather, kept low so the wine wall stays the view.',
+  });
+  group.add(stoolSet);
 
   // 3. Staged items on table (tray, bottle, 2 wine glasses)
   const tray = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.21, 0.02, 16), sm.metal);
@@ -189,33 +201,52 @@ function addWineCellarFurniture(group, sm, W, H, D) {
       barrel.add(band);
     }
   });
+  tagPiece(barrelGroup, {
+    name: 'The Aging Barrels',
+    materials: ['French oak', 'Blackened steel bands'],
+    description: 'Three coopered oak barrels stacked in the corner — retired from the estate’s own reserve after a full ageing cycle.',
+  });
   group.add(barrelGroup);
   addContactShadow(group, -3.9, 2.2, 1.8, 1.8, 0.5);
 
   // 7. Stacked Vintage Wood Wine Boxes (placed near barrels)
+  const crateSet = new THREE.Group();
   const box1 = new THREE.Mesh(new THREE.BoxGeometry(0.48, 0.32, 0.38), sm.walnutWood);
   box1.position.set(-2.8, 0.16, 2.3);
   box1.rotation.y = 0.14;
   box1.castShadow = true;
-  group.add(box1);
+  crateSet.add(box1);
 
   const box2 = new THREE.Mesh(new THREE.BoxGeometry(0.45, 0.28, 0.34), sm.walnutWood);
   box2.position.set(-2.85, 0.46, 2.2);
   box2.rotation.y = -0.08;
   box2.castShadow = true;
-  group.add(box2);
+  crateSet.add(box2);
+  tagPiece(crateSet, {
+    name: 'The Vintage Crates',
+    materials: ['Stamped pine', 'Iron corner brackets'],
+    description: 'Original shipping crates, kept as found — stencilled vintages still legible under the dust.',
+  });
+  group.add(crateSet);
   addContactShadow(group, -2.8, 2.2, 0.7, 0.7, 0.35);
 }
 
 function addMaterialVaultFurniture(group, sm, W, H, D) {
   // Central Marble Design Workbench
+  const workbench = new THREE.Group();
   const island = new THREE.Mesh(createRoundedBoxGeometry(2.4, 0.9, 1.1, 0.03, 3), sm.marbleNero);
   island.position.set(0, 0.45, 0.2);
   island.castShadow = true; island.receiveShadow = true;
-  group.add(island);
+  workbench.add(island);
   const trim = new THREE.Mesh(new THREE.BoxGeometry(2.44, 0.04, 1.14), sm.metal);
   trim.position.set(0, 0.9, 0.2);
-  group.add(trim);
+  workbench.add(trim);
+  tagPiece(workbench, {
+    name: 'The Design Workbench',
+    materials: ['Nero Marquina marble', 'Champagne brass'],
+    description: 'A Nero Marquina slab on a brass-trimmed base — every material specification for the house is signed off at this table.',
+  });
+  group.add(workbench);
   addContactShadow(group, 0, 0.2, 2.7, 1.4, 0.55);
 
   // Task Pendant light above workbench
@@ -264,22 +295,29 @@ function addMaterialVaultFurniture(group, sm, W, H, D) {
   // Large Material Storage racks
   const rackW = 2.0, rackH = 2.4, rackD = 0.42;
   for (const rx of [-2.8, 2.8]) {
+    const rackGroup = new THREE.Group();
     const rack = new THREE.Mesh(createRoundedBoxGeometry(rackW, rackH, rackD, 0.04, 3), sm.darkWood);
     rack.position.set(rx, rackH / 2, -D / 2 + rackD / 2 + 0.1);
     rack.castShadow = true;
-    group.add(rack);
+    rackGroup.add(rack);
     for (let sh = 0; sh < 4; sh++) {
       const shelf = new THREE.Mesh(new THREE.BoxGeometry(rackW - 0.08, 0.03, rackD - 0.06), sm.darkWood);
       shelf.position.set(rx, 0.48 + sh * 0.55, -D / 2 + rackD / 2 + 0.1);
-      group.add(shelf);
+      rackGroup.add(shelf);
       for (let j = 0; j < 3; j++) {
         const matColors = [sm.velvetTerracotta, sm.velvetForest, sm.velvetNavy, sm.linen];
         const roll = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.06, 0.45, 12), matColors[(sh + j) % matColors.length]);
         roll.rotation.z = Math.PI / 2;
         roll.position.set(rx - 0.5 + j * 0.5, 0.56 + sh * 0.55, -D / 2 + rackD / 2 + 0.1);
-        group.add(roll);
+        rackGroup.add(roll);
       }
     }
+    tagPiece(rackGroup, {
+      name: 'The Sample Racks',
+      materials: ['Dark oak', 'Bolt-end fabrics'],
+      description: 'Every fabric under consideration for the house lives here on the bolt, sorted so a whole season’s palette reads in one glance.',
+    });
+    group.add(rackGroup);
     addContactShadow(group, rx, -D / 2 + rackD / 2 + 0.1, rackW + 0.4, rackD + 0.4, 0.5);
   }
 
@@ -343,6 +381,11 @@ function addArchiveFurniture(group, sm, W, H, D) {
   const lGlow = new THREE.Mesh(new THREE.SphereGeometry(0.025, 8, 8), sm.fixtureGlow);
   lGlow.position.set(-1.1, 0.95, 0.42);
   lamp.add(lGlow);
+  tagPiece(lamp, {
+    name: 'The Banker’s Lamp',
+    materials: ['Green cased glass', 'Antiqued brass'],
+    description: 'A classic green-glass banker’s lamp, kept for the one task this room is built for: reading drawings by hand.',
+  });
   tableGroup.add(lamp);
 
   for (const lx of [-0.6, 0.6]) {
@@ -350,6 +393,11 @@ function addArchiveFurniture(group, sm, W, H, D) {
     leg.position.set(-0.5 + lx, 0.37, 0.2);
     tableGroup.add(leg);
   }
+  tagPiece(tableGroup, {
+    name: 'The Drafting Table',
+    materials: ['Dark oak', 'Linen', 'Blackened steel'],
+    description: 'An inclined drafting table holding the house’s working drawings — the same table every floor plan in this archive was first drawn on.',
+  });
   group.add(tableGroup);
   addContactShadow(group, -0.5, 0.2, 1.8, 1.1, 0.45);
 
@@ -370,29 +418,41 @@ function addArchiveFurniture(group, sm, W, H, D) {
   ott.rotation.y = -0.55;
   ott.castShadow = true;
   chairGroup.add(ott);
+  tagPiece(chairGroup, {
+    name: 'The Reading Chair',
+    materials: ['Cognac saddle leather', 'Solid walnut'],
+    description: 'A deep leather chair and ottoman angled toward the drafting table — the only concession to comfort in a working room.',
+  });
   group.add(chairGroup);
   addContactShadow(group, 2.4, -0.8, 1.4, 1.4, 0.5);
 
   // Tall Archive Book Cabinets
   const cabW = 2.0, cabH = 2.5, cabD = 0.42;
   for (const cx of [-2.8, 2.8]) {
+    const cabinetGroup = new THREE.Group();
     const cabinet = new THREE.Mesh(createRoundedBoxGeometry(cabW, cabH, cabD, 0.04, 3), sm.darkWood);
     cabinet.position.set(cx, cabH / 2, -D / 2 + cabD / 2 + 0.1);
     cabinet.castShadow = true;
-    group.add(cabinet);
+    cabinetGroup.add(cabinet);
     for (let sh = 0; sh < 5; sh++) {
       const shelf = new THREE.Mesh(new THREE.BoxGeometry(cabW - 0.08, 0.03, cabD - 0.06), sm.darkWood);
       shelf.position.set(cx, 0.4 + sh * 0.48, -D / 2 + cabD / 2 + 0.1);
-      group.add(shelf);
+      cabinetGroup.add(shelf);
       const fileCount = 4 + Math.floor(Math.random() * 4);
       const fColors = [sm.leatherCognac, sm.linen, sm.walnutWood];
       for (let f = 0; f < fileCount; f++) {
         const file = new THREE.Mesh(new THREE.BoxGeometry(0.32, 0.025, 0.24), fColors[f % fColors.length]);
         file.position.set(cx - 0.6 + f * 0.36 + (Math.random() - 0.5) * 0.05, 0.435 + sh * 0.48, -D / 2 + cabD / 2 + 0.1);
         file.rotation.y = (Math.random() - 0.5) * 0.12;
-        group.add(file);
+        cabinetGroup.add(file);
       }
     }
+    tagPiece(cabinetGroup, {
+      name: 'The Archive Cabinets',
+      materials: ['Dark oak', 'Cognac leather bindings'],
+      description: 'Floor-to-ceiling cabinets holding every drawing, invoice and correspondence the house has produced since the first stone was laid.',
+    });
+    group.add(cabinetGroup);
     addContactShadow(group, cx, -D / 2 + cabD / 2 + 0.1, cabW + 0.4, cabD + 0.4, 0.5);
   }
 

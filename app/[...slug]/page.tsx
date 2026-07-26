@@ -1,0 +1,31 @@
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
+import { EditorialExplorer } from "@/components/editorial/EditorialExplorer";
+import { SITE_PAGES } from "@/lib/site-content";
+
+type Props = { params: Promise<{ slug: string[] }> };
+
+export function generateStaticParams() {
+  return Object.keys(SITE_PAGES).map((key) => ({ slug: key.split("/") }));
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const key = (await params).slug.join("/");
+  const page = resolvePage(key);
+  if (!page) return {};
+  return { title: page.title, description: page.description, alternates: { canonical: `/${key}` }, openGraph: { title: page.title, description: page.description, images: [{ url: page.image, alt: page.imageAlt }] } };
+}
+
+export default async function EditorialRoute({ params }: Props) {
+  const key = (await params).slug.join("/");
+  const page = resolvePage(key);
+  if (!page) notFound();
+  return <EditorialExplorer page={page} />;
+}
+
+function resolvePage(key: string) {
+  if (SITE_PAGES[key]) return SITE_PAGES[key];
+  if (key.startsWith("journal/")) return SITE_PAGES.journal;
+  if (key.startsWith("the-wolf-way/object/") || key.startsWith("the-wolf-way/")) return SITE_PAGES["the-wolf-way"];
+  return undefined;
+}

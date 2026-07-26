@@ -109,16 +109,23 @@ export function addGalleryFurniture(group, sm, matAccent, W, H, D, name = '') {
     }
 
     // Side table between the loungers with a drink
+    const terraceSide = new THREE.Group();
     const sideTop = new THREE.Mesh(new THREE.CylinderGeometry(0.24, 0.24, 0.05, 24), sm.marble);
     sideTop.position.set(0, 0.46, 0.55);
     sideTop.castShadow = true;
-    group.add(sideTop);
+    terraceSide.add(sideTop);
     const sideStem = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.07, 0.44, 14), sm.metal);
     sideStem.position.set(0, 0.22, 0.55);
-    group.add(sideStem);
+    terraceSide.add(sideStem);
     const glassCup = new THREE.Mesh(new THREE.CylinderGeometry(0.045, 0.035, 0.13, 14), sm.glass);
     glassCup.position.set(0.06, 0.55, 0.55);
-    group.add(glassCup);
+    terraceSide.add(glassCup);
+    tagPiece(terraceSide, {
+      name: 'The Terrace Table',
+      materials: ['Weathered marble', 'Blackened steel'],
+      description: 'A marble-topped side table between the loungers, its steel stem left to weather rather than sealed against it.',
+    });
+    group.add(terraceSide);
     addContactShadow(group, 0, 0.55, 0.6, 0.6, 0.4);
 
     // Linear stone fire table with a bed of lava pebbles and flame glow
@@ -148,21 +155,28 @@ export function addGalleryFurniture(group, sm, matAccent, W, H, D, name = '') {
     group.add(flame);
 
     // Olive tree in a large stone planter for outdoor scale
+    const oliveTree = new THREE.Group();
     const bigPot = new THREE.Mesh(createFlutedCylinderGeometry(0.42, 0.85, 18), sm.marble);
     bigPot.position.set(3.9, 0.42, 0.6);
     bigPot.castShadow = true; bigPot.receiveShadow = true;
-    group.add(bigPot);
-    addContactShadow(group, 3.9, 0.6, 1.1, 1.1, 0.45);
+    oliveTree.add(bigPot);
     const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.1, 1.1, 10), sm.darkWood);
     trunk.position.set(3.9, 1.35, 0.6);
     trunk.castShadow = true;
-    group.add(trunk);
+    oliveTree.add(trunk);
     for (let c = 0; c < 5; c++) {
       const canopy = new THREE.Mesh(new THREE.SphereGeometry(0.42 - c * 0.03, 14, 10), sm.foliage);
       canopy.position.set(3.9 + (Math.random() - 0.5) * 0.55, 2.0 + (Math.random() - 0.5) * 0.45, 0.6 + (Math.random() - 0.5) * 0.55);
       canopy.scale.y = 0.8;
       canopy.castShadow = true;
-      group.add(canopy);
+      oliveTree.add(canopy);
     }
+    tagPiece(oliveTree, {
+      name: 'The Olive Tree',
+      materials: ['Fluted marble', 'Mature olive'],
+      description: 'A single olive tree, decades old, in a fluted marble planter sized to hold it for another decade.',
+    });
+    group.add(oliveTree);
+    addContactShadow(group, 3.9, 0.6, 1.1, 1.1, 0.45);
   }
 }

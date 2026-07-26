@@ -51,16 +51,23 @@ export function addBedroomFurniture(group, sm, matPanel, matAccent, W, H, D) {
 
   // Calacatta Marble Nightstands
   for (const nx of [-1, 1]) {
+    const nightstand = new THREE.Group();
     const ns = new THREE.Mesh(createRoundedBoxGeometry(0.55, 0.48, 0.42, 0.03, 3), sm.marble);
     ns.position.set(nx * (bedW / 2 + 0.52), 0.24, -D / 2 + 0.5);
     ns.castShadow = true;
-    group.add(ns);
+    nightstand.add(ns);
     const drawerFront = new THREE.Mesh(new THREE.BoxGeometry(0.48, 0.2, 0.02), sm.walnutWood);
     drawerFront.position.set(nx * (bedW / 2 + 0.52), 0.24, -D / 2 + 0.72);
-    group.add(drawerFront);
+    nightstand.add(drawerFront);
     const handle = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.015, 0.015), sm.metal);
     handle.position.set(nx * (bedW / 2 + 0.52), 0.24, -D / 2 + 0.74);
-    group.add(handle);
+    nightstand.add(handle);
+    tagPiece(nightstand, {
+      name: 'The Marble Nightstand',
+      materials: ['Calacatta marble', 'Solid walnut', 'Champagne brass'],
+      description: 'A marble-faced nightstand with a single walnut drawer, its brass pull the only bright note in the room.',
+    });
+    group.add(nightstand);
     addContactShadow(group, nx * (bedW / 2 + 0.52), -D / 2 + 0.5, 0.7, 0.6, 0.35);
 
     const lampStem = new THREE.Mesh(new THREE.CylinderGeometry(0.012, 0.012, 0.14, 8), sm.metal);

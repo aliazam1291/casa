@@ -37,35 +37,49 @@ export function addHallFurniture(group, sm, matAccent, W, H, D) {
   addContactShadow(group, 0, 0.3, 2.3, 0.95, 0.5);
 
   // Flanking marble plinths with objets
+  const plinthSet = new THREE.Group();
   [-1, 1].forEach((sgn, i) => {
     const plinth = new THREE.Mesh(new THREE.BoxGeometry(0.42, 1.0, 0.42), sm.marble);
     plinth.position.set(sgn * 2.7, 0.5, -1.6);
     plinth.castShadow = true; plinth.receiveShadow = true;
-    group.add(plinth);
+    plinthSet.add(plinth);
     if (i === 0) {
       const orb = new THREE.Mesh(new THREE.SphereGeometry(0.16, 20, 14), sm.metal);
       orb.position.set(sgn * 2.7, 1.16, -1.6);
       orb.castShadow = true;
-      group.add(orb);
+      plinthSet.add(orb);
     } else {
       const vessel = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.14, 0.34, 20), sm.ceramicPot);
       vessel.position.set(sgn * 2.7, 1.17, -1.6);
       vessel.castShadow = true;
-      group.add(vessel);
+      plinthSet.add(vessel);
     }
     addContactShadow(group, sgn * 2.7, -1.6, 0.7, 0.7, 0.4);
   });
+  tagPiece(plinthSet, {
+    name: 'The Marble Plinths',
+    materials: ['Calacatta marble', 'Champagne brass', 'Glazed ceramic'],
+    description: 'A pair of square marble plinths flanking the entry, each carrying a single object rather than a display.',
+  });
+  group.add(plinthSet);
 
   // Tall branch vase in the near corner
+  const vaseGroup = new THREE.Group();
   const vase = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.11, 0.72, 20), sm.ceramicPot);
   vase.position.set(-(W / 2) + 1.2, 0.36, 1.9);
   vase.castShadow = true;
-  group.add(vase);
+  vaseGroup.add(vase);
   for (let s = 0; s < 6; s++) {
     const stem = new THREE.Mesh(new THREE.CylinderGeometry(0.006, 0.012, 1.0 + (s % 3) * 0.25, 5), sm.walnutWood);
     stem.position.set(-(W / 2) + 1.2 + (s - 3) * 0.05, 1.15 + (s % 3) * 0.12, 1.9 + ((s % 2) - 0.5) * 0.15);
     stem.rotation.z = (s - 3) * 0.12;
-    group.add(stem);
+    vaseGroup.add(stem);
   }
+  tagPiece(vaseGroup, {
+    name: 'The Branch Vase',
+    materials: ['Glazed ceramic', 'Dried walnut branch'],
+    description: 'A single glazed vessel holding bare walnut branches — the one note of the outdoors let inside the foyer.',
+  });
+  group.add(vaseGroup);
   addContactShadow(group, -(W / 2) + 1.2, 1.9, 0.7, 0.7, 0.4);
 }

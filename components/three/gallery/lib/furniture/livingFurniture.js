@@ -79,44 +79,58 @@ export function addLivingFurniture(group, sm, matAccent, W, H, D) {
   addContactShadow(group, 0.6, 0.3, 1.5, 1.5, 0.5);
 
   // Calacatta marble side table
+  const sideTableGroup = new THREE.Group();
   const sideBase = new THREE.Mesh(new THREE.CylinderGeometry(0.28, 0.3, 0.55, 28), sm.marble);
   sideBase.position.set(-3.5, 0.275, -1.0);
   sideBase.castShadow = true; sideBase.receiveShadow = true;
-  group.add(sideBase);
+  sideTableGroup.add(sideBase);
   const sideTop = new THREE.Mesh(new THREE.CylinderGeometry(0.31, 0.31, 0.045, 28), sm.marbleNero);
   sideTop.position.set(-3.5, 0.57, -1.0);
   sideTop.castShadow = true;
-  group.add(sideTop);
+  sideTableGroup.add(sideTop);
   const brassBowl = new THREE.Mesh(new THREE.SphereGeometry(0.12, 20, 12, 0, Math.PI * 2, 0, Math.PI * 0.55), sm.metal);
   brassBowl.position.set(-3.5, 0.6, -1.0);
-  group.add(brassBowl);
+  sideTableGroup.add(brassBowl);
+  tagPiece(sideTableGroup, {
+    name: 'The Side Table',
+    materials: ['Calacatta marble', 'Nero Marquina', 'Champagne brass'],
+    description: 'A short marble drum with a dark cap and a hand-spun brass bowl for keys, rings, whatever the day leaves behind.',
+  });
+  group.add(sideTableGroup);
   addContactShadow(group, -3.5, -1.0, 0.95, 0.95, 0.4);
 
-  // Book stack
+  // Book stack, vase and candles — the coffee table's still life
+  const stillLife = new THREE.Group();
   const bookColors = [sm.velvetTerracotta, sm.walnutWood, sm.velvetNavy];
   for (let b = 0; b < 3; b++) {
     const bk = new THREE.Mesh(new THREE.BoxGeometry(0.34 - b * 0.03, 0.032, 0.25 - b * 0.02), bookColors[b]);
     bk.position.set(0.48 + (b - 1) * 0.01, 0.42 + b * 0.032, 0.2);
     bk.rotation.y = (b - 1) * 0.04;
     bk.castShadow = true;
-    group.add(bk);
+    stillLife.add(bk);
   }
 
   // Smoked Glass Vessel Vase
   const vase = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.11, 0.26, 16), sm.glass);
   vase.position.set(0.74, 0.54, 0.35);
-  group.add(vase);
+  stillLife.add(vase);
 
   // Brass Candle Holder Trio
   for (let c = 0; c < 3; c++) {
     const ch = 0.10 + c * 0.06;
     const candleBase = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.035, ch, 10), sm.metal);
     candleBase.position.set(0.35 + c * 0.12, 0.40 + ch / 2, 0.42);
-    group.add(candleBase);
+    stillLife.add(candleBase);
     const wick = new THREE.Mesh(new THREE.CylinderGeometry(0.015, 0.015, 0.08, 8), sm.linen);
     wick.position.set(0.35 + c * 0.12, 0.40 + ch + 0.04, 0.42);
-    group.add(wick);
+    stillLife.add(wick);
   }
+  tagPiece(stillLife, {
+    name: 'The Coffee Table Still Life',
+    materials: ['Smoked glass', 'Champagne brass', 'Cloth-bound books'],
+    description: 'A stack of cloth-bound editions, a smoked-glass vessel and three brass candle holders — styled, not collected.',
+  });
+  group.add(stillLife);
 
   // Designer Lounge Chair
   const chairGroup = new THREE.Group();

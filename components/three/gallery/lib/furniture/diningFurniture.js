@@ -33,6 +33,7 @@ export function addDiningFurniture(group, sm, matPanel, matAccent, W, H, D) {
   addContactShadow(group, 0, 0, 4.0, 1.8, 0.5);
 
   // Upholstered Curved Bouclé Dining Chairs (6)
+  const chairSet = new THREE.Group();
   for (const side of [-1, 1]) {
     for (let i = 0; i < 3; i++) {
       const cx = -1.2 + i * 1.2;
@@ -40,33 +41,46 @@ export function addDiningFurniture(group, sm, matPanel, matAccent, W, H, D) {
       const seat = new THREE.Mesh(createRoundedBoxGeometry(0.48, 0.06, 0.45, 0.03, 3), sm.boucle);
       seat.position.set(cx, 0.48, cz);
       seat.castShadow = true;
-      group.add(seat);
+      chairSet.add(seat);
       const back = new THREE.Mesh(createRoundedBoxGeometry(0.48, 0.42, 0.06, 0.03, 3), sm.boucle);
       back.position.set(cx, 0.71, cz + side * 0.2);
-      group.add(back);
+      chairSet.add(back);
       for (const legX of [-0.2, 0.2]) {
         for (const legZ of [-0.18, 0.18]) {
           const leg = new THREE.Mesh(new THREE.CylinderGeometry(0.012, 0.012, 0.45, 8), sm.walnutWood);
           leg.position.set(cx + legX, 0.225, cz + legZ);
-          group.add(leg);
+          chairSet.add(leg);
           const cap = new THREE.Mesh(new THREE.CylinderGeometry(0.014, 0.014, 0.05, 8), sm.metal);
           cap.position.set(cx + legX, 0.025, cz + legZ);
-          group.add(cap);
+          chairSet.add(cap);
         }
       }
       addContactShadow(group, cx, cz, 0.6, 0.6, 0.35);
     }
   }
+  tagPiece(chairSet, {
+    name: 'The Dining Chairs',
+    materials: ['Bouclé', 'Solid walnut', 'Champagne brass'],
+    description: 'Six curved-back chairs in undyed bouclé on turned walnut legs with brass sabots, set three to a side.',
+  });
+  group.add(chairSet);
 
   // Multi-Ring Sculptural Brass Chandelier
+  const chandelier = new THREE.Group();
   const chand = new THREE.Mesh(new THREE.TorusGeometry(0.7, 0.015, 12, 32), sm.metal);
   chand.rotation.x = Math.PI / 2;
   chand.position.set(0, H - 1.1, 0);
-  group.add(chand);
+  chandelier.add(chand);
   for (let a = 0; a < 6; a++) {
     const ang = (a / 6) * Math.PI * 2;
     const orb = new THREE.Mesh(new THREE.SphereGeometry(0.08, 12, 10), sm.fixtureGlow);
     orb.position.set(Math.cos(ang) * 0.7, H - 1.1, Math.sin(ang) * 0.7);
-    group.add(orb);
+    chandelier.add(orb);
   }
+  tagPiece(chandelier, {
+    name: 'The Ring Chandelier',
+    materials: ['Champagne brass', 'Blown glass'],
+    description: 'A single brass ring set with six glass orbs, hung low enough to warm the table without blocking the view across it.',
+  });
+  group.add(chandelier);
 }

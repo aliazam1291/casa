@@ -1,15 +1,16 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { HoverItem, Magnetic } from "@/components/cursor/HoverItem";
 import { useStage } from "@/components/stage/StageProvider";
 import styles from "./Nav.module.css";
 
 const LINKS = [
-  { href: "#manifesto", label: "The Way", cursor: "Read" },
-  { href: "#worlds", label: "Worlds", cursor: "Enter" },
-  { href: "#sojourn", label: "Casa Sojourn", cursor: "Enter" },
-  { href: "#journal", label: "Journal", cursor: "Read" },
+  { href: "/way-of-light-form", label: "The Way", cursor: "Read" },
+  { href: "/the-wolf-way", label: "Worlds", cursor: "Enter" },
+  { href: "/experiences", label: "Experiences", cursor: "Enter" },
+  { href: "/journal", label: "Journal", cursor: "Read" },
   { href: "/visit", label: "Visit", cursor: "Visit" },
 ];
 
@@ -41,9 +42,9 @@ export function Nav() {
         ))}
       </div>
       <HoverItem as="span" cursorLabel="Book">
-        <a href="/experiences/consultation" className={styles.cta}>
+        <Link href="/experiences/consultation" className={styles.cta}>
           <Magnetic>Consultation</Magnetic>
-        </a>
+        </Link>
       </HoverItem>
     </nav>
   );

@@ -30,25 +30,32 @@ export function addBathFurniture(group, sm, matAccent, W, H, D) {
   group.add(tapStem);
 
   // Floating Calacatta Marble Vanity with Fluted Walnut Cabinetry
+  const vanityGroup = new THREE.Group();
   const vanity = new THREE.Mesh(createRoundedBoxGeometry(2.4, 0.45, 0.55, 0.02, 3), sm.walnutWood);
   vanity.position.set(2.2, 0.65, -D / 2 + 0.32);
   vanity.castShadow = true;
-  group.add(vanity);
+  vanityGroup.add(vanity);
   const vanityTop = new THREE.Mesh(new THREE.BoxGeometry(2.45, 0.04, 0.58), sm.marble);
   vanityTop.position.set(2.2, 0.88, -D / 2 + 0.32);
-  group.add(vanityTop);
+  vanityGroup.add(vanityTop);
   const sink = new THREE.Mesh(createFlutedCylinderGeometry(0.22, 0.12, 16), sm.marble);
   sink.position.set(2.2, 0.96, -D / 2 + 0.32);
   sink.castShadow = true;
-  group.add(sink);
+  vanityGroup.add(sink);
 
   // Backlit Architectural Arch Mirror
   const mirrorFrame = new THREE.Mesh(new THREE.BoxGeometry(1.4, 1.6, 0.03), sm.metal);
   mirrorFrame.position.set(2.2, 2.05, -D / 2 + 0.02);
-  group.add(mirrorFrame);
+  vanityGroup.add(mirrorFrame);
   const mirror = new THREE.Mesh(new THREE.PlaneGeometry(1.32, 1.52), sm.glass);
   mirror.position.set(2.2, 2.05, -D / 2 + 0.04);
-  group.add(mirror);
+  vanityGroup.add(mirror);
+  tagPiece(vanityGroup, {
+    name: 'The Floating Vanity',
+    materials: ['Fluted walnut', 'Calacatta marble', 'Polished brass'],
+    description: 'A wall-hung walnut vanity with a marble top and a backlit arch mirror, floating clear of the floor so the stone reads uninterrupted.',
+  });
+  group.add(vanityGroup);
 
   // Toiletries on vanity top
   const bottle1 = new THREE.Mesh(new THREE.CylinderGeometry(0.025, 0.025, 0.08, 8), sm.glass);
@@ -82,6 +89,11 @@ export function addBathFurniture(group, sm, matAccent, W, H, D) {
   showerHead.rotation.x = Math.PI / 2;
   showerHead.position.set(-W / 2 + 0.25, 2.3, 1.8);
   showerGroup.add(showerHead);
+  tagPiece(showerGroup, {
+    name: 'The Rain Shower',
+    materials: ['Low-iron glass', 'Polished brass'],
+    description: 'A frameless glass enclosure with a single overhead rain head — no curtain, no threshold, just a change in the floor.',
+  });
   group.add(showerGroup);
   addContactShadow(group, -W / 2 + 0.8, 1.8, 1.6, 1.6, 0.4);
 

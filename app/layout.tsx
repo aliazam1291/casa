@@ -24,6 +24,12 @@ const cormorant = Cormorant({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://wolfcasa.in"),
+  keywords: ["luxury interiors India", "modern Indian living", "interior design Indore", "furniture sourcing", "Wolf Casa"],
+  alternates: { canonical: "/" },
+  openGraph: { type: "website", locale: "en_IN", siteName: "Wolf Casa", images: [{ url: "/images/editorial/villa-hero.png", width: 1800, height: 1013, alt: "Wolf Casa contemporary Indian residence" }] },
+  twitter: { card: "summary_large_image" },
+  robots: { index: true, follow: true },
   title: "Wolf Casa — Way of Light & Form",
   description:
     "Luxury interiors, carefully composed. A gallery of light and form — Indore, India.",
@@ -38,6 +44,19 @@ export default function RootLayout({
     <html lang="en" className={`${archivo.variable} ${cormorant.variable}`} suppressHydrationWarning>
       <head>
         <link rel="preconnect" href="https://images.unsplash.com" crossOrigin="anonymous" />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Organization",
+              name: "Wolf Casa",
+              url: "https://wolfcasa.in",
+              description: "Modern Indian living, carefully composed.",
+              address: { "@type": "PostalAddress", addressLocality: "Indore", addressCountry: "IN" },
+            }),
+          }}
+        />
       </head>
       <body suppressHydrationWarning>
         <StageProvider>

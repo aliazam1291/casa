@@ -35,30 +35,44 @@ export function addKitchenFurniture(group, sm, matPanel, matAccent, W, H, D) {
   group.add(tap);
 
   // Saddle Leather Counter Stools
+  const stoolGroup = new THREE.Group();
   for (let i = 0; i < 3; i++) {
     const sx = -1.1 + i * 1.1;
     const seat = new THREE.Mesh(createRoundedBoxGeometry(0.42, 0.06, 0.4, 0.03, 3), sm.leatherCognac);
     seat.position.set(sx, 0.72, 1.05);
     seat.castShadow = true;
-    group.add(seat);
+    stoolGroup.add(seat);
     const footrest = new THREE.Mesh(new THREE.TorusGeometry(0.18, 0.012, 8, 16), sm.metal);
     footrest.rotation.x = Math.PI / 2;
     footrest.position.set(sx, 0.3, 1.05);
-    group.add(footrest);
+    stoolGroup.add(footrest);
     addContactShadow(group, sx, 1.05, 0.55, 0.55, 0.35);
   }
+  tagPiece(stoolGroup, {
+    name: 'The Counter Stools',
+    materials: ['Cognac saddle leather', 'Champagne brass'],
+    description: 'Three backless stools in the same hide as the sofa, so the kitchen and the living room share one leather.',
+  });
+  group.add(stoolGroup);
 
   // Floating Brass Linear Pendant Light
+  const pendant = new THREE.Group();
   const bar = new THREE.Mesh(new THREE.CylinderGeometry(0.015, 0.015, 2.4, 12), sm.metal);
   bar.rotation.z = Math.PI / 2;
   bar.position.set(0, H - 1.2, 0);
-  group.add(bar);
+  pendant.add(bar);
   for (const cx of [-0.9, 0, 0.9]) {
     const drop = new THREE.Mesh(new THREE.CylinderGeometry(0.004, 0.004, 0.8, 6), sm.metal);
     drop.position.set(cx, H - 0.8, 0);
-    group.add(drop);
+    pendant.add(drop);
     const bulb = new THREE.Mesh(new THREE.SphereGeometry(0.07, 12, 10), sm.fixtureGlow);
     bulb.position.set(cx, H - 1.24, 0);
-    group.add(bulb);
+    pendant.add(bulb);
   }
+  tagPiece(pendant, {
+    name: 'The Linear Pendant',
+    materials: ['Champagne brass', 'Blown glass'],
+    description: 'A single brass bar carrying three drop bulbs at even spacing over the island — no shade, so the filament is the fixture.',
+  });
+  group.add(pendant);
 }

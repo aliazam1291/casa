@@ -89,6 +89,11 @@ export function addStudyFurniture(group, sm, matPanel, matAccent, W, H, D) {
   aOtt.rotation.y = 0.55;
   aOtt.castShadow = true;
   armGroup.add(aOtt);
+  tagPiece(armGroup, {
+    name: 'The Reading Chair',
+    materials: ['Cognac saddle leather', 'Solid walnut'],
+    description: 'A high-backed armchair and ottoman in the study’s own reading nook, angled toward the window rather than the desk.',
+  });
   group.add(armGroup);
   addContactShadow(group, -2.7, 1.1, 1.3, 1.3, 0.45);
 
@@ -96,6 +101,11 @@ export function addStudyFurniture(group, sm, matPanel, matAccent, W, H, D) {
   const readTable = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.22, 0.5, 16), sm.marbleNero);
   readTable.position.set(-3.4, 0.25, 0.4);
   readTable.castShadow = true;
+  tagPiece(readTable, {
+    name: 'The Side Table',
+    materials: ['Nero Marquina marble'],
+    description: 'A single turned drum in Nero Marquina, kept low and close to the reading chair for a cup or a closed book.',
+  });
   group.add(readTable);
   addContactShadow(group, -3.4, 0.4, 0.55, 0.55, 0.35);
 
@@ -114,6 +124,11 @@ export function addStudyFurniture(group, sm, matPanel, matAccent, W, H, D) {
   const lBulb = new THREE.Mesh(new THREE.SphereGeometry(0.05, 12, 10), sm.fixtureGlow);
   lBulb.position.set(-3.41, 1.40, 1.8);
   lampGroup.add(lBulb);
+  tagPiece(lampGroup, {
+    name: 'The Reading Lamp',
+    materials: ['Blackened brass'],
+    description: 'A slim arcing floor lamp, its shade angled low over the reading chair so the light falls on the page and nowhere else.',
+  });
   group.add(lampGroup);
   addContactShadow(group, -3.6, 1.8, 0.4, 0.4, 0.3);
 }

@@ -1,6 +1,7 @@
 import { WorldMoodProvider } from "@/components/three/vase-hero/WorldMoodProvider";
 import { GalleryHero } from "@/components/three/gallery/GalleryHero";
 import { Manifesto } from "@/components/sections/Manifesto";
+import { FloorPlans } from "@/components/sections/FloorPlans";
 import { Stats } from "@/components/sections/Stats";
 import { Worlds } from "@/components/sections/Worlds";
 import { Gallery } from "@/components/sections/Gallery";
@@ -18,6 +19,7 @@ export default function Home() {
     <WorldMoodProvider>
       <GalleryHero />
       <Manifesto />
+      <FloorPlans />
       <Stats />
       <Worlds />
       <Gallery />
