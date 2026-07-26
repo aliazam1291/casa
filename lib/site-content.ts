@@ -1,8 +1,6 @@
-export type SiteImage =
-  | "/images/editorial/villa-hero.png"
-  | "/images/editorial/materials.png"
-  | "/images/editorial/sojourn.png"
-  | "/images/editorial/light-form-atrium.png";
+// Widened from a closed 4-path union so new imagery (rooms, catalogue,
+// journal) doesn't require touching this file — any path under /images/.
+export type SiteImage = `/images/${string}`;
 
 export type SiteCard = {
   title: string;
