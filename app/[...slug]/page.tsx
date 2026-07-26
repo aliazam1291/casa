@@ -4,6 +4,13 @@ import { EditorialExplorer } from "@/components/editorial/EditorialExplorer";
 import { WayOfLightForm } from "@/components/editorial/WayOfLightForm";
 import { TheWolfWay } from "@/components/editorial/TheWolfWay";
 import { ExperiencesPage } from "@/components/editorial/ExperiencesPage";
+import { JournalIndex } from "@/components/editorial/JournalIndex";
+import { TheHouse } from "@/components/editorial/TheHouse";
+import { TradeDesk } from "@/components/editorial/TradeDesk";
+import { VisitPage } from "@/components/editorial/VisitPage";
+import { ConsultationPage } from "@/components/editorial/ConsultationPage";
+import { SojournJourney } from "@/components/editorial/SojournJourney";
+import { MaterialsLibrary } from "@/components/editorial/MaterialsLibrary";
 import { SITE_PAGES } from "@/lib/site-content";
 
 type Props = { params: Promise<{ slug: string[] }> };
@@ -12,6 +19,13 @@ const CUSTOM_LAYOUTS: Record<string, () => React.JSX.Element> = {
   "way-of-light-form": WayOfLightForm,
   "the-wolf-way": TheWolfWay,
   experiences: ExperiencesPage,
+  journal: JournalIndex,
+  "the-house": TheHouse,
+  trade: TradeDesk,
+  visit: VisitPage,
+  "experiences/consultation": ConsultationPage,
+  "experiences/furniture-tourism": SojournJourney,
+  "experiences/materials-library": MaterialsLibrary,
 };
 
 export function generateStaticParams() {

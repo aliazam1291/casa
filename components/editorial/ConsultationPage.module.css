@@ -1,0 +1,35 @@
+.page { background: var(--bg); color: var(--fg); }
+
+.hero { position: relative; min-height: min(620px, 76svh); overflow: hidden; }
+.heroImage { object-fit: cover; }
+.heroShade { position: absolute; inset: 0; background: linear-gradient(0deg, rgba(20, 19, 17, .82), rgba(20, 19, 17, .28) 62%); }
+.heroFrame { position: relative; z-index: 1; display: flex; min-height: min(620px, 76svh); flex-direction: column; justify-content: flex-end; gap: 18px; padding: 20vh var(--gutter) 8vh; color: #fff; }
+.kicker, .sectionLabel { font-family: var(--sans); font-size: 10px; font-weight: 650; letter-spacing: .24em; text-transform: uppercase; }
+.heroFrame h1 { max-width: 720px; font-family: var(--serif); font-size: clamp(46px, 6.8vw, 100px); font-style: italic; font-weight: 400; line-height: .92; }
+
+/* ---- Customer problem statement ---- */
+.problem { display: flex; flex-direction: column; align-items: center; gap: 28px; padding: 15vh var(--gutter) 12vh; text-align: center; border-top: 1px solid var(--line); }
+.problem p:first-of-type { max-width: 780px; font-family: var(--serif); font-size: clamp(30px, 4.4vw, 58px); font-style: italic; font-weight: 400; line-height: 1.15; }
+.problem p:last-of-type { max-width: 560px; color: var(--fg-dim); font-size: 15px; line-height: 1.8; }
+
+/* ---- Timeline: before / during / after / next ---- */
+.timeline { padding: 6vh var(--gutter) 14vh; }
+.stages { position: relative; border-top: 1px solid var(--fg); }
+.stage { display: grid; grid-template-columns: 160px 1fr; gap: clamp(20px, 4vw, 60px); border-bottom: 1px solid var(--line); padding: clamp(28px, 4vw, 46px) 0; }
+.stage span { color: var(--walnut); font-family: var(--sans); font-size: 11px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; }
+.stage h3 { max-width: 480px; margin: 14px 0 12px; font-family: var(--serif); font-size: clamp(26px, 3vw, 42px); font-style: italic; font-weight: 400; line-height: 1; }
+.stage p { max-width: 460px; color: var(--fg-dim); font-size: 14px; line-height: 1.7; }
+
+/* ---- CTA ---- */
+.cta { display: flex; flex-direction: column; align-items: center; gap: 30px; padding: 15vh var(--gutter); text-align: center; background: var(--espresso); color: var(--cream-light); }
+.cta p { max-width: 620px; font-family: var(--serif); font-size: clamp(24px, 3vw, 38px); font-style: italic; font-weight: 400; line-height: 1.3; }
+.cta a { display: inline-flex; min-height: 46px; align-items: center; border: 1px solid var(--cream-light); padding: 0 22px; font-family: var(--sans); font-size: 10px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; transition: background .25s ease, color .25s ease; }
+.cta a:hover { background: var(--gold); border-color: var(--gold); color: var(--espresso); }
+
+@media (max-width: 720px) {
+  .hero { min-height: 72svh; }
+  .heroFrame { min-height: 72svh; padding: 18vh var(--gutter) 6vh; }
+  .heroFrame h1 { font-size: clamp(38px, 13vw, 56px); }
+  .problem, .timeline, .cta { padding-top: 88px; padding-bottom: 88px; }
+  .stage { grid-template-columns: 1fr; gap: 10px; }
+}

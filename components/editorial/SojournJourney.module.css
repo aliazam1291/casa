@@ -1,0 +1,40 @@
+.page { background: var(--bg); color: var(--fg); }
+
+.hero { position: relative; min-height: min(620px, 76svh); overflow: hidden; }
+.heroImage { object-fit: cover; }
+.heroShade { position: absolute; inset: 0; background: linear-gradient(0deg, rgba(20, 19, 17, .82), rgba(20, 19, 17, .28) 62%); }
+.heroFrame { position: relative; z-index: 1; display: flex; min-height: min(620px, 76svh); flex-direction: column; justify-content: flex-end; gap: 18px; padding: 20vh var(--gutter) 8vh; color: #fff; }
+.kicker, .sectionLabel { font-family: var(--sans); font-size: 10px; font-weight: 650; letter-spacing: .24em; text-transform: uppercase; }
+.heroFrame h1 { max-width: 780px; font-family: var(--serif); font-size: clamp(46px, 6.8vw, 100px); font-style: italic; font-weight: 400; line-height: .92; }
+.heroFrame > p { max-width: 560px; color: rgba(255, 255, 255, .8); font-size: 15px; line-height: 1.8; }
+
+/* ---- Itinerary: alternating rows ---- */
+.itinerary { padding: 12vh var(--gutter); border-top: 1px solid var(--line); }
+.itinerary > p { max-width: 620px; margin-bottom: 10vh; font-family: var(--serif); font-size: clamp(30px, 3.8vw, 54px); font-style: italic; font-weight: 400; line-height: 1.05; }
+.leg { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(28px, 5vw, 80px); align-items: center; padding-bottom: 10vh; }
+.leg:last-child { padding-bottom: 0; }
+.legReverse { direction: rtl; }
+.legReverse > * { direction: ltr; }
+.legImage { position: relative; height: 420px; overflow: hidden; background: var(--bg-2); }
+.legImage img { object-fit: cover; }
+.legCopy span { color: var(--walnut); font-family: var(--sans); font-size: 10px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; }
+.legCopy h3 { max-width: 420px; margin: 20px 0 16px; font-family: var(--serif); font-size: clamp(28px, 3vw, 44px); font-style: italic; font-weight: 400; line-height: 1; }
+.legCopy p { max-width: 420px; color: var(--fg-dim); font-size: 14.5px; line-height: 1.75; }
+
+/* ---- CTA ---- */
+.cta { display: flex; flex-direction: column; align-items: center; gap: 30px; padding: 15vh var(--gutter); text-align: center; background: var(--espresso); color: var(--cream-light); }
+.cta p { max-width: 620px; font-family: var(--serif); font-size: clamp(24px, 3vw, 38px); font-style: italic; font-weight: 400; line-height: 1.3; }
+.cta a { display: inline-flex; min-height: 46px; align-items: center; border: 1px solid var(--cream-light); padding: 0 22px; font-family: var(--sans); font-size: 10px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; transition: background .25s ease, color .25s ease; }
+.cta a:hover { background: var(--gold); border-color: var(--gold); color: var(--espresso); }
+
+@media (max-width: 900px) {
+  .leg, .legReverse { grid-template-columns: 1fr; direction: ltr; }
+  .legImage { height: 320px; }
+}
+
+@media (max-width: 720px) {
+  .hero { min-height: 72svh; }
+  .heroFrame { min-height: 72svh; padding: 18vh var(--gutter) 6vh; }
+  .heroFrame h1 { font-size: clamp(38px, 13vw, 56px); }
+  .itinerary, .cta { padding-top: 88px; padding-bottom: 88px; }
+}

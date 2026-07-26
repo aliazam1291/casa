@@ -1,0 +1,40 @@
+.page { background: var(--bg); color: var(--fg); }
+
+.hero { position: relative; min-height: min(620px, 76svh); overflow: hidden; }
+.heroImage { object-fit: cover; }
+.heroShade { position: absolute; inset: 0; background: linear-gradient(0deg, rgba(20, 19, 17, .82), rgba(20, 19, 17, .28) 62%); }
+.heroFrame { position: relative; z-index: 1; display: flex; min-height: min(620px, 76svh); flex-direction: column; justify-content: flex-end; gap: 18px; padding: 20vh var(--gutter) 8vh; color: #fff; }
+.kicker, .sectionLabel { font-family: var(--sans); font-size: 10px; font-weight: 650; letter-spacing: .24em; text-transform: uppercase; }
+.heroFrame h1 { max-width: 780px; font-family: var(--serif); font-size: clamp(46px, 6.8vw, 100px); font-style: italic; font-weight: 400; line-height: .92; }
+.heroFrame > p { max-width: 580px; color: rgba(255, 255, 255, .8); font-size: 15px; line-height: 1.8; }
+
+/* ---- Dossier: numbered spec rows ---- */
+.dossier { padding: 12vh var(--gutter); border-top: 1px solid var(--line); }
+.dossier h2 { max-width: 620px; margin: 20px 0 46px; font-family: var(--serif); font-size: clamp(32px, 4vw, 58px); font-style: italic; font-weight: 400; line-height: .98; }
+.spec { border-top: 1px solid var(--fg); }
+.spec > div { display: grid; grid-template-columns: 70px minmax(0, 1fr) auto; align-items: center; gap: clamp(14px, 2.4vw, 30px); border-bottom: 1px solid var(--line); padding: 26px 0; }
+.spec small { font-family: var(--mono); font-size: 12px; color: var(--fg-faint); }
+.spec strong { font-family: var(--serif); font-size: clamp(19px, 1.9vw, 26px); font-style: italic; font-weight: 400; }
+.spec p { max-width: 340px; color: var(--fg-dim); font-size: 13.5px; line-height: 1.6; }
+
+/* ---- Colour quick reference ---- */
+.swatches { display: flex; flex-wrap: wrap; gap: 1px; margin-top: 60px; background: var(--line); border: 1px solid var(--line); }
+.swatches div { display: flex; min-width: 150px; flex: 1 1 150px; align-items: center; gap: 10px; padding: 16px; background: var(--bg-2); }
+.swatches i { width: 20px; height: 20px; flex: 0 0 auto; border-radius: 3px; }
+.swatches span { font-family: var(--mono); font-size: 11px; letter-spacing: .04em; }
+
+/* ---- CTA panel ---- */
+.cta { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 24px; padding: 10vh var(--gutter); border-top: 1px solid var(--line); background: var(--espresso); color: var(--cream-light); }
+.cta p { max-width: 520px; font-family: var(--serif); font-size: clamp(24px, 3vw, 38px); font-style: italic; font-weight: 400; line-height: 1.2; }
+.cta a { display: inline-flex; min-height: 46px; flex: 0 0 auto; align-items: center; border: 1px solid var(--cream-light); padding: 0 22px; font-family: var(--sans); font-size: 10px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; transition: background .25s ease, color .25s ease; }
+.cta a:hover { background: var(--gold); border-color: var(--gold); color: var(--espresso); }
+
+@media (max-width: 720px) {
+  .hero { min-height: 72svh; }
+  .heroFrame { min-height: 72svh; padding: 18vh var(--gutter) 6vh; }
+  .heroFrame h1 { font-size: clamp(38px, 13vw, 56px); }
+  .dossier { padding-top: 88px; padding-bottom: 88px; }
+  .spec > div { grid-template-columns: 44px 1fr; }
+  .spec p { grid-column: 1 / 3; max-width: none; }
+  .cta { flex-direction: column; align-items: flex-start; }
+}
