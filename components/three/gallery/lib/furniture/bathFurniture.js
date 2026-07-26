@@ -2,6 +2,7 @@
 import * as THREE from 'three';
 import { createRoundedBoxGeometry, createFlutedCylinderGeometry } from '../geometries.js';
 import { addContactShadow } from '../shadows.js';
+import { tagPiece } from '../interactive.js';
 
 export function addBathFurniture(group, sm, matAccent, W, H, D) {
   // Freestanding Oval Soaking Tub in Honed Travertine
@@ -15,6 +16,11 @@ export function addBathFurniture(group, sm, matAccent, W, H, D) {
   const tub = new THREE.Mesh(tubGeo, sm.marble);
   tub.position.set(-2.2, 0.3, -1.2);
   tub.castShadow = true; tub.receiveShadow = true;
+  tagPiece(tub, {
+    name: 'The Still Bath',
+    materials: ['Calacatta marble', 'Polished brass'],
+    description: 'An oval bath carved from one block of Calacatta, walls honed to twenty millimetres so the stone warms with the water.',
+  });
   group.add(tub);
   addContactShadow(group, -2.2, -1.2, 2.4, 1.4, 0.5);
 

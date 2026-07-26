@@ -2,6 +2,7 @@
 import * as THREE from 'three';
 import { createRoundedBoxGeometry, createFlutedCylinderGeometry } from '../geometries.js';
 import { addContactShadow } from '../shadows.js';
+import { tagPiece } from '../interactive.js';
 
 export function addBedroomFurniture(group, sm, matPanel, matAccent, W, H, D) {
   const bedW = 2.6, bedD = 3.1;
@@ -10,6 +11,11 @@ export function addBedroomFurniture(group, sm, matPanel, matAccent, W, H, D) {
   const headboard = new THREE.Mesh(createRoundedBoxGeometry(bedW + 0.5, 1.45, 0.12, 0.04, 4), sm.velvetTerracotta);
   headboard.position.set(0, 1.05, -D / 2 + 0.2);
   headboard.castShadow = true;
+  tagPiece(headboard, {
+    name: 'The Monastic Bed',
+    materials: ['Terracotta cotton velvet', 'Solid walnut', 'Washed linen'],
+    description: 'A channel-tufted headboard in terracotta velvet on a low walnut platform — six hand-run channels, each stuffed and closed by one maker.',
+  });
   group.add(headboard);
   for (let ch = 0; ch < 6; ch++) {
     const stitch = new THREE.Mesh(new THREE.BoxGeometry(bedW + 0.3, 0.008, 0.13), sm.metalDark);

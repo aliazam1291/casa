@@ -2,6 +2,7 @@
 import * as THREE from 'three';
 import { createRoundedBoxGeometry, createFlutedCylinderGeometry } from '../geometries.js';
 import { addContactShadow } from '../shadows.js';
+import { tagPiece } from '../interactive.js';
 
 export function addDiningFurniture(group, sm, matPanel, matAccent, W, H, D) {
   // Capsule Calacatta Marble Dining Table
@@ -16,6 +17,11 @@ export function addDiningFurniture(group, sm, matPanel, matAccent, W, H, D) {
   const top = new THREE.Mesh(tableGeo, sm.marble);
   top.position.set(0, 0.75, 0);
   top.castShadow = true; top.receiveShadow = true;
+  tagPiece(top, {
+    name: 'The Heirloom Table',
+    materials: ['Calacatta marble', 'Solid walnut'],
+    description: 'A softened-rectangle slab in honed Calacatta, seating eight. Cut, bevelled and polished by hand over eleven days.',
+  });
   group.add(top);
 
   for (const bx of [-1.1, 1.1]) {

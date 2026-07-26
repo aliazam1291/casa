@@ -2,12 +2,18 @@
 import * as THREE from 'three';
 import { createRoundedBoxGeometry, createFlutedCylinderGeometry } from '../geometries.js';
 import { addContactShadow } from '../shadows.js';
+import { tagPiece } from '../interactive.js';
 
 export function addStudyFurniture(group, sm, matPanel, matAccent, W, H, D) {
   // Executive Caramel Walnut Desk with Saddle Leather Inlay & Brass Edge Trim
   const desk = new THREE.Mesh(createRoundedBoxGeometry(2.3, 0.06, 0.95, 0.03, 3), sm.walnutWood);
   desk.position.set(-0.5, 0.78, -0.4);
   desk.castShadow = true;
+  tagPiece(desk, {
+    name: 'The Writing Desk',
+    materials: ['Caramel walnut', 'Cognac saddle leather', 'Champagne brass'],
+    description: 'A walnut desk with a hand-skived saddle-leather inlay and a brass edge trim, the grain running unbroken across the full span.',
+  });
   group.add(desk);
   const inlay = new THREE.Mesh(new THREE.PlaneGeometry(1.6, 0.65), sm.leatherCognac);
   inlay.rotation.x = -Math.PI / 2;

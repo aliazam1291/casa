@@ -2,12 +2,18 @@
 import * as THREE from 'three';
 import { createRoundedBoxGeometry, createFlutedCylinderGeometry } from '../geometries.js';
 import { addContactShadow } from '../shadows.js';
+import { tagPiece } from '../interactive.js';
 
 export function addKitchenFurniture(group, sm, matPanel, matAccent, W, H, D) {
   // Nero Marquina Dark Marble Kitchen Island
   const island = new THREE.Mesh(createRoundedBoxGeometry(3.6, 0.94, 1.2, 0.03, 3), sm.marbleNero);
   island.position.set(0, 0.47, 0);
   island.castShadow = true; island.receiveShadow = true;
+  tagPiece(island, {
+    name: 'The Hearth Island',
+    materials: ['Nero Marquina marble', 'Champagne brass'],
+    description: 'A single 3.6-metre block of Nero Marquina with a mitred waterfall edge, the veining book-matched across every face.',
+  });
   group.add(island);
   addContactShadow(group, 0, 0, 3.9, 1.5, 0.55);
 

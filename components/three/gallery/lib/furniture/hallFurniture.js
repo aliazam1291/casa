@@ -2,6 +2,7 @@
 import * as THREE from 'three';
 import { createRoundedBoxGeometry, createFlutedCylinderGeometry } from '../geometries.js';
 import { addContactShadow } from '../shadows.js';
+import { tagPiece } from '../interactive.js';
 
 export function addHallFurniture(group, sm, matAccent, W, H, D) {
   // Round entry rug
@@ -15,6 +16,11 @@ export function addHallFurniture(group, sm, matAccent, W, H, D) {
   const benchTop = new THREE.Mesh(createRoundedBoxGeometry(2.0, 0.18, 0.62, 0.06, 4), sm.velvetForest);
   benchTop.position.set(0, 0.46, 0.3);
   benchTop.castShadow = true; benchTop.receiveShadow = true;
+  tagPiece(benchTop, {
+    name: 'The Arrival Bench',
+    materials: ['Forest cotton velvet', 'Champagne brass'],
+    description: 'A channel-tufted bench in forest velvet on tapered brass legs — the first place the house asks you to pause.',
+  });
   group.add(benchTop);
   for (let t = 0; t < 4; t++) {
     const tuft = new THREE.Mesh(new THREE.BoxGeometry(0.44, 0.02, 0.58), sm.metalDark);
