@@ -2,6 +2,7 @@
 import * as THREE from 'three';
 import { createRoundedBoxGeometry, createFlutedCylinderGeometry } from '../geometries.js';
 import { addContactShadow } from '../shadows.js';
+import { tagPiece } from '../interactive.js';
 
 export function addLivingFurniture(group, sm, matAccent, W, H, D) {
   const sofaGroup = new THREE.Group();
@@ -47,6 +48,11 @@ export function addLivingFurniture(group, sm, matAccent, W, H, D) {
     sofaGroup.add(foot);
   });
 
+  tagPiece(sofaGroup, {
+    name: 'The Low Sofa',
+    materials: ['Cognac saddle leather', 'Kiln-dried ash frame', 'Champagne brass'],
+    description: 'A tailored three-seat sectional in full-grain cognac leather that darkens with use. Track arms, feather-wrapped cushions, tapered brass feet.',
+  });
   group.add(sofaGroup);
   addContactShadow(group, -1.2, -0.7, 3.7, 2.3, 0.6);
 
@@ -64,6 +70,11 @@ export function addLivingFurniture(group, sm, matAccent, W, H, D) {
   brassLip.rotation.x = Math.PI / 2;
   brassLip.position.set(0.6, 0.4, 0.3);
   tableGroup.add(brassLip);
+  tagPiece(tableGroup, {
+    name: 'The Stone Table',
+    materials: ['Calacatta marble', 'Nero Marquina', 'Champagne brass'],
+    description: 'A fluted drum turned from a single block of Calacatta, capped with a honed Nero Marquina top and a hand-set brass lip.',
+  });
   group.add(tableGroup);
   addContactShadow(group, 0.6, 0.3, 1.5, 1.5, 0.5);
 
@@ -136,6 +147,11 @@ export function addLivingFurniture(group, sm, matAccent, W, H, D) {
   chairCush.position.set(2.30, 0.50, -1.40);
   chairCush.rotation.y = -0.4;
   chairGroup.add(chairCush);
+  tagPiece(chairGroup, {
+    name: 'The Still Chair',
+    materials: ['Cognac saddle leather', 'Champagne brass'],
+    description: 'A single-seat lounge chair on a slim brass frame, its saddle-leather sling cut from one hide and stitched at the edge.',
+  });
   group.add(chairGroup);
   addContactShadow(group, 2.4, -1.3, 1.2, 1.2, 0.45);
 }

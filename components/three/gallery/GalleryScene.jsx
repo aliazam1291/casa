@@ -10,7 +10,9 @@ import { getSurfBundle, disposeSurfBundleCache, disposeArtTextureCache } from '.
 import { disposeShadowCache } from './lib/shadows';
 import { buildRoom, disposeGLTFCache } from './lib/buildRoom';
 
-const GalleryScene = forwardRef(function GalleryScene({ onRoomChange, onFloorChange }, ref) {
+import { findPiece } from './lib/interactive';
+
+const GalleryScene = forwardRef(function GalleryScene({ onRoomChange, onFloorChange, onPieceHover }, ref) {
   const mountRef = useRef(null);
   const internals = useRef(null);
 
@@ -235,9 +237,40 @@ const GalleryScene = forwardRef(function GalleryScene({ onRoomChange, onFloorCha
     onFloorChange?.(s.currentFloor);
     onRoomChange?.(0);
 
+    // Furniture hover: raycast against the active room and surface the piece's
+    // name / materials / description. Throttled so we don't test every pixel.
+    const raycaster = new THREE.Raycaster();
+    const ndc = new THREE.Vector2();
+    let lastPick = 0;
+    let hoveredPiece = null;
+
+    const pickPiece = (clientX, clientY) => {
+      const rect = mount.getBoundingClientRect();
+      ndc.x = ((clientX - rect.left) / rect.width) * 2 - 1;
+      ndc.y = -((clientY - rect.top) / rect.height) * 2 + 1;
+      raycaster.setFromCamera(ndc, camera);
+      const hits = raycaster.intersectObjects(s.roomsGroup.children, true);
+      for (const hit of hits) {
+        const piece = findPiece(hit.object);
+        if (piece) return piece;
+      }
+      return null;
+    };
+
     const onPointerMove = (e) => {
       s.ptrTx = (e.clientX / window.innerWidth) * 2 - 1;
       s.ptrTy = (e.clientY / window.innerHeight) * 2 - 1;
+
+      const now = performance.now();
+      if (now - lastPick < 90 || s.transit) return;
+      lastPick = now;
+
+      const piece = pickPiece(e.clientX, e.clientY);
+      if (piece !== hoveredPiece) {
+        hoveredPiece = piece;
+        mount.style.cursor = piece ? 'pointer' : 'grab';
+        onPieceHover?.(piece ? piece.userData.pieceInfo : null);
+      }
     };
     const onPointerDown = (e) => {
       s.isDragging = true;
@@ -396,7 +429,7 @@ const GalleryScene = forwardRef(function GalleryScene({ onRoomChange, onFloorCha
       pmrem.dispose();
       if (renderer.domElement.parentNode === mount) mount.removeChild(renderer.domElement);
     };
-  }, [onRoomChange, onFloorChange]);
+  }, [onRoomChange, onFloorChange, onPieceHover]);
 
   return (
     <div

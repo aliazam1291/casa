@@ -22,6 +22,7 @@ type SceneHandle = {
 type GallerySceneProps = {
   onRoomChange?: (i: number) => void;
   onFloorChange?: (i: number) => void;
+  onPieceHover?: (info: PieceInfo | null) => void;
 };
 
 // ssr:false must live inside a Client Component in Next.js 16. The engine is
@@ -39,6 +40,9 @@ type Room = {
 };
 type Floor = { name: string; level: string; rooms: Room[] };
 const FLOOR_LIST = FLOORS as Floor[];
+
+/** Material/description record surfaced when a furniture piece is hovered. */
+type PieceInfo = { name: string; materials: string[]; description: string };
 
 function Chevron({ dir }: { dir: "left" | "right" }) {
   return (
@@ -62,7 +66,10 @@ export function GalleryHero() {
   const [entered, setEntered] = useState(false);
   const [floorsOpen, setFloorsOpen] = useState(false);
   const [detailsOpen, setDetailsOpen] = useState(false);
+  const [piece, setPiece] = useState<PieceInfo | null>(null);
   const { setCursor, resetCursor } = useCursor();
+
+  const onPieceHover = useCallback((info: PieceInfo | null) => setPiece(info), []);
 
   const floor = FLOOR_LIST[currentFloor];
   const roomNames = floor.rooms.map((r) => r.name);
@@ -85,7 +92,12 @@ export function GalleryHero() {
   return (
     <section id="hero" className={styles.hero}>
       <div className={styles.mount}>
-        <GalleryScene ref={sceneRef} onRoomChange={onRoomChange} onFloorChange={onFloorChange} />
+        <GalleryScene
+          ref={sceneRef}
+          onRoomChange={onRoomChange}
+          onFloorChange={onFloorChange}
+          onPieceHover={onPieceHover}
+        />
       </div>
       <div className={styles.frameVignette} />
 
@@ -142,10 +154,25 @@ export function GalleryHero() {
             </div>
 
             {/* Room name */}
-            <div className={styles.roomName}>
-              <span>{room.eyebrow}</span>
-              {roomNames[currentRoom]}
-            </div>
+            {/* Hovering a furniture piece swaps the room title for that
+                piece's name, materials and description. */}
+            {piece ? (
+              <div className={styles.pieceCard}>
+                <span className={styles.pieceEyebrow}>In this room</span>
+                <h3 className={styles.pieceName}>{piece.name}</h3>
+                <div className={styles.materials}>
+                  {piece.materials.map((m) => (
+                    <span key={m}>{m}</span>
+                  ))}
+                </div>
+                <p className={styles.pieceDesc}>{piece.description}</p>
+              </div>
+            ) : (
+              <div className={styles.roomName}>
+                <span>{room.eyebrow}</span>
+                {roomNames[currentRoom]}
+              </div>
+            )}
 
             <div className={styles.roomBrief}>
               <button

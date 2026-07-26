@@ -167,6 +167,9 @@ export function buildRoom(def, roomIndex, floorIndex, sm) {
   // The terrace is genuinely outdoors: open to the sky, stone paving, a glass
   // balustrade and a pergola instead of a ceiling, painting and slat wall.
   const isTerrace = roomName.includes('terrace');
+  // The wine cellar's hero is a full-height wine wall, so it must not also get
+  // the slat wall, hero painting or console ledge stacked on the same surface.
+  const isWineCellar = roomName.includes('wine');
 
   const marbleFloor = !isTerrace && (floorIndex === 0 || (roomIndex % 2 === 1));
   const wallB = getSurfBundle('plaster', def.wallColor, 3, 1.4);
@@ -287,7 +290,7 @@ export function buildRoom(def, roomIndex, floorIndex, sm) {
 
   // Slatted wood acoustic wall feature. The sky pavilion trades this for a
   // full-height glazed horizon, so its two rooms never read like bedrooms.
-  if (floorIndex !== 3) {
+  if (floorIndex !== 3 && !isWineCellar) {
     const slatCount = 18;
     const slatGap = 0.035;
     const slatW = (W - slatGap * (slatCount + 1)) / slatCount;
@@ -341,8 +344,9 @@ export function buildRoom(def, roomIndex, floorIndex, sm) {
     group.add(header);
   }
 
-  // Indoor-only trim and art. The terrace has no wall to hang them on.
-  if (!isTerrace) {
+  // Indoor-only trim and art. The terrace has no wall to hang them on, and the
+  // wine cellar's back wall is entirely given over to the wine wall.
+  if (!isTerrace && !isWineCellar) {
     // Base Rails & Crown molding
     const baseRail = new THREE.Mesh(new THREE.BoxGeometry(W, 0.12, 0.04), sm.darkWood);
     baseRail.position.set(0, 0.06, -D / 2 + 0.05);
@@ -366,7 +370,7 @@ export function buildRoom(def, roomIndex, floorIndex, sm) {
       group.add(leg);
     }
     addContactShadow(group, 0, -D / 2 + 0.2, 2.4, 0.5, 0.4);
-  } else {
+  } else if (isTerrace) {
     // Terrace: planted stone borders instead of skirting/art.
     for (const bx of [-1, 1]) {
       const trough = new THREE.Mesh(new THREE.BoxGeometry(3.0, 0.42, 0.6), sm.marble);

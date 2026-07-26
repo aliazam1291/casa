@@ -2,6 +2,7 @@
 import * as THREE from 'three';
 import { createRoundedBoxGeometry, createFlutedCylinderGeometry } from '../geometries.js';
 import { addContactShadow } from '../shadows.js';
+import { tagPiece } from '../interactive.js';
 
 function addWineCellarFurniture(group, sm, W, H, D) {
   // 1. Central Tasting Table (Walnut slab, brass/dark-metal legs)
@@ -72,44 +73,90 @@ function addWineCellarFurniture(group, sm, W, H, D) {
   }
   group.add(candelabra);
 
-  // 5. Grand Arched Wine Racks along back wall
-  const rackW = 2.4, rackH = 2.6, rackD = 0.38;
-  for (const rx of [-2.4, 2.4]) {
-    const rackGroup = new THREE.Group();
-    
-    const frame = new THREE.Mesh(createRoundedBoxGeometry(rackW, rackH, rackD, 0.03, 3), sm.darkWood);
-    frame.position.set(rx, rackH / 2, -D / 2 + rackD / 2 + 0.1);
-    frame.castShadow = true;
-    rackGroup.add(frame);
+  // 5. THE WINE WALL — a full-height, wall-to-wall cellar of bottles in
+  // walnut cubbies, backlit so the glass glows. This is the room's hero.
+  const wallZ = -D / 2 + 0.34;
+  const wineWall = new THREE.Group();
 
-    for (let sh = 1; sh < 5; sh++) {
-      const divider = new THREE.Mesh(new THREE.BoxGeometry(rackW - 0.06, 0.02, rackD - 0.04), sm.darkWood);
-      divider.position.set(rx, sh * 0.5, -D / 2 + rackD / 2 + 0.1);
-      rackGroup.add(divider);
-    }
-    for (let dv = 1; dv < 5; dv++) {
-      const dx = rx - rackW / 2 + dv * (rackW / 5);
-      const divider = new THREE.Mesh(new THREE.BoxGeometry(0.02, rackH - 0.06, rackD - 0.04), sm.darkWood);
-      divider.position.set(dx, rackH / 2, -D / 2 + rackD / 2 + 0.1);
-      rackGroup.add(divider);
-    }
+  // Dark recessed backing so the bottle ends read against shadow
+  const backing = new THREE.Mesh(
+    new THREE.BoxGeometry(W - 0.6, H - 0.35, 0.1),
+    new THREE.MeshStandardMaterial({ color: 0x16110d, roughness: 0.95 })
+  );
+  backing.position.set(0, (H - 0.35) / 2, wallZ - 0.3);
+  backing.receiveShadow = true;
+  wineWall.add(backing);
 
-    for (let row = 0; row < 5; row++) {
-      for (let col = 0; col < 5; col++) {
-        if ((row + col) % 2 === 0) {
-          const bx = rx - rackW / 2 + (col + 0.5) * (rackW / 5);
-          const by = (row + 0.5) * (rackH / 5.2) + 0.1;
-          const bottle = new THREE.Mesh(new THREE.CylinderGeometry(0.024, 0.026, 0.24, 8), sm.glass);
-          bottle.rotation.x = Math.PI / 2;
-          bottle.position.set(bx, by, -D / 2 + rackD / 2 + 0.1);
-          rackGroup.add(bottle);
-        }
-      }
-    }
+  // Warm backlight washing through the bottles
+  const wallGlow = new THREE.Mesh(
+    new THREE.PlaneGeometry(W - 0.8, H - 0.6),
+    new THREE.MeshBasicMaterial({ color: 0xffb765, transparent: true, opacity: 0.16 })
+  );
+  wallGlow.position.set(0, (H - 0.35) / 2, wallZ - 0.24);
+  wineWall.add(wallGlow);
 
-    group.add(rackGroup);
-    addContactShadow(group, rx, -D / 2 + rackD / 2 + 0.1, rackW + 0.4, rackD + 0.4, 0.5);
+  // Cubby grid — walnut shelves + vertical dividers across the whole wall
+  const cols = 14, rows = 7;
+  const gridW = W - 0.8, gridH = H - 0.75;
+  const cellW = gridW / cols, cellH = gridH / rows;
+  const baseY = 0.3;
+
+  for (let r = 0; r <= rows; r++) {
+    const shelf = new THREE.Mesh(new THREE.BoxGeometry(gridW, 0.035, 0.36), sm.walnutWood);
+    shelf.position.set(0, baseY + r * cellH, wallZ);
+    shelf.castShadow = true; shelf.receiveShadow = true;
+    wineWall.add(shelf);
   }
+  for (let c = 0; c <= cols; c++) {
+    const div = new THREE.Mesh(new THREE.BoxGeometry(0.03, gridH, 0.36), sm.walnutWood);
+    div.position.set(-gridW / 2 + c * cellW, baseY + gridH / 2, wallZ);
+    div.castShadow = true;
+    wineWall.add(div);
+  }
+
+  // Bottles laid on their sides, necks out — shared geometry, three glass tones
+  const bottleGeo = new THREE.CylinderGeometry(0.036, 0.038, 0.3, 10);
+  const neckGeo = new THREE.CylinderGeometry(0.013, 0.017, 0.12, 8);
+  const bottleMats = [
+    new THREE.MeshPhysicalMaterial({ color: 0x1e3320, roughness: 0.14, metalness: 0.0, transmission: 0.55, thickness: 0.4, envMapIntensity: 1.6 }),
+    new THREE.MeshPhysicalMaterial({ color: 0x3a1518, roughness: 0.14, metalness: 0.0, transmission: 0.5, thickness: 0.4, envMapIntensity: 1.6 }),
+    new THREE.MeshPhysicalMaterial({ color: 0x2b2a16, roughness: 0.18, metalness: 0.0, transmission: 0.45, thickness: 0.4, envMapIntensity: 1.5 }),
+  ];
+
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < cols; c++) {
+      // A few empty cubbies keep it from looking mechanically perfect
+      if ((r * 31 + c * 17) % 23 === 0) continue;
+      const bx = -gridW / 2 + (c + 0.5) * cellW;
+      const by = baseY + (r + 0.5) * cellH;
+      const mat = bottleMats[(r + c) % bottleMats.length];
+
+      const bottle = new THREE.Mesh(bottleGeo, mat);
+      bottle.rotation.x = Math.PI / 2;
+      bottle.position.set(bx, by, wallZ + 0.02);
+      bottle.castShadow = true;
+      wineWall.add(bottle);
+
+      const neck = new THREE.Mesh(neckGeo, mat);
+      neck.rotation.x = Math.PI / 2;
+      neck.position.set(bx, by, wallZ + 0.2);
+      wineWall.add(neck);
+
+      // Brass foil cap catches the cellar light
+      const cap = new THREE.Mesh(new THREE.CylinderGeometry(0.018, 0.018, 0.03, 8), sm.metal);
+      cap.rotation.x = Math.PI / 2;
+      cap.position.set(bx, by, wallZ + 0.27);
+      wineWall.add(cap);
+    }
+  }
+
+  tagPiece(wineWall, {
+    name: 'The Wine Wall',
+    materials: ['Solid walnut', 'Blown glass', 'Champagne brass'],
+    description: 'A full-height cellar wall of hand-fitted walnut cubbies, backlit so the glass holds the light. Ninety-eight bottles, laid neck-out at a constant twelve degrees.',
+  });
+  group.add(wineWall);
+  addContactShadow(group, 0, wallZ, W - 0.5, 0.9, 0.55);
 
   // 6. Oak Aging Barrels stack
   const barrelRadius = 0.38, barrelHeight = 0.9;
