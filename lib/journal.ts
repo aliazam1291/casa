@@ -18,7 +18,7 @@ export const JOURNAL_ARTICLES: JournalArticle[] = [
     category: "Way of Light",
     title: "Why light is the material you never pay for.",
     dek: "How to arrange a room around the changing day rather than against it.",
-    image: "/images/journal/way-of-light.jpg",
+    image: "/images/journal/way-of-light.webp",
     imageAlt: "Sunlight cutting across a composed interior of wood and stone",
     published: "2026-05-04",
     body: [
@@ -32,7 +32,7 @@ export const JOURNAL_ARTICLES: JournalArticle[] = [
     category: "Material Intelligence",
     title: "Reading stone, wood and leather as evidence.",
     dek: "A guide to reading character, variation and permanence in natural materials.",
-    image: "/images/journal/material-intelligence.jpg",
+    image: "/images/journal/material-intelligence.webp",
     imageAlt: "Close detail of marble veining, walnut grain and saddle leather",
     published: "2026-05-18",
     body: [
@@ -46,7 +46,7 @@ export const JOURNAL_ARTICLES: JournalArticle[] = [
     category: "The Signature Reveal",
     title: "Inside a completed home, Indore, 2026.",
     dek: "Why the most personal rooms have a place for pause built into them.",
-    image: "/images/journal/signature-reveal.jpg",
+    image: "/images/journal/signature-reveal.webp",
     imageAlt: "A finished living room composition with a low sofa and reading chair",
     published: "2026-06-02",
     body: [

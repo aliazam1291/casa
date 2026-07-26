@@ -4,28 +4,16 @@ import Image from "next/image";
 import Link from "next/link";
 import { useCursor } from "@/components/cursor/CursorProvider";
 import { useReveal } from "@/hooks/useReveal";
+import { JOURNAL_ARTICLES } from "@/lib/journal";
 import styles from "./Journal.module.css";
 
-const ARTICLES = [
-  {
-    num: "01 · Way of Light",
-    title: "Why light is the material you never pay for.",
-    href: "/journal/why-light-is-the-material",
-    img: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1200&q=85",
-  },
-  {
-    num: "02 · Material Intelligence",
-    title: "Reading stone, wood and leather as evidence.",
-    href: "/journal/reading-stone-wood-leather",
-    img: "https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&w=1200&q=85",
-  },
-  {
-    num: "03 · The Signature Reveal",
-    title: "Inside a completed home, Indore, 2026.",
-    href: "/journal/the-chair-you-return-to",
-    img: "https://images.unsplash.com/photo-1615529182904-14819c35db37?auto=format&fit=crop&w=1200&q=85",
-  },
-];
+const ARTICLES = JOURNAL_ARTICLES.map((a, i) => ({
+  num: `${String(i + 1).padStart(2, "0")} · ${a.category}`,
+  title: a.title,
+  href: `/journal/${a.slug}`,
+  img: a.image,
+  imageAlt: a.imageAlt,
+}));
 
 /** Ported from wolf-casa-homepage-v3.html <section class="journal"> (~line 559). */
 export function Journal() {
@@ -59,7 +47,7 @@ export function Journal() {
               <div className={styles.thumb}>
                 <Image
                   src={a.img}
-                  alt={a.title}
+                  alt={a.imageAlt}
                   fill
                   loading="lazy"
                   sizes="(max-width: 900px) 100vw, 33vw"

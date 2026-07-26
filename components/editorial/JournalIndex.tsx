@@ -4,31 +4,19 @@ import Image from "next/image";
 import Link from "next/link";
 import { useCursor } from "@/components/cursor/CursorProvider";
 import { useReveal } from "@/hooks/useReveal";
+import { JOURNAL_ARTICLES } from "@/lib/journal";
 import styles from "./JournalIndex.module.css";
 
 const CATEGORIES = ["Compositions", "The Wolf Way", "Material Intelligence", "Room Rituals", "Walkthroughs"];
 
-const ARTICLES = [
-  {
-    tag: "01 · Way of Light",
-    title: "Why light is the material you never pay for.",
-    href: "/journal/why-light-is-the-material",
-    img: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1400&q=85",
-    lead: true,
-  },
-  {
-    tag: "02 · Material Intelligence",
-    title: "Reading stone, wood and leather as evidence.",
-    href: "/journal/reading-stone-wood-leather",
-    img: "https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&w=1200&q=85",
-  },
-  {
-    tag: "03 · The Signature Reveal",
-    title: "Inside a completed home, Indore, 2026.",
-    href: "/journal/the-chair-you-return-to",
-    img: "https://images.unsplash.com/photo-1615529182904-14819c35db37?auto=format&fit=crop&w=1200&q=85",
-  },
-];
+const ARTICLES = JOURNAL_ARTICLES.map((a, i) => ({
+  tag: `${String(i + 1).padStart(2, "0")} · ${a.category}`,
+  title: a.title,
+  href: `/journal/${a.slug}`,
+  img: a.image,
+  imageAlt: a.imageAlt,
+  lead: i === 0,
+}));
 
 const SEASONS = [
   { tag: "01", title: "Monsoon Layer" },
@@ -69,7 +57,7 @@ export function JournalIndex() {
           onMouseLeave={resetCursor}
         >
           <div className={styles.thumb}>
-            <Image src={lead.img} alt={lead.title} fill sizes="(max-width: 1000px) 100vw, 56vw" />
+            <Image src={lead.img} alt={lead.imageAlt} fill sizes="(max-width: 1000px) 100vw, 56vw" />
           </div>
           <div className={styles.copy}>
             <span>{lead.tag}</span>
@@ -85,7 +73,7 @@ export function JournalIndex() {
             onMouseLeave={resetCursor}
           >
             <div className={styles.thumb}>
-              <Image src={a.img} alt={a.title} fill sizes="(max-width: 1000px) 100vw, 44vw" />
+              <Image src={a.img} alt={a.imageAlt} fill sizes="(max-width: 1000px) 100vw, 44vw" />
             </div>
             <div className={styles.copy}>
               <span>{a.tag}</span>
