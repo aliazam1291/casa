@@ -221,8 +221,9 @@ export function buildRoom(def, roomIndex, floorIndex, sm) {
     group.add(rightWall);
   }
 
-  // Slatted wood acoustic wall feature
-  {
+  // Slatted wood acoustic wall feature. The sky pavilion trades this for a
+  // full-height glazed horizon, so its two rooms never read like bedrooms.
+  if (floorIndex !== 3) {
     const slatCount = 18;
     const slatGap = 0.035;
     const slatW = (W - slatGap * (slatCount + 1)) / slatCount;
@@ -234,6 +235,28 @@ export function buildRoom(def, roomIndex, floorIndex, sm) {
       slat.castShadow = true;
       group.add(slat);
     }
+  }
+
+  if (floorIndex === 3) {
+    const skyline = new THREE.MeshStandardMaterial({
+      color: roomIndex === 0 ? 0x8d9bae : 0x667181,
+      roughness: 0.12,
+      metalness: 0.45,
+      transparent: true,
+      opacity: 0.72,
+    });
+    const windowWall = new THREE.Mesh(new THREE.PlaneGeometry(W - 1.1, H - 0.9), skyline);
+    windowWall.position.set(0, H / 2, -D / 2 + 0.03);
+    group.add(windowWall);
+
+    for (let i = -2; i <= 2; i++) {
+      const mullion = new THREE.Mesh(new THREE.BoxGeometry(0.055, H - 0.7, 0.08), sm.metalDark);
+      mullion.position.set(i * 2.1, H / 2, -D / 2 + 0.08);
+      group.add(mullion);
+    }
+    const sill = new THREE.Mesh(new THREE.BoxGeometry(W - 0.9, 0.08, 0.28), sm.marbleNero);
+    sill.position.set(0, 0.82, -D / 2 + 0.16);
+    group.add(sill);
   }
 
   // Base Rails & Crown molding

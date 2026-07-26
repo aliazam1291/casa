@@ -121,6 +121,23 @@ export function addBedroomFurniture(group, sm, matPanel, matAccent, W, H, D) {
   mug.position.set(W / 2 - 2.2, 0.52, 2.2);
   group.add(mug);
   addContactShadow(group, W / 2 - 2.2, 2.2, 0.5, 0.5, 0.3);
+
+  // Full-height dressing wall and upholstered end bench make the master
+  // suite a private retreat rather than a scaled-up guest room.
+  for (let i = 0; i < 5; i++) {
+    const panel = new THREE.Mesh(createRoundedBoxGeometry(0.82, 2.9, 0.14, 0.025, 3), sm.walnutWood);
+    panel.position.set(-4.65 + i * 0.88, 1.45, 2.9);
+    panel.castShadow = true;
+    group.add(panel);
+    const pull = new THREE.Mesh(new THREE.BoxGeometry(0.02, 0.52, 0.03), sm.metal);
+    pull.position.set(-4.65 + i * 0.88 + 0.31, 1.46, 2.99);
+    group.add(pull);
+  }
+  const bench = new THREE.Mesh(createRoundedBoxGeometry(1.85, 0.32, 0.52, 0.08, 4), sm.velvetTerracotta);
+  bench.position.set(0, 0.3, 1.95);
+  bench.castShadow = true;
+  group.add(bench);
+  addContactShadow(group, 0, 1.95, 2.2, 0.8, 0.35);
 }
 
 export function addGuestBedroomFurniture(group, sm, matPanel, matAccent, W, H, D) {
@@ -260,4 +277,29 @@ export function addGuestBedroomFurniture(group, sm, matPanel, matAccent, W, H, D
   }
 
   group.add(readingGroup);
+
+  // A slim luggage rack and open hanging rail give the guest room a
+  // completely different purpose and silhouette from the master suite.
+  const rack = new THREE.Group();
+  const rail = new THREE.Mesh(new THREE.CylinderGeometry(0.018, 0.018, 1.6, 8), sm.metalDark);
+  rail.rotation.z = Math.PI / 2;
+  rail.position.set(-3.7, 1.85, -1.8);
+  rack.add(rail);
+  for (const x of [-4.45, -2.95]) {
+    const leg = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.02, 1.75, 8), sm.metalDark);
+    leg.position.set(x, 0.875, -1.8);
+    rack.add(leg);
+  }
+  for (let i = 0; i < 3; i++) {
+    const hanger = new THREE.Mesh(new THREE.TorusGeometry(0.13, 0.009, 6, 12, Math.PI), sm.metal);
+    hanger.position.set(-4.15 + i * 0.42, 1.68, -1.8);
+    hanger.rotation.z = Math.PI;
+    rack.add(hanger);
+  }
+  const luggage = new THREE.Mesh(createRoundedBoxGeometry(0.92, 0.36, 0.46, 0.06, 3), sm.leatherCognac);
+  luggage.position.set(-3.7, 0.32, -1.8);
+  luggage.castShadow = true;
+  rack.add(luggage);
+  group.add(rack);
+  addContactShadow(group, -3.7, -1.8, 2.1, 0.8, 0.35);
 }

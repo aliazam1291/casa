@@ -157,9 +157,94 @@
   transition: opacity 0.5s var(--ease-gallery);
   white-space: nowrap;
 }
+.roomName span {
+  display: block;
+  margin-bottom: 10px;
+  font-family: var(--sans);
+  font-size: 10px;
+  font-style: normal;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--walnut);
+}
 .roomName em {
   font-style: italic;
 }
+
+/* Room notes replace the old dead-space HUD with useful, room-specific
+   context. It is intentionally compact until the visitor asks for more. */
+.roomBrief {
+  position: absolute;
+  top: 100px;
+  left: var(--gutter);
+  width: min(340px, calc(100vw - 40px));
+  pointer-events: auto;
+}
+.roomBriefButton {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px;
+  border: 1px solid rgba(107, 88, 68, 0.3);
+  background: rgba(250, 247, 242, 0.76);
+  backdrop-filter: blur(10px);
+  color: var(--fg);
+  font-family: var(--sans);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-align: left;
+  text-transform: uppercase;
+  cursor: none;
+}
+.roomBriefButton:hover { background: var(--cream-light); }
+.roomBriefPanel {
+  padding: 16px 14px 14px;
+  border: 1px solid rgba(107, 88, 68, 0.3);
+  border-top: 0;
+  background: rgba(250, 247, 242, 0.92);
+  backdrop-filter: blur(14px);
+}
+.roomBriefPanel p {
+  color: var(--fg-dim);
+  font-family: var(--serif);
+  font-size: 17px;
+  font-style: italic;
+  line-height: 1.35;
+}
+.materials {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin: 16px 0;
+}
+.materials span {
+  border: 1px solid var(--line);
+  padding: 5px 7px;
+  color: var(--walnut);
+  font-family: var(--sans);
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.exploreButton {
+  width: 100%;
+  padding: 11px 0 0;
+  border: 0;
+  border-top: 1px solid var(--line);
+  background: transparent;
+  color: var(--fg);
+  font-family: var(--sans);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-align: left;
+  text-transform: uppercase;
+  cursor: none;
+}
+.exploreButton span { float: right; }
 
 /* floor selector — bottom left */
 .floors {
@@ -322,6 +407,7 @@
     font-size: clamp(24px, 6.5vw, 42px);
     bottom: 11vh;
   }
+  .roomBrief { top: 84px; left: 16px; width: min(290px, calc(100vw - 32px)); }
   .arrow {
     width: 40px;
     height: 40px;
@@ -406,4 +492,3 @@
     opacity: 0;
   }
 }
-

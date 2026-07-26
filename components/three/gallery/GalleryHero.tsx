@@ -30,7 +30,13 @@ const GalleryScene = dynamic(() => import("./GalleryScene"), {
   ssr: false,
 }) as unknown as ForwardRefExoticComponent<GallerySceneProps & RefAttributes<SceneHandle>>;
 
-type Room = { name: string; pos?: { x: number; z: number } };
+type Room = {
+  name: string;
+  eyebrow?: string;
+  detail?: string;
+  materials?: string[];
+  pos?: { x: number; z: number };
+};
 type Floor = { name: string; level: string; rooms: Room[] };
 const FLOOR_LIST = FLOORS as Floor[];
 
@@ -55,14 +61,22 @@ export function GalleryHero() {
   const [currentFloor, setCurrentFloor] = useState(1);
   const [entered, setEntered] = useState(false);
   const [floorsOpen, setFloorsOpen] = useState(false);
+  const [detailsOpen, setDetailsOpen] = useState(false);
   const { setCursor, resetCursor } = useCursor();
 
   const floor = FLOOR_LIST[currentFloor];
   const roomNames = floor.rooms.map((r) => r.name);
+  const room = floor.rooms[currentRoom];
   const totalRooms = floor.rooms.length;
 
-  const onRoomChange = useCallback((idx: number) => setCurrentRoom(idx), []);
-  const onFloorChange = useCallback((idx: number) => setCurrentFloor(idx), []);
+  const onRoomChange = useCallback((idx: number) => {
+    setCurrentRoom(idx);
+    setDetailsOpen(false);
+  }, []);
+  const onFloorChange = useCallback((idx: number) => {
+    setCurrentFloor(idx);
+    setDetailsOpen(false);
+  }, []);
 
   const hover = (label: string) => {
     setCursor("hover", label);
@@ -128,7 +142,41 @@ export function GalleryHero() {
             </div>
 
             {/* Room name */}
-            <div className={styles.roomName}>{roomNames[currentRoom]}</div>
+            <div className={styles.roomName}>
+              <span>{room.eyebrow}</span>
+              {roomNames[currentRoom]}
+            </div>
+
+            <div className={styles.roomBrief}>
+              <button
+                type="button"
+                className={styles.roomBriefButton}
+                onClick={() => setDetailsOpen((open) => !open)}
+                onMouseEnter={() => hover(detailsOpen ? "Close" : "Details")}
+                onMouseLeave={resetCursor}
+                aria-expanded={detailsOpen}
+              >
+                <span>Room notes</span>
+                <span aria-hidden>{detailsOpen ? "−" : "+"}</span>
+              </button>
+              {detailsOpen && (
+                <div className={styles.roomBriefPanel}>
+                  <p>{room.detail}</p>
+                  <div className={styles.materials}>
+                    {room.materials?.map((material) => <span key={material}>{material}</span>)}
+                  </div>
+                  <button
+                    type="button"
+                    className={styles.exploreButton}
+                    onClick={() => sceneRef.current?.nextRoom()}
+                    onMouseEnter={() => hover("Explore")}
+                    onMouseLeave={resetCursor}
+                  >
+                    Explore the next room <span aria-hidden>→</span>
+                  </button>
+                </div>
+              )}
+            </div>
 
             {/* Floor selector */}
             <div className={styles.floors}>
@@ -235,4 +283,3 @@ export function GalleryHero() {
     </section>
   );
 }
-
