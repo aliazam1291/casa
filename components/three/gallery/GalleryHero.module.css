@@ -214,6 +214,10 @@
 }
 
 @media (max-width: 720px) {
+  .hero { min-height: 560px; }
+  .gate { padding: 0 22px 14vh; }
+  .gateFloor { font-size: clamp(42px, 12vw, 64px); }
+  .stepBtn { width: min(100%, 280px); padding: 15px 18px; }
   .pieceCard {
     bottom: 9vh;
     padding: 14px 15px;
@@ -456,7 +460,9 @@
   }
   .roomName {
     font-size: clamp(24px, 6.5vw, 42px);
-    bottom: 11vh;
+    bottom: 14vh;
+    max-width: calc(100vw - 80px);
+    white-space: normal;
   }
   .roomBrief { top: 84px; left: 16px; width: min(290px, calc(100vw - 32px)); }
   .arrow {

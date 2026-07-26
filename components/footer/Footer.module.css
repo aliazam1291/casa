@@ -74,3 +74,10 @@
     grid-template-columns: 1fr 1fr;
   }
 }
+
+@media (max-width: 560px) {
+  .footer { padding-top: 14vh; }
+  .hero { margin-bottom: 64px; font-size: clamp(52px, 14vw, 76px); }
+  .grid { grid-template-columns: 1fr; gap: 36px; padding-top: 36px; }
+  .bottom { margin-top: 56px; }
+}

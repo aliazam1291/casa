@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { HoverItem, Magnetic } from "@/components/cursor/HoverItem";
 import { useReveal } from "@/hooks/useReveal";
 import styles from "./Footer.module.css";
@@ -10,8 +11,8 @@ const COLUMNS = [
     links: [
       { label: "Way of Light & Form", href: "/way-of-light-form" },
       { label: "The Wolf Way", href: "/the-wolf-way" },
-      { label: "The Foundation", href: "/the-house#foundation" },
-      { label: "Directors", href: "/the-house#directors" },
+      { label: "The House", href: "/the-house" },
+      { label: "Trade Desk", href: "/trade" },
     ],
   },
   {
@@ -20,16 +21,16 @@ const COLUMNS = [
       { label: "Consultation", href: "/experiences/consultation" },
       { label: "Casa Sojourn", href: "/experiences/furniture-tourism" },
       { label: "Materials Library", href: "/experiences/materials-library" },
-      { label: "Signature Evenings", href: "/experiences/signature-evenings" },
+      { label: "All Experiences", href: "/experiences" },
     ],
   },
   {
     title: "Visit",
     links: [
-      { label: "Trade Desk", href: "/trade" },
       { label: "Indore Showroom", href: "/visit" },
-      { label: "Contact", href: "/visit#contact" },
-      { label: "WhatsApp", href: "https://wa.me/" },
+      { label: "The Journal", href: "/journal" },
+      { label: "Contact", href: "/visit" },
+      { label: "Book a Consultation", href: "/experiences/consultation" },
     ],
   },
 ];
@@ -56,9 +57,9 @@ export function Footer() {
               <h4>{col.title}</h4>
               {col.links.map((link) => (
                 <HoverItem key={link.label} as="span" cursorLabel="→">
-                  <a href={link.href}>
+                  <Link href={link.href}>
                     <Magnetic>{link.label}</Magnetic>
-                  </a>
+                  </Link>
                 </HoverItem>
               ))}
             </div>

@@ -1,65 +1,114 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
+import Link from "next/link";
+import { useState } from "react";
+import { useCursor } from "@/components/cursor/CursorProvider";
+import { useReveal } from "@/hooks/useReveal";
 import styles from "./Sojourn.module.css";
 
-const FRAMES = [
-  "https://images.unsplash.com/photo-1519643381401-22c77e60520e?auto=format&fit=crop&w=2400&q=85",
-  "https://images.unsplash.com/photo-1554995207-c18c203602cb?auto=format&fit=crop&w=2400&q=85",
-  "https://images.unsplash.com/photo-1567016432779-094069958ea5?auto=format&fit=crop&w=2400&q=85",
-  "https://images.unsplash.com/photo-1615529182904-14819c35db37?auto=format&fit=crop&w=2400&q=85",
+const STEPS = [
+  {
+    label: "Material Audit",
+    meta: "01 / Before buying",
+    title: "Start with what the room is missing.",
+    body: "We read light, scale, storage, circulation and existing pieces before suggesting furniture or finishes.",
+    image: "/images/editorial/light-form-atrium.png",
+  },
+  {
+    label: "Sourcing Edit",
+    meta: "02 / Furniture + objects",
+    title: "Choose fewer, better pieces.",
+    body: "Furniture, lighting, beds, dining and accessories are edited into one composition rather than bought as separate objects.",
+    image: "/images/editorial/sojourn.png",
+  },
+  {
+    label: "Material Library",
+    meta: "03 / Wood + marble",
+    title: "Touch the form before it enters the home.",
+    body: "Wood, marble, stone, textile, metal and finishes are compared by grain, reflection, warmth and ageing.",
+    image: "/images/editorial/materials.png",
+  },
+  {
+    label: "Home Install",
+    meta: "04 / Final composition",
+    title: "Bring the mall into the house, calmly.",
+    body: "The final room is planned through placement, styling, installation sequence and the small pauses that make it feel lived in.",
+    image: "/images/editorial/villa-hero.png",
+  },
+] as const;
+
+const DEPARTMENTS = [
+  { title: "Furniture Gallery", detail: "Sofas, beds, dining, lounge chairs, consoles and accents." },
+  { title: "Material Bar", detail: "Wood, marble, stone, metal, textile and finish consultations." },
+  { title: "Room Planning", detail: "Floor-plan thinking for living, bedrooms, kitchens, baths and terraces." },
+  { title: "Specifier Desk", detail: "Support for architects, designers and whole-home projects." },
 ];
 
-const COPY = [
-  { s: "§ 05 — Casa Sojourn / 01 of 04", t: ["Sourced across", "the world."] },
-  { s: "§ 05 — Casa Sojourn / 02 of 04", t: ["Factory visits,", "hand-selected."] },
-  { s: "§ 05 — Casa Sojourn / 03 of 04", t: ["The final lock,", "and the return."] },
-  { s: "§ 05 — Casa Sojourn / 04 of 04", t: ["Composed", "in your home."] },
-];
-
-/** Scroll-scrub sequence (Casa Sojourn) — ported from ~line 534/909. */
 export function Sojourn() {
-  const sectionRef = useRef<HTMLElement>(null);
-  const [step, setStep] = useState(0);
-
-  useEffect(() => {
-    const update = () => {
-      const el = sectionRef.current;
-      if (!el) return;
-      const rect = el.getBoundingClientRect();
-      const total = rect.height - window.innerHeight;
-      const passed = Math.min(1, Math.max(0, -rect.top / total));
-      setStep(Math.min(FRAMES.length - 1, Math.floor(passed * FRAMES.length)));
-    };
-    update();
-    window.addEventListener("scroll", update, { passive: true });
-    return () => window.removeEventListener("scroll", update);
-  }, []);
+  const [active, setActive] = useState(0);
+  const { setCursor, resetCursor } = useCursor();
+  const { ref, inView } = useReveal<HTMLDivElement>();
+  const step = STEPS[active];
 
   return (
-    <section ref={sectionRef} className={styles.scrub} id="sojourn">
-      <div className={styles.sticky}>
-        {FRAMES.map((src, i) => (
-          <div
-            key={src}
-            className={`${styles.frame} ${i === step ? styles.active : ""}`}
-            style={{ backgroundImage: `url('${src}')` }}
-          />
-        ))}
-        <div className={styles.vignette} />
-        <div className={styles.text}>
-          <span className={styles.step}>{COPY[step].s}</span>
-          <h2 className={styles.title}>
-            {COPY[step].t[0]}
-            <br />
-            <em>{COPY[step].t[1]}</em>
-          </h2>
-        </div>
-        <div className={styles.progress}>
-          {COPY.map((c, i) => (
-            <span key={c.s} className={i === step ? styles.on : ""} />
+    <section className={styles.section} id="sojourn">
+      <div ref={ref} className={`${styles.header} reveal ${inView ? "in" : ""}`}>
+        <p className={styles.eyebrow}>§ 05 — Casa Sojourn / Home Interior Mall</p>
+        <h2>
+          Source the home as a
+          <span> complete composition.</span>
+        </h2>
+        <p>
+          Wolf Casa brings furniture, material selection, room planning and sourcing into one premium destination, so each decision belongs to the same home.
+        </p>
+      </div>
+
+      <div className={styles.composer}>
+        <div className={styles.steps} role="tablist" aria-label="Casa Sojourn steps">
+          {STEPS.map((item, index) => (
+            <button
+              key={item.label}
+              type="button"
+              role="tab"
+              aria-selected={index === active}
+              className={index === active ? styles.activeStep : ""}
+              onClick={() => setActive(index)}
+              onMouseEnter={() => setCursor("hover", "View")}
+              onMouseLeave={resetCursor}
+            >
+              <span>{item.meta}</span>
+              <strong>{item.label}</strong>
+            </button>
           ))}
         </div>
+
+        <article className={styles.feature}>
+          <div className={styles.imageWrap}>
+            <Image src={step.image} alt={step.title} fill sizes="(max-width: 900px) 100vw, 50vw" />
+          </div>
+          <div className={styles.featureCopy}>
+            <span>{step.meta}</span>
+            <h3>{step.title}</h3>
+            <p>{step.body}</p>
+            <Link
+              href="/experiences/furniture-tourism"
+              onMouseEnter={() => setCursor("hover", "Enter")}
+              onMouseLeave={resetCursor}
+            >
+              Plan Casa Sojourn
+            </Link>
+          </div>
+        </article>
+      </div>
+
+      <div className={styles.departments} aria-label="Wolf Casa departments">
+        {DEPARTMENTS.map((item) => (
+          <article key={item.title}>
+            <h3>{item.title}</h3>
+            <p>{item.detail}</p>
+          </article>
+        ))}
       </div>
     </section>
   );

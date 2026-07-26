@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { OBJECTS } from "@/lib/objects";
 import { useCursor } from "@/components/cursor/CursorProvider";
@@ -84,8 +85,14 @@ export function Gallery() {
         {OBJECTS.map((o) => (
           <div key={o.slug} className={styles.card}>
             <div className={styles.img}>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={o.img} draggable={false} alt="" loading="lazy" />
+              <Image
+                src={o.img}
+                alt={o.t}
+                fill
+                draggable={false}
+                loading="lazy"
+                sizes="(max-width: 720px) 82vw, min(56vw, 680px)"
+              />
             </div>
             <span className={styles.cardNum}>{o.n} · Named Object</span>
             <div className={styles.cardTitle}>{o.t}</div>

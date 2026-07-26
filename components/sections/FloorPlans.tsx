@@ -2,7 +2,9 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useCursor } from "@/components/cursor/CursorProvider";
+import { useReveal } from "@/hooks/useReveal";
 import styles from "./FloorPlans.module.css";
 
 type Room = { id: string; name: string; ritual: string; materials: string; x: number; y: number; w: number; h: number };
@@ -36,6 +38,7 @@ export function FloorPlans() {
   const [floorIndex, setFloorIndex] = useState(1);
   const [roomId, setRoomId] = useState(FLOORS[1].rooms[0].id);
   const { setCursor, resetCursor } = useCursor();
+  const { ref, inView } = useReveal<HTMLDivElement>();
   const floor = FLOORS[floorIndex];
   const room = floor.rooms.find((item) => item.id === roomId) ?? floor.rooms[0];
 
@@ -44,8 +47,8 @@ export function FloorPlans() {
 
   return (
     <section className={styles.section} id="floor-plans">
-      <div className={styles.heading}>
-        <div><span>Section 02</span><p>Plan the feeling,<br />not just the room.</p></div>
+      <div ref={ref} className={`${styles.heading} reveal ${inView ? "in" : ""}`}>
+        <div><span>§ 02 — The Composition</span><p>Plan the feeling,<br />not just the room.</p></div>
         <h2>Every floor is<br /><em>a composition.</em></h2>
       </div>
       <div className={styles.explorer}>
@@ -68,6 +71,10 @@ export function FloorPlans() {
           <span>{floor.level} / {floor.label}</span>
           <p className={styles.floorNote}>{floor.note}</p>
           <div className={styles.roomNote}>
+            <div className={styles.materialImage}>
+              <Image src="/images/editorial/materials.png" alt="Curated material palette" fill sizes="(max-width: 1000px) 50vw, 22vw" />
+              <span>Material direction</span>
+            </div>
             <small>{room.ritual}</small>
             <h3>{room.name}</h3>
             <p>{room.materials}</p>

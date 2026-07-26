@@ -16,6 +16,7 @@ const LINKS = [
 
 export function Nav() {
   const [scrolled, setScrolled] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   const { activeColor } = useStage();
 
   useEffect(() => {
@@ -24,20 +25,25 @@ export function Nav() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  useEffect(() => {
+    document.body.style.overflow = menuOpen ? "hidden" : "";
+    return () => { document.body.style.overflow = ""; };
+  }, [menuOpen]);
+
   // Only settle into the solid/normal-blend state once scrolled AND the
   // page is on the dark stage — over the cream diorama, difference-blend
   // must stay on or the nav becomes unreadable (off-white on cream).
   const solid = scrolled && activeColor === "dark";
 
   return (
-    <nav className={`${styles.nav} ${solid ? styles.solid : ""}`}>
-      <div className={styles.wordmark}>Wolf Casa</div>
+    <nav className={`${styles.nav} ${solid ? styles.solid : ""} ${menuOpen ? styles.menuOpen : ""}`}>
+      <Link href="/" className={styles.wordmark} onClick={() => setMenuOpen(false)}>Wolf Casa</Link>
       <div className={styles.links}>
         {LINKS.map((link) => (
           <HoverItem key={link.href} as="span" cursorLabel={link.cursor}>
-            <a href={link.href}>
+            <Link href={link.href}>
               <Magnetic>{link.label}</Magnetic>
-            </a>
+            </Link>
           </HoverItem>
         ))}
       </div>
@@ -46,6 +52,20 @@ export function Nav() {
           <Magnetic>Consultation</Magnetic>
         </Link>
       </HoverItem>
+      <button type="button" className={styles.menuToggle} aria-expanded={menuOpen} aria-controls="mobile-navigation" aria-label={menuOpen ? "Close navigation" : "Open navigation"} onClick={() => setMenuOpen((open) => !open)}>
+        <span /><span />
+      </button>
+      <div id="mobile-navigation" className={styles.mobilePanel} aria-hidden={!menuOpen}>
+        <span className={styles.mobileKicker}>Wolf Casa / Navigation</span>
+        <div className={styles.mobileLinks}>
+          {LINKS.map((link, index) => (
+            <Link key={link.href} href={link.href} onClick={() => setMenuOpen(false)}>
+              <span>{String(index + 1).padStart(2, "0")}</span>{link.label}<i>↗</i>
+            </Link>
+          ))}
+        </div>
+        <Link href="/experiences/consultation" className={styles.mobileCta} onClick={() => setMenuOpen(false)}>Begin a consultation <span>→</span></Link>
+      </div>
     </nav>
   );
 }
