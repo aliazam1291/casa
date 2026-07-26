@@ -11,6 +11,7 @@ import { disposeShadowCache } from './lib/shadows';
 import { buildRoom, disposeGLTFCache } from './lib/buildRoom';
 
 import { findPiece } from './lib/interactive';
+import { moodForRoom, applyMood } from './lib/lightMoods';
 
 const GalleryScene = forwardRef(function GalleryScene({ onRoomChange, onFloorChange, onPieceHover }, ref) {
   const mountRef = useRef(null);
@@ -200,6 +201,9 @@ const GalleryScene = forwardRef(function GalleryScene({ onRoomChange, onFloorCha
       return sp;
     });
 
+    // Rig handle so the per-room light moods can retune everything each frame.
+    const lightRig = { ambient, hemi, dirKey, dirRim, dirFill, spots, scene, renderer };
+
     const roomsGroup = new THREE.Group();
     scene.add(roomsGroup);
 
@@ -385,6 +389,10 @@ const GalleryScene = forwardRef(function GalleryScene({ onRoomChange, onFloorCha
 
       const activeRoomDef = FLOORS[s.currentFloor]?.rooms[s.currentRoom];
       const rPos = activeRoomDef?.pos || { x: 0, y: 0, z: 0, ry: 0 };
+
+      // Cross-fade the rig toward the active room's mood so each space has its
+      // own light — candle-lit cellar, cool spa, golden living room.
+      applyMood(lightRig, moodForRoom(activeRoomDef?.name), Math.min(1, dt * 2.2));
       const cosR = Math.cos(rPos.ry), sinR = Math.sin(rPos.ry);
 
       dirKey.position.set(rPos.x + 4 * cosR + 5 * sinR, 9, rPos.z - 4 * sinR + 5 * cosR);
