@@ -109,6 +109,69 @@ function addArchitecturalRealism(group, W, H, D, isTerrace) {
   }
 }
 
+// Small recessed can lights near the room's four corners — the detail whose
+// absence most reads as "a render" rather than a photographed interior. Kept
+// clear of the ceiling tray's beams/crossbars by sitting on the flat field.
+function addDownlights(group, sm, W, H, D) {
+  const y = H - 0.015;
+  const insetX = Math.min(2.0, W / 2 - 0.6);
+  const insetZ = Math.min(1.8, D / 2 - 0.6);
+  for (const sx of [-1, 1]) {
+    for (const sz of [-1, 1]) {
+      const trim = new THREE.Mesh(new THREE.TorusGeometry(0.052, 0.01, 8, 20), sm.metalDark);
+      trim.rotation.x = Math.PI / 2;
+      trim.position.set(sx * (W / 2 - insetX), y, sz * (D / 2 - insetZ));
+      group.add(trim);
+      const bulb = new THREE.Mesh(new THREE.CircleGeometry(0.045, 16), sm.glowDim);
+      bulb.rotation.x = Math.PI / 2;
+      bulb.position.set(sx * (W / 2 - insetX), y - 0.004, sz * (D / 2 - insetZ));
+      group.add(bulb);
+    }
+  }
+}
+
+// Paired wall sconces flanking the hero painting — the human-scale fixture a
+// real evening room is lit by, rather than the ceiling alone.
+function addWallSconces(group, sm, W, D, H) {
+  const y = 2.32;
+  const z = -D / 2 + 0.07;
+  for (const sx of [-1.15, 1.15]) {
+    const back = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.16, 0.03), sm.metalDark);
+    back.position.set(sx, y, z);
+    group.add(back);
+    const arm = new THREE.Mesh(new THREE.CylinderGeometry(0.012, 0.012, 0.14, 8), sm.metal);
+    arm.rotation.x = Math.PI / 2;
+    arm.position.set(sx, y, z + 0.08);
+    group.add(arm);
+    const shade = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.05, 0.075, 0.16, 14, 1, true, 0, Math.PI),
+      new THREE.MeshBasicMaterial({ color: 0xfff3dc, transparent: true, opacity: 0.72, side: THREE.DoubleSide })
+    );
+    shade.rotation.y = sx < 0 ? Math.PI / 2 : -Math.PI / 2;
+    shade.position.set(sx, y, z + 0.16);
+    group.add(shade);
+    const glowDisc = new THREE.Mesh(new THREE.CircleGeometry(0.11, 16), sm.glowDim);
+    glowDisc.position.set(sx, y, z + 0.01);
+    group.add(glowDisc);
+  }
+}
+
+// A single wall switch plate by the entry corner — the kind of throwaway
+// detail nobody designs on purpose but every real room has.
+function addSwitchPlate(group, sm, W, D) {
+  const x = -W / 2 + 0.42;
+  const y = 1.32;
+  const z = -D / 2 + 0.042;
+  const plate = new THREE.Mesh(new THREE.BoxGeometry(0.11, 0.16, 0.012), sm.marble);
+  plate.position.set(x, y, z);
+  group.add(plate);
+  for (const dy of [0.035, -0.035]) {
+    const toggle = new THREE.Mesh(new THREE.BoxGeometry(0.028, 0.045, 0.014), sm.metalDark);
+    toggle.position.set(x, y + dy, z + 0.011);
+    group.add(toggle);
+  }
+}
+
 // A false ceiling gives each interior a distinct architectural profile. The
 // shallow construction keeps headroom generous while creating real edges for
 // light and shadow to describe in the walkthrough.
@@ -227,6 +290,17 @@ export function addCommonDecor(group, sm, matAccent, W, H, D, seed, name = '') {
     rugBorder.rotation.x = -Math.PI / 2;
     rugBorder.position.set(-0.5, 0.004, 0.2);
     group.add(rugBorder);
+    // Hand-knotted fringe along the rug's short edges
+    const fringeMat = new THREE.MeshStandardMaterial({ color: 0xd9c9a8, roughness: 0.95 });
+    for (const fz of [0.2 - rugD / 2, 0.2 + rugD / 2]) {
+      for (let i = 0; i < 16; i++) {
+        const fx = -0.5 - rugW / 2 + 0.1 + i * ((rugW - 0.2) / 15);
+        const strand = new THREE.Mesh(new THREE.CylinderGeometry(0.006, 0.006, 0.1, 4), fringeMat);
+        strand.rotation.x = Math.PI / 2;
+        strand.position.set(fx, 0.006, fz + (fz > 0.2 ? 0.05 : -0.05));
+        group.add(strand);
+      }
+    }
 
     // Upholstered ottomans on the rug
     const poufGeo = new THREE.SphereGeometry(0.42, 18, 12);
@@ -242,6 +316,22 @@ export function addCommonDecor(group, sm, matAccent, W, H, D, seed, name = '') {
       group.add(p);
     }
     addContactShadow(group, cx, cz, 3.4, 2.4, 0.35);
+
+    // A throw blanket, casually folded over the nearest ottoman — the kind of
+    // lived-in touch that keeps a staged room from reading as showroom-empty.
+    const throwGroup = new THREE.Group();
+    const throwMat = sm.velvetCaramel || sm.linen;
+    const foldCount = 3;
+    for (let f = 0; f < foldCount; f++) {
+      const fold = new THREE.Mesh(createRoundedBoxGeometry(0.62, 0.05, 0.4 - f * 0.03, 0.05, 3), throwMat);
+      fold.position.set(0, f * 0.045, f * 0.03);
+      fold.rotation.z = -0.06;
+      fold.castShadow = true;
+      throwGroup.add(fold);
+    }
+    throwGroup.position.set(cx - 0.3, 0.32, cz - 0.35);
+    throwGroup.rotation.y = 0.35;
+    group.add(throwGroup);
   }
 
   // Potted Ceramic Architectural Plant
@@ -366,6 +456,7 @@ export function buildRoom(def, roomIndex, floorIndex, sm) {
     ceil.position.y = H;
     group.add(ceil);
     addFalseCeiling(group, sm, W, H, D, roomName);
+    addDownlights(group, sm, W, H, D);
   }
 
   // Walls — the terrace opens to a view behind a glass balustrade instead.
@@ -401,6 +492,7 @@ export function buildRoom(def, roomIndex, floorIndex, sm) {
     backWall.position.set(0, H / 2, -D / 2);
     backWall.receiveShadow = true;
     group.add(backWall);
+    if (!isWineCellar && !isKitchen) addSwitchPlate(group, sm, W, D);
   }
 
   if (roomIndex === 0) {
@@ -408,12 +500,18 @@ export function buildRoom(def, roomIndex, floorIndex, sm) {
     leftWall.rotation.y = Math.PI / 2;
     leftWall.position.set(-W / 2, H / 2, 0);
     group.add(leftWall);
+    const leftBase = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.12, D), sm.darkWood);
+    leftBase.position.set(-W / 2 + 0.02, 0.06, 0);
+    group.add(leftBase);
   }
   if (roomIndex === lastIndex) {
     const rightWall = new THREE.Mesh(new THREE.PlaneGeometry(D, H), matWall);
     rightWall.rotation.y = -Math.PI / 2;
     rightWall.position.set(W / 2, H / 2, 0);
     group.add(rightWall);
+    const rightBase = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.12, D), sm.darkWood);
+    rightBase.position.set(W / 2 - 0.02, 0.06, 0);
+    group.add(rightBase);
   }
 
   addArchitecturalRealism(group, W, H, D, isTerrace);
@@ -488,6 +586,7 @@ export function buildRoom(def, roomIndex, floorIndex, sm) {
     // Hero Framed Painting
     const heroTex = getArtTexture(`${floorIndex}-${roomIndex}-hero`, floorIndex * 17 + roomIndex * 3 + 1);
     addFramedArt(group, sm, heroTex, { x: 0, y: 2.1, z: -D / 2 + 0.05, w: 1.8, h: 2.2 });
+    addWallSconces(group, sm, W, D, H);
 
     // Console Ledge
     const ledge = new THREE.Mesh(new THREE.BoxGeometry(2.2, 0.05, 0.35), sm.marble);
