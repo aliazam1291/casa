@@ -56,34 +56,97 @@ export function addGalleryFurniture(group, sm, matAccent, W, H, D, name = '') {
       group.add(blade);
     }
   } else {
-    // Two modern wood/linen sun loungers (terrace)
-    for (const lx of [-1.0, 1.0]) {
+    // Teak-slatted sun loungers with linen cushions and a rolled bolster
+    for (const lx of [-1.15, 1.15]) {
       const lounger = new THREE.Group();
-      const frame = new THREE.Mesh(createRoundedBoxGeometry(0.68, 0.08, 1.9, 0.02, 3), sm.darkWood);
-      frame.position.set(lx, 0.1, 0.5);
-      frame.castShadow = true;
-      lounger.add(frame);
-      const cush = new THREE.Mesh(createRoundedBoxGeometry(0.64, 0.1, 1.84, 0.04, 3), sm.linen);
-      cush.position.set(lx, 0.18, 0.5);
-      cush.castShadow = true;
+      // Slatted teak deck — individual boards so the frame reads as timber
+      for (let s = 0; s < 9; s++) {
+        const board = new THREE.Mesh(createRoundedBoxGeometry(0.62, 0.05, 0.15, 0.015, 3), sm.darkWood);
+        board.position.set(lx, 0.34, -0.36 + s * 0.2);
+        board.castShadow = true; board.receiveShadow = true;
+        lounger.add(board);
+      }
+      for (const fx of [-0.26, 0.26]) {
+        for (const fz of [-0.3, 1.24]) {
+          const leg = new THREE.Mesh(new THREE.CylinderGeometry(0.022, 0.022, 0.34, 10), sm.metal);
+          leg.position.set(lx + fx, 0.17, 0.5 + fz - 0.5);
+          lounger.add(leg);
+        }
+      }
+      const cush = new THREE.Mesh(createRoundedBoxGeometry(0.6, 0.12, 1.6, 0.05, 4), sm.linen);
+      cush.position.set(lx, 0.43, 0.62);
+      cush.castShadow = true; cush.receiveShadow = true;
       lounger.add(cush);
-      const back = new THREE.Mesh(createRoundedBoxGeometry(0.64, 0.1, 0.65, 0.04, 3), sm.linen);
-      back.position.set(lx, 0.35, -0.2);
-      back.rotation.x = -0.35;
+      const back = new THREE.Mesh(createRoundedBoxGeometry(0.6, 0.12, 0.78, 0.05, 4), sm.linen);
+      back.position.set(lx, 0.62, -0.36);
+      back.rotation.x = -0.55;
       back.castShadow = true;
       lounger.add(back);
+      // Rolled bolster cushion
+      const bolster = new THREE.Mesh(new THREE.CylinderGeometry(0.09, 0.09, 0.56, 16), sm.velvetTerracotta);
+      bolster.rotation.z = Math.PI / 2;
+      bolster.position.set(lx, 0.55, 0.1);
+      bolster.castShadow = true;
+      lounger.add(bolster);
+      // Folded towel
+      const towel = new THREE.Mesh(createRoundedBoxGeometry(0.5, 0.06, 0.34, 0.03, 3), sm.boucle);
+      towel.position.set(lx, 0.52, 1.12);
+      towel.castShadow = true;
+      lounger.add(towel);
       group.add(lounger);
-      addContactShadow(group, lx, 0.5, 0.9, 2.1, 0.45);
+      addContactShadow(group, lx, 0.5, 0.95, 2.2, 0.45);
     }
 
-    // Linear outdoor fireplace table
-    const fpTable = new THREE.Mesh(createRoundedBoxGeometry(0.55, 0.45, 1.6, 0.03, 3), sm.marbleNero);
-    fpTable.position.set(0, 0.225, 2.2);
-    fpTable.castShadow = true;
+    // Side table between the loungers with a drink
+    const sideTop = new THREE.Mesh(new THREE.CylinderGeometry(0.24, 0.24, 0.05, 24), sm.marble);
+    sideTop.position.set(0, 0.46, 0.55);
+    sideTop.castShadow = true;
+    group.add(sideTop);
+    const sideStem = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.07, 0.44, 14), sm.metal);
+    sideStem.position.set(0, 0.22, 0.55);
+    group.add(sideStem);
+    const glassCup = new THREE.Mesh(new THREE.CylinderGeometry(0.045, 0.035, 0.13, 14), sm.glass);
+    glassCup.position.set(0.06, 0.55, 0.55);
+    group.add(glassCup);
+    addContactShadow(group, 0, 0.55, 0.6, 0.6, 0.4);
+
+    // Linear stone fire table with a bed of lava pebbles and flame glow
+    const fpTable = new THREE.Mesh(createRoundedBoxGeometry(0.85, 0.42, 2.0, 0.04, 3), sm.marbleNero);
+    fpTable.position.set(0, 0.21, 2.6);
+    fpTable.castShadow = true; fpTable.receiveShadow = true;
     group.add(fpTable);
-    addContactShadow(group, 0, 2.2, 0.9, 1.9, 0.5);
-    const fireGlow = new THREE.Mesh(new THREE.BoxGeometry(0.2, 0.03, 1.0), sm.fixtureGlow);
-    fireGlow.position.set(0, 0.46, 2.2);
+    const fpTrim = new THREE.Mesh(new THREE.BoxGeometry(0.9, 0.03, 2.05), sm.metal);
+    fpTrim.position.set(0, 0.43, 2.6);
+    group.add(fpTrim);
+    addContactShadow(group, 0, 2.6, 1.25, 2.35, 0.5);
+    for (let p = 0; p < 22; p++) {
+      const peb = new THREE.Mesh(new THREE.SphereGeometry(0.035, 8, 6), sm.pebble);
+      peb.position.set((Math.random() - 0.5) * 0.34, 0.45, 2.6 + (Math.random() - 0.5) * 1.6);
+      group.add(peb);
+    }
+    const fireGlow = new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.02, 1.5), sm.fixtureGlow);
+    fireGlow.position.set(0, 0.47, 2.6);
     group.add(fireGlow);
+    const flame = new THREE.PointLight(0xff9c4a, 6, 5, 2);
+    flame.position.set(0, 0.85, 2.6);
+    group.add(flame);
+
+    // Olive tree in a large stone planter for outdoor scale
+    const bigPot = new THREE.Mesh(createFlutedCylinderGeometry(0.42, 0.85, 18), sm.marble);
+    bigPot.position.set(3.9, 0.42, 0.6);
+    bigPot.castShadow = true; bigPot.receiveShadow = true;
+    group.add(bigPot);
+    addContactShadow(group, 3.9, 0.6, 1.1, 1.1, 0.45);
+    const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.1, 1.1, 10), sm.darkWood);
+    trunk.position.set(3.9, 1.35, 0.6);
+    trunk.castShadow = true;
+    group.add(trunk);
+    for (let c = 0; c < 5; c++) {
+      const canopy = new THREE.Mesh(new THREE.SphereGeometry(0.42 - c * 0.03, 14, 10), sm.foliage);
+      canopy.position.set(3.9 + (Math.random() - 0.5) * 0.55, 2.0 + (Math.random() - 0.5) * 0.45, 0.6 + (Math.random() - 0.5) * 0.55);
+      canopy.scale.y = 0.8;
+      canopy.castShadow = true;
+      group.add(canopy);
+    }
   }
 }

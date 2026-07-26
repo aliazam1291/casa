@@ -124,7 +124,9 @@ export const FLOORS = [
         materials: ['Teak', 'Linen', 'Black stone'],
         wallColor: 0xf0ece4, floorColor: 0xdcd0c0, panelColor: 0x7a6854, accent: 0xc8b898,
         pos: { x: 15, y: 0, z: -4, ry: -0.4 },
-        cam: { px: 0, py: 1.6, pz: 6.5, tx: 0, ty: 1.3, tz: -1.5 },
+        // Lower, closer eye-line so the terrace reads across the loungers and
+        // fire table to the balustrade and horizon, not down at the paving.
+        cam: { px: 0.2, py: 1.32, pz: 5.4, tx: 0, ty: 1.05, tz: -2.0 },
       },
     ],
   },
