@@ -1,0 +1,63 @@
+.page { background: var(--bg); color: var(--fg); }
+
+.hero { position: relative; min-height: min(760px, 88svh); overflow: hidden; }
+.heroImage { object-fit: cover; }
+.heroShade { position: absolute; inset: 0; background: linear-gradient(0deg, rgba(20, 19, 17, .82), rgba(20, 19, 17, .3) 60%, rgba(20, 19, 17, .48)); }
+.heroFrame { position: relative; z-index: 1; display: flex; min-height: min(760px, 88svh); flex-direction: column; justify-content: flex-end; gap: 20px; padding: 20vh var(--gutter) 9vh; color: #fff; }
+.kicker, .sectionLabel { font-family: var(--sans); font-size: 10px; font-weight: 650; letter-spacing: .24em; text-transform: uppercase; }
+.heroFrame h1 { max-width: 900px; font-family: var(--serif); font-size: clamp(56px, 8.4vw, 132px); font-style: italic; font-weight: 400; line-height: .86; }
+.heroFrame > p { max-width: 620px; color: rgba(255, 255, 255, .8); font-size: 15px; line-height: 1.8; }
+
+/* ---- Diptych: two lenses, Light / Form ---- */
+.diptych { display: grid; grid-template-columns: 1fr 1fr; border-top: 1px solid var(--line); }
+.lens { position: relative; display: grid; grid-template-rows: min(58vh, 560px) auto; border-right: 1px solid var(--line); }
+.lens:last-child { border-right: 0; }
+.lensImage { position: relative; overflow: hidden; }
+.lensImage img { object-fit: cover; transition: transform 1.1s var(--ease-gallery); }
+.lens:hover .lensImage img { transform: scale(1.045); }
+.lensCopy { padding: clamp(28px, 4vw, 56px); background: var(--cream-light); }
+.lensCopy span { color: var(--walnut); font-family: var(--sans); font-size: 10px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; }
+.lensCopy h2 { max-width: 420px; margin: 20px 0 22px; font-family: var(--serif); font-size: clamp(32px, 3.6vw, 56px); font-style: italic; font-weight: 400; line-height: .96; }
+.quote { max-width: 420px; margin-bottom: 18px; color: var(--fg); font-family: var(--serif); font-size: clamp(17px, 1.6vw, 21px); font-style: italic; line-height: 1.5; }
+.lensCopy > p:last-child { max-width: 420px; color: var(--fg-dim); font-size: 14px; line-height: 1.75; }
+
+/* ---- Colour system ---- */
+.palette { padding: 15vh var(--gutter); border-top: 1px solid var(--line); background: var(--bg-2); }
+.palette h2 { max-width: 760px; margin: 20px 0 60px; font-family: var(--serif); font-size: clamp(38px, 5vw, 76px); font-style: italic; font-weight: 400; line-height: .96; }
+.swatchRow { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); }
+.swatchRow div { display: flex; min-height: 168px; flex-direction: column; justify-content: flex-end; gap: 6px; padding: 20px; background: var(--cream-light); }
+.swatchRow i { width: 34px; height: 34px; margin-bottom: 14px; border-radius: 999px; box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .12); }
+.swatchRow span { font-family: var(--sans); font-size: 12px; font-weight: 650; letter-spacing: .04em; }
+.swatchRow small { color: var(--fg-dim); font-family: var(--mono); font-size: 11px; letter-spacing: .06em; text-transform: uppercase; }
+
+/* ---- Composition builder ---- */
+.builder { padding: 15vh var(--gutter); border-top: 1px solid var(--line); }
+.builder h2 { max-width: 760px; margin: 20px 0 60px; font-family: var(--serif); font-size: clamp(38px, 5vw, 76px); font-style: italic; font-weight: 400; line-height: .96; }
+.steps { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: clamp(18px, 3vw, 40px); align-items: start; }
+.steps article { position: relative; padding-top: 26px; border-top: 1px solid var(--fg); }
+.steps span { display: block; margin-bottom: 16px; color: var(--walnut); font-family: var(--sans); font-size: 10px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; }
+.steps h3 { margin-bottom: 14px; font-family: var(--serif); font-size: clamp(24px, 2.4vw, 34px); font-style: italic; font-weight: 400; line-height: 1; }
+.steps p { color: var(--fg-dim); font-size: 14px; line-height: 1.7; }
+.steps .result { border-top-color: var(--gold); }
+.steps .result span { color: var(--gold); }
+
+/* ---- Closing quote banner ---- */
+.quoteBanner { display: flex; flex-direction: column; align-items: center; gap: 34px; padding: 16vh var(--gutter); border-top: 1px solid rgba(244, 239, 230, .18); background: var(--espresso); color: var(--cream-light); text-align: center; }
+.quoteBanner p { max-width: 780px; font-family: var(--serif); font-size: clamp(30px, 4.6vw, 60px); font-style: italic; font-weight: 400; line-height: 1.12; }
+.quoteBanner a { display: inline-flex; min-height: 46px; align-items: center; border: 1px solid var(--cream-light); padding: 0 22px; font-family: var(--sans); font-size: 10px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; transition: background .25s ease, color .25s ease; }
+.quoteBanner a:hover { background: var(--gold); border-color: var(--gold); color: var(--espresso); }
+
+@media (max-width: 1000px) {
+  .diptych, .swatchRow, .steps { grid-template-columns: 1fr; }
+  .lens { border-right: 0; border-bottom: 1px solid var(--line); }
+  .lens:last-child { border-bottom: 0; }
+  .swatchRow { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 720px) {
+  .hero { min-height: 82svh; }
+  .heroFrame { min-height: 82svh; padding: 18vh var(--gutter) 6vh; }
+  .heroFrame h1 { font-size: clamp(46px, 15vw, 74px); }
+  .palette, .builder, .quoteBanner { padding-top: 88px; padding-bottom: 88px; }
+  .swatchRow { grid-template-columns: 1fr 1fr; }
+}

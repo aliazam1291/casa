@@ -112,9 +112,9 @@ const defaultPalette = [
 
 export const SITE_PAGES: Record<string, SitePage> = {
   "way-of-light-form": {
-    eyebrow: "The design style",
+    eyebrow: "Design philosophy · Internal",
     title: "Way of Light & Form",
-    description: "Light is the shadow that gives empty space meaning. Form is the wood, marble, stone and textile that gives the home its body.",
+    description: "Light decides what the eye remembers. Premium is not more — premium is resolved. Our internal philosophy for illumination, proportion and material.",
     image: atrium,
     imageAlt: "A luxury home interior where sunlight casts long shadows across wood and marble",
     intro:
@@ -135,9 +135,9 @@ export const SITE_PAGES: Record<string, SitePage> = {
     ],
   },
   "the-wolf-way": {
-    eyebrow: "Five worlds",
-    title: "Find your Wolf Way",
-    description: "Explore five distinct interior worlds, composed through light, material and ritual.",
+    eyebrow: "The method",
+    title: "The Wolf Way",
+    description: "Ten principles for selling, styling and explaining complete rooms instead of isolated products. The wolf does not decorate — it marks territory.",
     image: villa,
     imageAlt: "Layered contemporary living room in a modern Indian home",
     intro: "The Wolf Way is not a catalogue. It is a set of atmospheres, each one a starting point for a home with its own rhythm.",
@@ -158,8 +158,8 @@ export const SITE_PAGES: Record<string, SitePage> = {
   },
   experiences: {
     eyebrow: "The rituals",
-    title: "Experiences that stay with you",
-    description: "Consultation, material selection, furniture tourism and room planning in one premium interior destination.",
+    title: "Experiences",
+    description: "Not a warehouse — a sequence of composed territories. Seven showroom stages, named compositions, and the rituals of consultation and sourcing.",
     image: sojourn,
     imageAlt: "Refined furniture sourcing atelier with samples and prototypes",
     intro: "The work of composing a home deserves its own rituals: looking closely, travelling well and making decisions with material in hand.",

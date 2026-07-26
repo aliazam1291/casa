@@ -1,9 +1,18 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { EditorialExplorer } from "@/components/editorial/EditorialExplorer";
+import { WayOfLightForm } from "@/components/editorial/WayOfLightForm";
+import { TheWolfWay } from "@/components/editorial/TheWolfWay";
+import { ExperiencesPage } from "@/components/editorial/ExperiencesPage";
 import { SITE_PAGES } from "@/lib/site-content";
 
 type Props = { params: Promise<{ slug: string[] }> };
+
+const CUSTOM_LAYOUTS: Record<string, () => React.JSX.Element> = {
+  "way-of-light-form": WayOfLightForm,
+  "the-wolf-way": TheWolfWay,
+  experiences: ExperiencesPage,
+};
 
 export function generateStaticParams() {
   return Object.keys(SITE_PAGES).map((key) => ({ slug: key.split("/") }));
@@ -20,6 +29,8 @@ export default async function EditorialRoute({ params }: Props) {
   const key = (await params).slug.join("/");
   const page = resolvePage(key);
   if (!page) notFound();
+  const Layout = CUSTOM_LAYOUTS[key];
+  if (Layout) return <Layout />;
   return <EditorialExplorer page={page} />;
 }
 
