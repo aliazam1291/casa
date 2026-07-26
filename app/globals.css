@@ -80,6 +80,11 @@ a {
   text-decoration: none;
 }
 
+:focus-visible {
+  outline: 1.5px solid var(--gold);
+  outline-offset: 3px;
+}
+
 img {
   max-width: 100%;
   display: block;

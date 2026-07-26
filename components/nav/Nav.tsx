@@ -37,24 +37,26 @@ export function Nav() {
 
   return (
     <nav className={`${styles.nav} ${solid ? styles.solid : ""} ${menuOpen ? styles.menuOpen : ""}`}>
-      <Link href="/" className={styles.wordmark} onClick={() => setMenuOpen(false)}>Wolf Casa</Link>
-      <div className={styles.links}>
-        {LINKS.map((link) => (
-          <HoverItem key={link.href} as="span" cursorLabel={link.cursor}>
-            <Link href={link.href}>
-              <Magnetic>{link.label}</Magnetic>
-            </Link>
-          </HoverItem>
-        ))}
+      <div className={styles.bar}>
+        <Link href="/" className={styles.wordmark} onClick={() => setMenuOpen(false)}>Wolf Casa</Link>
+        <div className={styles.links}>
+          {LINKS.map((link) => (
+            <HoverItem key={link.href} as="span" cursorLabel={link.cursor}>
+              <Link href={link.href}>
+                <Magnetic>{link.label}</Magnetic>
+              </Link>
+            </HoverItem>
+          ))}
+        </div>
+        <HoverItem as="span" cursorLabel="Book">
+          <Link href="/experiences/consultation" className={styles.cta}>
+            <Magnetic>Consultation</Magnetic>
+          </Link>
+        </HoverItem>
+        <button type="button" className={styles.menuToggle} aria-expanded={menuOpen} aria-controls="mobile-navigation" aria-label={menuOpen ? "Close navigation" : "Open navigation"} onClick={() => setMenuOpen((open) => !open)}>
+          <span /><span />
+        </button>
       </div>
-      <HoverItem as="span" cursorLabel="Book">
-        <Link href="/experiences/consultation" className={styles.cta}>
-          <Magnetic>Consultation</Magnetic>
-        </Link>
-      </HoverItem>
-      <button type="button" className={styles.menuToggle} aria-expanded={menuOpen} aria-controls="mobile-navigation" aria-label={menuOpen ? "Close navigation" : "Open navigation"} onClick={() => setMenuOpen((open) => !open)}>
-        <span /><span />
-      </button>
       <div id="mobile-navigation" className={styles.mobilePanel} aria-hidden={!menuOpen}>
         <span className={styles.mobileKicker}>Wolf Casa / Navigation</span>
         <div className={styles.mobileLinks}>
