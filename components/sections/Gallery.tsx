@@ -16,6 +16,7 @@ export function Gallery() {
   const [count, setCount] = useState(`01 / ${String(OBJECTS.length).padStart(2, "0")}`);
 
   useEffect(() => {
+    if (!inView) return;
     const zone = trackRef.current?.parentElement;
     if (!zone) return;
 
@@ -66,7 +67,7 @@ export function Gallery() {
       window.removeEventListener("pointermove", onMove);
       cancelAnimationFrame(raf);
     };
-  }, [setCursor, resetCursor]);
+  }, [inView, setCursor, resetCursor]);
 
   return (
     <section className={styles.section} data-cursor-zone="drag">

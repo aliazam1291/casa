@@ -99,8 +99,6 @@ export function GalleryHero() {
           onPieceHover={onPieceHover}
         />
       </div>
-      <div className={styles.frameVignette} />
-
       <div className={styles.overlay}>
         {!entered ? (
           <div className={styles.gate}>
@@ -115,7 +113,7 @@ export function GalleryHero() {
             >
               Step Inside
             </button>
-            <div className={styles.hint}>Scroll · drag · or use the arrows</div>
+            <div className={styles.hint}>Swipe sideways · shift + scroll · or use the arrows</div>
           </div>
         ) : (
           <>

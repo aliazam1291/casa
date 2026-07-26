@@ -81,9 +81,9 @@ const GalleryScene = forwardRef(function GalleryScene({ onRoomChange, onFloorCha
         velvetCaramel: new THREE.MeshPhysicalMaterial({ color: 0xffffff, map: velvetCaramelB.map, normalMap: velvetCaramelB.normalMap, roughnessMap: velvetCaramelB.roughnessMap, normalScale: new THREE.Vector2(0.9, 0.9), roughness: 1.0, sheen: 1.0, sheenRoughness: 0.4, sheenColor: new THREE.Color(0xd8a86a) }),
         leatherCognac: new THREE.MeshPhysicalMaterial({ color: 0xffffff, map: leatherB.map, normalMap: leatherB.normalMap, roughnessMap: leatherB.roughnessMap, normalScale: new THREE.Vector2(0.7, 0.7), roughness: 1.0, metalness: 0.04, clearcoat: 0.3, clearcoatRoughness: 0.4 }),
         linen: new THREE.MeshStandardMaterial({ color: 0xffffff, map: linenB.map, normalMap: linenB.normalMap, roughnessMap: linenB.roughnessMap, normalScale: new THREE.Vector2(0.8, 0.8), roughness: 1.0 }),
-        metal: new THREE.MeshStandardMaterial({ color: 0xd4af37, roughness: 0.15, metalness: 0.92, envMapIntensity: 2.0 }),
-        metalDark: new THREE.MeshStandardMaterial({ color: 0x4a3e2e, roughness: 0.28, metalness: 0.84 }),
-        glass: new THREE.MeshStandardMaterial({ color: 0x3a342c, roughness: 0.02, metalness: 0.94, transparent: true, opacity: 0.50 }),
+        metal: new THREE.MeshStandardMaterial({ color: 0xc4a24f, roughness: 0.28, metalness: 0.82, envMapIntensity: 1.45 }),
+        metalDark: new THREE.MeshStandardMaterial({ color: 0x4a3e2e, roughness: 0.36, metalness: 0.72 }),
+        glass: new THREE.MeshPhysicalMaterial({ color: 0xd8e5e7, roughness: 0.02, metalness: 0.0, transparent: true, opacity: 0.34, transmission: 0.72, thickness: 0.18, envMapIntensity: 1.35 }),
         rugMat: new THREE.MeshStandardMaterial({ color: 0xffffff, map: linenB.map, normalMap: linenB.normalMap, roughnessMap: linenB.roughnessMap, normalScale: new THREE.Vector2(0.6, 0.6), roughness: 1.0, transparent: true, opacity: 0.55 }),
         pebble: new THREE.MeshStandardMaterial({ color: 0xbdb2a0, roughness: 0.92, metalness: 0.02 }),
         ceramicPot: new THREE.MeshStandardMaterial({ color: 0xc86a4b, roughness: 0.86, metalness: 0.03 }),
@@ -139,10 +139,10 @@ const GalleryScene = forwardRef(function GalleryScene({ onRoomChange, onFloorCha
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.setSize(W, H);
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.02;
+    renderer.toneMappingExposure = 0.92;
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.shadowMap.enabled = true;
-    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    renderer.shadowMap.type = THREE.PCFShadowMap;
     mount.appendChild(renderer.domElement);
 
     const onContextLost = (e) => { e.preventDefault(); };
@@ -150,50 +150,51 @@ const GalleryScene = forwardRef(function GalleryScene({ onRoomChange, onFloorCha
 
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(0xece3d2);
+    scene.fog = new THREE.FogExp2(0xece3d2, 0.012);
 
     const pmrem = new THREE.PMREMGenerator(renderer);
     const envRT = pmrem.fromScene(new RoomEnvironment(), 0.04);
     scene.environment = envRT.texture;
-    scene.environmentIntensity = 0.7;
+    scene.environmentIntensity = 0.48;
 
-    const camera = new THREE.PerspectiveCamera(48, W / H, 0.1, 140);
+    const camera = new THREE.PerspectiveCamera(42, W / H, 0.1, 140);
     const initialCam = getRoomCamAnchor(1, 0);
     camera.position.set(...initialCam.p);
 
-    const ambient = new THREE.AmbientLight(0xfff1dc, 0.06);
+    const ambient = new THREE.AmbientLight(0xfff1dc, 0.025);
     scene.add(ambient);
 
-    const hemi = new THREE.HemisphereLight(0xfff6e6, 0xb8a890, 0.24);
+    const hemi = new THREE.HemisphereLight(0xfff6e6, 0x8f8172, 0.17);
     scene.add(hemi);
 
-    const dirKey = new THREE.DirectionalLight(0xfff0d4, 2.9);
-    dirKey.position.set(4, 9, 5);
+    const dirKey = new THREE.DirectionalLight(0xffead0, 3.25);
+    dirKey.position.set(5, 8.5, 4.2);
     dirKey.castShadow = true;
-    dirKey.shadow.mapSize.set(2048, 2048);
+    dirKey.shadow.mapSize.set(4096, 4096);
     dirKey.shadow.camera.near = 1;
     dirKey.shadow.camera.far = 28;
     dirKey.shadow.camera.left = -10;
     dirKey.shadow.camera.right = 10;
     dirKey.shadow.camera.top = 10;
     dirKey.shadow.camera.bottom = -7;
-    dirKey.shadow.bias = -0.0004;
-    dirKey.shadow.normalBias = 0.02;
-    dirKey.shadow.radius = 3;
+    dirKey.shadow.bias = -0.00025;
+    dirKey.shadow.normalBias = 0.035;
+    dirKey.shadow.radius = 1.8;
     scene.add(dirKey);
     scene.add(dirKey.target);
 
-    const dirRim = new THREE.DirectionalLight(0xffd9a8, 0.55);
+    const dirRim = new THREE.DirectionalLight(0xffd9a8, 0.36);
     dirRim.position.set(-3, 5, -4);
     scene.add(dirRim);
     scene.add(dirRim.target);
 
-    const dirFill = new THREE.DirectionalLight(0xe8edf2, 0.22);
+    const dirFill = new THREE.DirectionalLight(0xdce6ef, 0.11);
     dirFill.position.set(-4, 4, 3);
     scene.add(dirFill);
 
     const spotOffsets = [-3.6, -1.2, 1.2, 3.6];
     const spots = spotOffsets.map((ox) => {
-      const sp = new THREE.SpotLight(0xfff1d8, 52, 14, Math.PI * 0.22, 0.5, 1.3);
+      const sp = new THREE.SpotLight(0xffeed4, 34, 13, Math.PI * 0.18, 0.72, 1.45);
       sp.position.set(ox, 4.3, -3.2);
       sp.target.position.set(ox, 1.1, -5.2);
       scene.add(sp);
@@ -280,7 +281,15 @@ const GalleryScene = forwardRef(function GalleryScene({ onRoomChange, onFloorCha
       s.isDragging = true;
       s.dragStartX = e.clientX;
     };
-    const onPointerUp = () => {
+    const onPointerUp = (e) => {
+      if (s.isDragging && !s.transit) {
+        const dx = e.clientX - s.dragStartX;
+        const max = FLOORS[s.currentFloor].rooms.length - 1;
+        if (Math.abs(dx) > 44) {
+          if (dx < 0 && s.currentRoom < max) s.beginRoom(s.currentRoom + 1);
+          if (dx > 0 && s.currentRoom > 0) s.beginRoom(s.currentRoom - 1);
+        }
+      }
       s.isDragging = false;
     };
     let wheelCooldown = 0;
@@ -288,14 +297,19 @@ const GalleryScene = forwardRef(function GalleryScene({ onRoomChange, onFloorCha
       const now = performance.now();
       if (s.transit || now - wheelCooldown < 550) return;
       const max = FLOORS[s.currentFloor].rooms.length - 1;
-      const down = e.deltaY > 12;
-      const up = e.deltaY < -12;
+      // Rooms are a left-to-right journey. Preserve normal page scrolling and
+      // only capture a horizontal trackpad/wheel gesture (or Shift + wheel).
+      const horizontalDelta = Math.abs(e.deltaX) > Math.abs(e.deltaY)
+        ? e.deltaX
+        : (e.shiftKey ? e.deltaY : 0);
+      const forward = horizontalDelta > 12;
+      const backward = horizontalDelta < -12;
 
-      if (down && s.currentRoom < max) {
+      if (forward && s.currentRoom < max) {
         e.preventDefault();
         wheelCooldown = now;
         s.beginRoom(s.currentRoom + 1);
-      } else if (up && s.currentRoom > 0) {
+      } else if (backward && s.currentRoom > 0) {
         e.preventDefault();
         wheelCooldown = now;
         s.beginRoom(s.currentRoom - 1);
@@ -330,9 +344,9 @@ const GalleryScene = forwardRef(function GalleryScene({ onRoomChange, onFloorCha
       renderer.setSize(w, h);
       camera.aspect = w / h;
       if (w / h < 1.0) {
-        camera.fov = 48 + (1.0 - w / h) * 20;
+        camera.fov = 48 + (1.0 - w / h) * 18;
       } else {
-        camera.fov = 48;
+        camera.fov = 42;
       }
       camera.updateProjectionMatrix();
     };
@@ -347,9 +361,22 @@ const GalleryScene = forwardRef(function GalleryScene({ onRoomChange, onFloorCha
     window.addEventListener('resize', onResize);
 
     let raf = 0;
+    let idleTimer = 0;
+    let isVisible = true;
+    const viewportObserver = new IntersectionObserver(([entry]) => {
+      isVisible = entry.isIntersecting;
+    }, { threshold: 0.01 });
+    viewportObserver.observe(mount);
     let lastT = performance.now();
 
     const tick = () => {
+      // A WebGL scene has no reason to keep drawing while another section (or
+      // browser tab) is visible. Poll lightly so it wakes without a costly
+      // continuous render loop when the visitor comes back.
+      if (!isVisible || document.hidden) {
+        idleTimer = window.setTimeout(tick, 250);
+        return;
+      }
       const now = performance.now();
       const dt = Math.min((now - lastT) / 1000, 0.05);
       lastT = now;
@@ -379,12 +406,12 @@ const GalleryScene = forwardRef(function GalleryScene({ onRoomChange, onFloorCha
         if (tr.t >= 1) s.transit = null;
       }
 
-      const idleX = Math.sin(s.time * 0.16) * 0.18;
-      const idleY = Math.sin(s.time * 0.11 + 1.7) * 0.08;
-      const idleZ = Math.cos(s.time * 0.09) * 0.12;
+      const idleX = Math.sin(s.time * 0.11) * 0.055;
+      const idleY = Math.sin(s.time * 0.085 + 1.7) * 0.025;
+      const idleZ = Math.cos(s.time * 0.075) * 0.04;
 
-      camera.position.x = s.camP[0] + s.pointerX * 0.35 + idleX;
-      camera.position.y = s.camP[1] + s.pointerY * -0.12 + idleY;
+      camera.position.x = s.camP[0] + s.pointerX * 0.14 + idleX;
+      camera.position.y = s.camP[1] + s.pointerY * -0.045 + idleY;
       camera.position.z = s.camP[2] + idleZ;
 
       const activeRoomDef = FLOORS[s.currentFloor]?.rooms[s.currentRoom];
@@ -415,6 +442,8 @@ const GalleryScene = forwardRef(function GalleryScene({ onRoomChange, onFloorCha
 
     return () => {
       cancelAnimationFrame(raf);
+      clearTimeout(idleTimer);
+      viewportObserver.disconnect();
       renderer.domElement.removeEventListener('webglcontextlost', onContextLost);
       mount.removeEventListener('pointermove', onPointerMove);
       mount.removeEventListener('pointerdown', onPointerDown);

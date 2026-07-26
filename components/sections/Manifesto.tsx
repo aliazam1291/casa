@@ -16,6 +16,20 @@ export function Manifesto() {
         <br />
         <span className="upright">It is precision.</span> <em>It is restraint.</em>
       </h2>
+      <div className={styles.principles}>
+        <article>
+          <span>01 / Light</span>
+          <p>Every room begins with the way daylight arrives and where it rests.</p>
+        </article>
+        <article>
+          <span>02 / Material</span>
+          <p>Stone, timber and textile are selected for tactility, not spectacle.</p>
+        </article>
+        <article>
+          <span>03 / Proportion</span>
+          <p>Furniture, circulation and empty space are composed as one whole.</p>
+        </article>
+      </div>
     </section>
   );
 }

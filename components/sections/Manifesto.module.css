@@ -26,6 +26,40 @@
   margin: 0 0 0 16.66%;
 }
 
+.principles {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(20px, 4vw, 64px);
+  max-width: 940px;
+  margin: clamp(72px, 11vw, 150px) 0 0 16.66%;
+  border-top: 1px solid var(--line);
+}
+.principles article {
+  padding-top: 18px;
+}
+.principles span {
+  display: block;
+  margin-bottom: 16px;
+  color: var(--walnut);
+  font-family: var(--sans);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+.principles p {
+  color: var(--fg-dim);
+  font-family: var(--serif);
+  font-size: clamp(17px, 1.5vw, 21px);
+  font-style: italic;
+  line-height: 1.3;
+}
+
 @media (max-width: 720px) {
   .heading { margin-left: 0; }
+  .principles {
+    grid-template-columns: 1fr;
+    gap: 28px;
+    margin-left: 0;
+  }
 }

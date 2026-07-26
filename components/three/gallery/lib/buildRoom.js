@@ -2,7 +2,7 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { FLOORS } from '../galleryData.js';
-import { createFlutedCylinderGeometry } from './geometries.js';
+import { createFlutedCylinderGeometry, createRoundedBoxGeometry } from './geometries.js';
 import { addContactShadow } from './shadows.js';
 import { getSurfBundle, getArtTexture, addFramedArt } from './textures.js';
 import * as furniture from './furniture/index.js';
@@ -53,6 +53,142 @@ function placeModel(group, { url, x = 0, z = 0, ry = 0, w = 2, h = null }) {
       group.add(obj);
     })
     .catch(() => {});
+}
+
+function softenBoxGeometry(root) {
+  root.traverse((obj) => {
+    if (!obj.isMesh || !obj.geometry || obj.geometry.type !== 'BoxGeometry') return;
+    const { width = 1, height = 1, depth = 1 } = obj.geometry.parameters || {};
+    const smallest = Math.min(width, height, depth);
+    if (smallest < 0.026) return;
+    const radius = Math.min(0.055, Math.max(0.006, smallest * 0.18));
+    const old = obj.geometry;
+    obj.geometry = createRoundedBoxGeometry(width, height, depth, radius, 3);
+    old.dispose();
+  });
+}
+
+function addArchitecturalRealism(group, W, H, D, isTerrace) {
+  const seamMat = new THREE.MeshBasicMaterial({ color: 0x342a22, transparent: true, opacity: isTerrace ? 0.16 : 0.09, depthWrite: false });
+  const shadowMat = new THREE.MeshBasicMaterial({ color: 0x1c1712, transparent: true, opacity: 0.12, depthWrite: false });
+  const revealMat = new THREE.MeshBasicMaterial({ color: 0x5b4c3f, transparent: true, opacity: 0.12, depthWrite: false });
+
+  // Subtle slab joints prevent large floor planes from reading as flat cartoons.
+  for (let x = -W / 2 + 2; x < W / 2 - 0.5; x += 2) {
+    const seam = new THREE.Mesh(new THREE.PlaneGeometry(0.012, D), seamMat);
+    seam.rotation.x = -Math.PI / 2;
+    seam.position.set(x, 0.009, 0);
+    group.add(seam);
+  }
+  for (let z = -D / 2 + 2; z < D / 2 - 0.5; z += 2) {
+    const seam = new THREE.Mesh(new THREE.PlaneGeometry(W, 0.012), seamMat);
+    seam.rotation.x = -Math.PI / 2;
+    seam.position.set(0, 0.01, z);
+    group.add(seam);
+  }
+
+  // Contact-darkened wall/floor corners mimic the ambient occlusion you expect
+  // from a real interior renderer, without adding a post-processing pipeline.
+  const rearShadow = new THREE.Mesh(new THREE.PlaneGeometry(W, 0.38), shadowMat);
+  rearShadow.rotation.x = -Math.PI / 2;
+  rearShadow.position.set(0, 0.012, -D / 2 + 0.18);
+  group.add(rearShadow);
+
+  for (const side of [-1, 1]) {
+    const wallLine = new THREE.Mesh(new THREE.PlaneGeometry(0.018, H - 0.35), revealMat);
+    wallLine.position.set(side * (W / 2 - 0.04), H / 2, -D / 2 + 0.04);
+    group.add(wallLine);
+  }
+
+  if (!isTerrace) {
+    for (let x = -W / 2 + 1.4; x < W / 2; x += 1.4) {
+      const plasterJoint = new THREE.Mesh(new THREE.BoxGeometry(0.01, H - 0.8, 0.012), revealMat);
+      plasterJoint.position.set(x, H / 2, -D / 2 + 0.066);
+      group.add(plasterJoint);
+    }
+  }
+}
+
+// A false ceiling gives each interior a distinct architectural profile. The
+// shallow construction keeps headroom generous while creating real edges for
+// light and shadow to describe in the walkthrough.
+function addFalseCeiling(group, sm, W, H, D, roomName) {
+  const name = roomName.toLowerCase();
+  const drop = H - 0.2;
+  const trimMat = sm.metalDark;
+  const recessMat = new THREE.MeshStandardMaterial({ color: 0xe8dfd2, roughness: 0.86 });
+  const darkRecessMat = new THREE.MeshStandardMaterial({ color: 0x2b2119, roughness: 0.78 });
+  const addPerimeter = (insetX, insetZ, material = trimMat) => {
+    for (const side of [-1, 1]) {
+      const xRail = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.16, D - insetZ * 2), material);
+      xRail.position.set(side * (W / 2 - insetX), drop, 0);
+      group.add(xRail);
+      const zRail = new THREE.Mesh(new THREE.BoxGeometry(W - insetX * 2, 0.16, 0.1), material);
+      zRail.position.set(0, drop, side * (D / 2 - insetZ));
+      group.add(zRail);
+    }
+  };
+  const addGlowLine = (x, z, width, depth) => {
+    const line = new THREE.Mesh(new THREE.BoxGeometry(width, 0.018, depth), sm.glow);
+    line.position.set(x, drop - 0.09, z);
+    group.add(line);
+  };
+
+  if (name.includes('wine') || name.includes('archive') || name.includes('study')) {
+    // Dark timber coffer ceiling for the cellar and more intimate rooms.
+    const inset = new THREE.Mesh(new THREE.BoxGeometry(W - 0.8, 0.055, D - 0.8), darkRecessMat);
+    inset.position.set(0, drop + 0.03, 0);
+    group.add(inset);
+    addPerimeter(0.4, 0.4, sm.walnutWood);
+    for (let x = -W / 2 + 1.4; x < W / 2 - 0.7; x += 1.7) {
+      const beam = new THREE.Mesh(new THREE.BoxGeometry(0.13, 0.18, D - 0.9), sm.walnutWood);
+      beam.position.set(x, drop, 0);
+      beam.castShadow = true;
+      group.add(beam);
+    }
+    addGlowLine(0, -D / 2 + 0.58, W - 1.3, 0.045);
+    return;
+  }
+
+  if (name.includes('kitchen')) {
+    // A clean floating tray with parallel oak battens and a continuous LED
+    // reveal, echoing the joinery and linear island pendant below.
+    const tray = new THREE.Mesh(new THREE.BoxGeometry(W - 1.0, 0.07, D - 1.0), recessMat);
+    tray.position.set(0, drop + 0.04, 0);
+    group.add(tray);
+    addPerimeter(0.5, 0.5, trimMat);
+    for (let x = -4.4; x <= 4.4; x += 0.55) {
+      const batten = new THREE.Mesh(new THREE.BoxGeometry(0.17, 0.11, D - 1.3), sm.walnutWood);
+      batten.position.set(x, drop - 0.035, 0.2);
+      group.add(batten);
+    }
+    addGlowLine(0, -D / 2 + 0.62, W - 1.4, 0.05);
+    addGlowLine(0, D / 2 - 0.62, W - 1.4, 0.05);
+    return;
+  }
+
+  if (name.includes('bath') || name.includes('spa')) {
+    // Spa: a large quiet recessed field with four soft linear light slots.
+    const tray = new THREE.Mesh(new THREE.BoxGeometry(W - 1.2, 0.07, D - 1.2), recessMat);
+    tray.position.set(0, drop + 0.04, 0);
+    group.add(tray);
+    addPerimeter(0.6, 0.6, sm.marble);
+    for (const x of [-3.2, -1.05, 1.05, 3.2]) addGlowLine(x, 0, 0.065, D - 1.5);
+    return;
+  }
+
+  // Social and bedroom rooms use a soft plaster coffer with brass-edged
+  // crossbars. It reads more residential than a commercial grid ceiling.
+  const tray = new THREE.Mesh(new THREE.BoxGeometry(W - 1.1, 0.065, D - 1.1), recessMat);
+  tray.position.set(0, drop + 0.035, 0);
+  group.add(tray);
+  addPerimeter(0.55, 0.55, trimMat);
+  for (const z of [-D * 0.22, 0, D * 0.22]) {
+    const crossbar = new THREE.Mesh(new THREE.BoxGeometry(W - 1.25, 0.12, 0.1), name.includes('bed') ? sm.walnutWood : sm.metal);
+    crossbar.position.set(0, drop - 0.02, z);
+    group.add(crossbar);
+  }
+  addGlowLine(0, -D / 2 + 0.65, W - 1.45, 0.045);
 }
 
 export function disposeGLTFCache() {
@@ -170,6 +306,7 @@ export function buildRoom(def, roomIndex, floorIndex, sm) {
   // The wine cellar's hero is a full-height wine wall, so it must not also get
   // the slat wall, hero painting or console ledge stacked on the same surface.
   const isWineCellar = roomName.includes('wine');
+  const isKitchen = roomName.includes('kitchen');
 
   const marbleFloor = !isTerrace && (floorIndex === 0 || (roomIndex % 2 === 1));
   const wallB = getSurfBundle('plaster', def.wallColor, 3, 1.4);
@@ -181,7 +318,7 @@ export function buildRoom(def, roomIndex, floorIndex, sm) {
   const matWall = new THREE.MeshStandardMaterial({
     color: 0xffffff, map: wallB.map, normalMap: wallB.normalMap, roughnessMap: wallB.roughnessMap, normalScale: new THREE.Vector2(0.35, 0.35), roughness: 1.0,
   });
-  const matFloor = new THREE.MeshStandardMaterial({
+  const matFloor = new THREE.MeshPhysicalMaterial({
     color: 0xffffff, map: floorB.map, normalMap: floorB.normalMap, roughnessMap: floorB.roughnessMap,
     // Outdoor paving reads matte and coarse; interior stone stays polished.
     normalScale: new THREE.Vector2(isTerrace ? 1.15 : 0.6, isTerrace ? 1.15 : 0.6),
@@ -228,16 +365,7 @@ export function buildRoom(def, roomIndex, floorIndex, sm) {
     ceil.rotation.x = Math.PI / 2;
     ceil.position.y = H;
     group.add(ceil);
-
-    // Warm ceiling cove strips
-    const cove = new THREE.Mesh(new THREE.BoxGeometry(W * 0.65, 0.04, 0.25), sm.glow);
-    cove.position.set(0, H - 0.02, -2);
-    group.add(cove);
-    for (const side of [-1, 1]) {
-      const sc = new THREE.Mesh(new THREE.BoxGeometry(0.25, 0.04, D * 0.45), sm.glowDim);
-      sc.position.set(side * W * 0.35, H - 0.02, 0);
-      group.add(sc);
-    }
+    addFalseCeiling(group, sm, W, H, D, roomName);
   }
 
   // Walls — the terrace opens to a view behind a glass balustrade instead.
@@ -287,6 +415,8 @@ export function buildRoom(def, roomIndex, floorIndex, sm) {
     rightWall.position.set(W / 2, H / 2, 0);
     group.add(rightWall);
   }
+
+  addArchitecturalRealism(group, W, H, D, isTerrace);
 
   // Slatted wood acoustic wall feature. The sky pavilion trades this for a
   // full-height glazed horizon, so its two rooms never read like bedrooms.
@@ -346,7 +476,7 @@ export function buildRoom(def, roomIndex, floorIndex, sm) {
 
   // Indoor-only trim and art. The terrace has no wall to hang them on, and the
   // wine cellar's back wall is entirely given over to the wine wall.
-  if (!isTerrace && !isWineCellar) {
+  if (!isTerrace && !isWineCellar && !isKitchen) {
     // Base Rails & Crown molding
     const baseRail = new THREE.Mesh(new THREE.BoxGeometry(W, 0.12, 0.04), sm.darkWood);
     baseRail.position.set(0, 0.06, -D / 2 + 0.05);
@@ -408,5 +538,6 @@ export function buildRoom(def, roomIndex, floorIndex, sm) {
   }
 
   addCommonDecor(group, sm, matAccent, W, H, D, floorIndex * 10 + roomIndex, (def.name || '').toLowerCase());
+  softenBoxGeometry(group);
   return group;
 }

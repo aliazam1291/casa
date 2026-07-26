@@ -85,8 +85,9 @@ function addWineCellarFurniture(group, sm, W, H, D) {
   }
   group.add(candelabra);
 
-  // 5. THE WINE WALL — a full-height, wall-to-wall cellar of bottles in
-  // walnut cubbies, backlit so the glass glows. This is the room's hero.
+  // 5. THE WINE WALL — a genuinely deep, individually stocked cellar rather
+  // than a flat grid. The bottle bodies sit on timber cradles and their labels
+  // catch the low light as they would in a real private cellar.
   const wallZ = -D / 2 + 0.34;
   const wineWall = new THREE.Group();
 
@@ -99,40 +100,52 @@ function addWineCellarFurniture(group, sm, W, H, D) {
   backing.receiveShadow = true;
   wineWall.add(backing);
 
-  // Warm backlight washing through the bottles
-  const wallGlow = new THREE.Mesh(
-    new THREE.PlaneGeometry(W - 0.8, H - 0.6),
-    new THREE.MeshBasicMaterial({ color: 0xffb765, transparent: true, opacity: 0.16 })
-  );
-  wallGlow.position.set(0, (H - 0.35) / 2, wallZ - 0.24);
-  wineWall.add(wallGlow);
-
-  // Cubby grid — walnut shelves + vertical dividers across the whole wall
-  const cols = 14, rows = 7;
+  // Cubby grid — deeper walnut shelves and dividers across the whole wall.
+  const cols = 12, rows = 6;
   const gridW = W - 0.8, gridH = H - 0.75;
   const cellW = gridW / cols, cellH = gridH / rows;
   const baseY = 0.3;
 
   for (let r = 0; r <= rows; r++) {
-    const shelf = new THREE.Mesh(new THREE.BoxGeometry(gridW, 0.035, 0.36), sm.walnutWood);
-    shelf.position.set(0, baseY + r * cellH, wallZ);
+    const shelf = new THREE.Mesh(new THREE.BoxGeometry(gridW, 0.055, 0.7), sm.walnutWood);
+    shelf.position.set(0, baseY + r * cellH, wallZ - 0.08);
     shelf.castShadow = true; shelf.receiveShadow = true;
     wineWall.add(shelf);
   }
   for (let c = 0; c <= cols; c++) {
-    const div = new THREE.Mesh(new THREE.BoxGeometry(0.03, gridH, 0.36), sm.walnutWood);
-    div.position.set(-gridW / 2 + c * cellW, baseY + gridH / 2, wallZ);
+    const div = new THREE.Mesh(new THREE.BoxGeometry(0.055, gridH, 0.7), sm.walnutWood);
+    div.position.set(-gridW / 2 + c * cellW, baseY + gridH / 2, wallZ - 0.08);
     div.castShadow = true;
     wineWall.add(div);
   }
 
-  // Bottles laid on their sides, necks out — shared geometry, three glass tones
-  const bottleGeo = new THREE.CylinderGeometry(0.036, 0.038, 0.3, 10);
-  const neckGeo = new THREE.CylinderGeometry(0.013, 0.017, 0.12, 8);
+  // Each shelf has its own low backlight instead of one flat orange panel.
+  const glowMat = new THREE.MeshBasicMaterial({ color: 0xff9c4d, transparent: true, opacity: 0.2, depthWrite: false });
+  for (let r = 0; r < rows; r++) {
+    const glow = new THREE.Mesh(new THREE.PlaneGeometry(gridW - 0.12, 0.035), glowMat);
+    glow.rotation.x = -Math.PI / 2;
+    glow.position.set(0, baseY + r * cellH + 0.04, wallZ - 0.36);
+    wineWall.add(glow);
+  }
+  for (const x of [-3.8, 0, 3.8]) {
+    const lamp = new THREE.PointLight(0xffa455, 1.25, 3.2, 2);
+    lamp.position.set(x, 2.2, wallZ + 0.35);
+    wineWall.add(lamp);
+  }
+
+  // Bottles rest sideways, with varied glass, foil, paper labels and cradles.
+  const bottleGeo = new THREE.CylinderGeometry(0.105, 0.115, cellW * 0.67, 16);
+  const neckGeo = new THREE.CylinderGeometry(0.038, 0.052, 0.16, 12);
+  const labelGeo = new THREE.PlaneGeometry(cellW * 0.25, 0.14);
+  const labelMats = [
+    new THREE.MeshStandardMaterial({ color: 0xd9caa8, roughness: 0.82 }),
+    new THREE.MeshStandardMaterial({ color: 0xe4dcc7, roughness: 0.78 }),
+    new THREE.MeshStandardMaterial({ color: 0x252019, roughness: 0.72 }),
+  ];
   const bottleMats = [
-    new THREE.MeshPhysicalMaterial({ color: 0x1e3320, roughness: 0.14, metalness: 0.0, transmission: 0.55, thickness: 0.4, envMapIntensity: 1.6 }),
-    new THREE.MeshPhysicalMaterial({ color: 0x3a1518, roughness: 0.14, metalness: 0.0, transmission: 0.5, thickness: 0.4, envMapIntensity: 1.6 }),
-    new THREE.MeshPhysicalMaterial({ color: 0x2b2a16, roughness: 0.18, metalness: 0.0, transmission: 0.45, thickness: 0.4, envMapIntensity: 1.5 }),
+    new THREE.MeshPhysicalMaterial({ color: 0x102919, roughness: 0.18, transmission: 0.18, thickness: 0.7, envMapIntensity: 1.8, clearcoat: 0.72, clearcoatRoughness: 0.12 }),
+    new THREE.MeshPhysicalMaterial({ color: 0x351014, roughness: 0.2, transmission: 0.12, thickness: 0.7, envMapIntensity: 1.7, clearcoat: 0.68, clearcoatRoughness: 0.14 }),
+    new THREE.MeshPhysicalMaterial({ color: 0x29210d, roughness: 0.22, transmission: 0.1, thickness: 0.7, envMapIntensity: 1.55, clearcoat: 0.6, clearcoatRoughness: 0.16 }),
   ];
 
   for (let r = 0; r < rows; r++) {
@@ -144,21 +157,31 @@ function addWineCellarFurniture(group, sm, W, H, D) {
       const mat = bottleMats[(r + c) % bottleMats.length];
 
       const bottle = new THREE.Mesh(bottleGeo, mat);
-      bottle.rotation.x = Math.PI / 2;
-      bottle.position.set(bx, by, wallZ + 0.02);
+      bottle.rotation.z = Math.PI / 2;
+      bottle.rotation.y = ((r + c) % 3 - 1) * 0.035;
+      bottle.position.set(bx - 0.04, by - cellH * 0.11, wallZ + 0.16);
       bottle.castShadow = true;
       wineWall.add(bottle);
 
       const neck = new THREE.Mesh(neckGeo, mat);
-      neck.rotation.x = Math.PI / 2;
-      neck.position.set(bx, by, wallZ + 0.2);
+      neck.rotation.z = Math.PI / 2;
+      neck.position.set(bx + cellW * 0.39, by - cellH * 0.11, wallZ + 0.16);
       wineWall.add(neck);
 
-      // Brass foil cap catches the cellar light
-      const cap = new THREE.Mesh(new THREE.CylinderGeometry(0.018, 0.018, 0.03, 8), sm.metal);
-      cap.rotation.x = Math.PI / 2;
-      cap.position.set(bx, by, wallZ + 0.27);
+      const cap = new THREE.Mesh(new THREE.CylinderGeometry(0.052, 0.052, 0.055, 12), (r + c) % 4 === 0 ? sm.metal : sm.metalDark);
+      cap.rotation.z = Math.PI / 2;
+      cap.position.set(bx + cellW * 0.49, by - cellH * 0.11, wallZ + 0.16);
       wineWall.add(cap);
+
+      const label = new THREE.Mesh(labelGeo, labelMats[(r * 2 + c) % labelMats.length]);
+      label.position.set(bx - 0.07, by - cellH * 0.1, wallZ + 0.278);
+      wineWall.add(label);
+      for (const yOffset of [-0.14, 0.14]) {
+        const cradle = new THREE.Mesh(new THREE.CylinderGeometry(0.018, 0.018, cellW * 0.68, 8), sm.darkWood);
+        cradle.rotation.z = Math.PI / 2;
+        cradle.position.set(bx - 0.04, by + yOffset, wallZ - 0.05);
+        wineWall.add(cradle);
+      }
     }
   }
 
@@ -170,7 +193,45 @@ function addWineCellarFurniture(group, sm, W, H, D) {
   group.add(wineWall);
   addContactShadow(group, 0, wallZ, W - 0.5, 0.9, 0.55);
 
-  // 6. Oak Aging Barrels stack
+  // 6. A freestanding wine shelf makes the storage legible from the entrance,
+  // even before the visitor reaches the back wall.
+  const displayShelf = new THREE.Group();
+  const shelfX = 3.85, shelfZ = 1.35, shelfW = 2.45, shelfH = 2.5, shelfD = 0.48;
+  const shelfBack = new THREE.Mesh(new THREE.BoxGeometry(shelfW, shelfH, 0.08), sm.darkWood);
+  shelfBack.position.set(shelfX, shelfH / 2, shelfZ - shelfD / 2);
+  displayShelf.add(shelfBack);
+  for (const xOffset of [-shelfW / 2, shelfW / 2]) {
+    const upright = new THREE.Mesh(new THREE.BoxGeometry(0.1, shelfH, shelfD), sm.walnutWood);
+    upright.position.set(shelfX + xOffset, shelfH / 2, shelfZ);
+    upright.castShadow = true;
+    displayShelf.add(upright);
+  }
+  for (let row = 0; row < 5; row++) {
+    const y = 0.16 + row * 0.55;
+    const shelf = new THREE.Mesh(new THREE.BoxGeometry(shelfW + 0.1, 0.075, shelfD), sm.walnutWood);
+    shelf.position.set(shelfX, y, shelfZ);
+    shelf.castShadow = true; shelf.receiveShadow = true;
+    displayShelf.add(shelf);
+    for (let col = 0; col < 4; col++) {
+      const bottle = new THREE.Mesh(new THREE.CylinderGeometry(0.075, 0.084, 0.42, 14), bottleMats[(row + col) % bottleMats.length]);
+      bottle.rotation.z = Math.PI / 2;
+      bottle.position.set(shelfX - 0.84 + col * 0.56, y + 0.13, shelfZ + 0.08);
+      bottle.castShadow = true;
+      displayShelf.add(bottle);
+      const paperLabel = new THREE.Mesh(new THREE.PlaneGeometry(0.13, 0.1), labelMats[(row + col) % labelMats.length]);
+      paperLabel.position.set(shelfX - 0.84 + col * 0.56, y + 0.13, shelfZ + 0.17);
+      displayShelf.add(paperLabel);
+    }
+  }
+  tagPiece(displayShelf, {
+    name: 'The Wine Shelf',
+    materials: ['Solid walnut', 'Bottle glass', 'Antiqued brass'],
+    description: 'An open walnut shelf for the bottles being poured now, set apart from the cellar archive behind it.',
+  });
+  group.add(displayShelf);
+  addContactShadow(group, shelfX, shelfZ, shelfW + 0.25, 0.9, 0.5);
+
+  // 7. Oak Aging Barrels stack
   const barrelRadius = 0.38, barrelHeight = 0.9;
   const bGeo = new THREE.CylinderGeometry(barrelRadius * 0.85, barrelRadius, barrelHeight, 18);
   const pos = bGeo.attributes.position;
@@ -322,7 +383,7 @@ function addMaterialVaultFurniture(group, sm, W, H, D) {
   }
 
   // Standing large material boards
-  const marbleSlabs = [sm.marble, sm.marbleNero, new THREE.MeshStandardMaterial({ color: 0x1c2420, roughness: 0.1, clearcoat: 0.9 })];
+  const marbleSlabs = [sm.marble, sm.marbleNero, new THREE.MeshPhysicalMaterial({ color: 0x1c2420, roughness: 0.16, clearcoat: 0.8, clearcoatRoughness: 0.08 })];
   for (let s = 0; s < 3; s++) {
     const slab = new THREE.Mesh(new THREE.BoxGeometry(0.8, 1.6, 0.06), marbleSlabs[s]);
     slab.position.set(4.2 - s * 0.15, 0.8, 1.8 + s * 0.1);
