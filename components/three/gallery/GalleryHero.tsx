@@ -133,8 +133,9 @@ function GalleryHeroInner() {
       <div className={styles.overlay}>
         {!entered ? (
           <div className={styles.gate}>
-            <span className={styles.eyebrow}>Way of Light &amp; Form</span>
-            <h1 className={styles.gateFloor}>{floor.name}</h1>
+            <span className={styles.eyebrow}>Wolf Casa · Indore, since 2007</span>
+            <h1 className={styles.gateFloor}>A room is not furnished. It is composed.</h1>
+            <p className={styles.gateSub}>Step inside thirteen complete rooms — furniture, lighting, stone, joinery, greenery. One house, one composition.</p>
             <button
               type="button"
               className={styles.stepBtn}

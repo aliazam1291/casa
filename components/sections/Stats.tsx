@@ -3,15 +3,19 @@
 import { useEffect, useRef, useState } from "react";
 import { useInViewport } from "@/hooks/useInViewport";
 import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
+import { PIECES } from "@/lib/pieces";
+import { ROOMS } from "@/lib/rooms";
 import styles from "./Stats.module.css";
 
 type Stat = { target: number; suffix: string; label: string };
 
+const FOUNDED_YEAR = 2007;
+
 const STATS: Stat[] = [
-  { target: 15, suffix: "yrs", label: "Of craft & built legacy" },
-  { target: 40, suffix: "k ft²", label: "In-house manufacturing" },
-  { target: 110, suffix: "+", label: "Hands behind the house" },
-  { target: 12, suffix: "", label: "Named objects composed" },
+  { target: new Date().getFullYear() - FOUNDED_YEAR, suffix: " yrs", label: "Since 2007 — Indore & Dewas" },
+  { target: 40, suffix: "k ft²", label: "Across both facilities" },
+  { target: 110, suffix: "+", label: "Specialist hands in-house" },
+  { target: PIECES.length, suffix: "", label: `Named pieces across ${ROOMS.length} rooms` },
 ];
 
 function StatCell({ stat, active, reducedMotion }: { stat: Stat; active: boolean; reducedMotion: boolean }) {

@@ -10,11 +10,11 @@ export function Manifesto() {
   return (
     <section id="manifesto" ref={ref} className={`${styles.manifesto} reveal ${inView ? "in" : ""}`}>
       <div className="curtain" />
-      <span className={styles.num}>§ 01 — The Doctrine</span>
+      <span className={styles.num}>§ 01 — The Composition</span>
       <h2 className={styles.heading}>
-        Luxury is not excess.
+        A room is not furnished.
         <br />
-        <span className="upright">It is precision.</span> <em>It is restraint.</em>
+        <span className="upright">It is</span> <em>composed.</em>
       </h2>
       <div className={styles.principles}>
         <article>
@@ -26,8 +26,8 @@ export function Manifesto() {
           <p>Stone, timber and textile are selected for tactility, not spectacle.</p>
         </article>
         <article>
-          <span>03 / Proportion</span>
-          <p>Furniture, circulation and empty space are composed as one whole.</p>
+          <span>03 / Composition</span>
+          <p>Seating, joinery, lighting, stone and greenery, resolved as one decision.</p>
         </article>
       </div>
     </section>

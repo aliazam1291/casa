@@ -1,19 +1,32 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import { OBJECTS } from "@/lib/objects";
+import { FEATURED_PIECES } from "@/lib/pieces";
+import { getRoom } from "@/lib/rooms";
 import { useCursor } from "@/components/cursor/CursorProvider";
 import { useReveal } from "@/hooks/useReveal";
 import styles from "./Gallery.module.css";
 
-/** Horizontal drag gallery — physics ported from wolf-casa-homepage-v3.html ~line 862. */
+const CARD_IMAGES = [
+  "/images/editorial/light-form-atrium.png",
+  "/images/editorial/villa-hero.png",
+  "/images/editorial/materials.png",
+  "/images/editorial/sojourn.png",
+  "/images/catalogue/seating-sofas.webp",
+  "/images/catalogue/bespoke-interiors-beds.webp",
+] as const;
+
+/** Horizontal drag gallery, fed by the real named pieces from the 3D
+ * walkthrough (lib/pieces.ts) — count derived from the data instead of
+ * a hardcoded "twelve" that used to contradict the six objects it named. */
 export function Gallery() {
   const { ref, inView } = useReveal<HTMLDivElement>();
   const { setCursor, resetCursor } = useCursor();
   const trackRef = useRef<HTMLDivElement>(null);
   const fillRef = useRef<HTMLDivElement>(null);
-  const [count, setCount] = useState(`01 / ${String(OBJECTS.length).padStart(2, "0")}`);
+  const [count, setCount] = useState(`01 / ${String(FEATURED_PIECES.length).padStart(2, "0")}`);
 
   useEffect(() => {
     if (!inView) return;
@@ -50,8 +63,8 @@ export function Gallery() {
         const max = -(trackRef.current.scrollWidth - window.innerWidth + 32);
         const prog = max ? Math.abs(current) / Math.abs(max) : 0;
         if (fillRef.current) fillRef.current.style.width = `${prog * 100}%`;
-        const idx = Math.min(OBJECTS.length, Math.floor(prog * OBJECTS.length) + 1);
-        setCount(`${String(idx).padStart(2, "0")} / ${String(OBJECTS.length).padStart(2, "0")}`);
+        const idx = Math.min(FEATURED_PIECES.length, Math.floor(prog * FEATURED_PIECES.length) + 1);
+        setCount(`${String(idx).padStart(2, "0")} / ${String(FEATURED_PIECES.length).padStart(2, "0")}`);
       }
       raf = requestAnimationFrame(tick);
     };
@@ -72,9 +85,9 @@ export function Gallery() {
   return (
     <section className={styles.section} data-cursor-zone="drag">
       <div ref={ref} className={`${styles.head} reveal ${inView ? "in" : ""}`}>
-        <span className={styles.num}>§ 04 — Named Objects</span>
+        <span className={styles.num}>§ 04 — Named Pieces</span>
         <h2 className={styles.heading}>
-          <span className="upright">Twelve</span> <em>heirlooms.</em>
+          <span className="upright">{FEATURED_PIECES.length}</span> <em>named pieces.</em>
         </h2>
       </div>
       <div
@@ -83,21 +96,21 @@ export function Gallery() {
         onMouseEnter={() => setCursor("hover", "Drag")}
         onMouseLeave={resetCursor}
       >
-        {OBJECTS.map((o) => (
-          <div key={o.slug} className={styles.card}>
+        {FEATURED_PIECES.map((piece, i) => (
+          <Link key={piece.slug} href={`/pieces/${piece.slug}`} className={styles.card}>
             <div className={styles.img}>
               <Image
-                src={o.img}
-                alt={o.t}
+                src={CARD_IMAGES[i % CARD_IMAGES.length]}
+                alt={piece.name}
                 fill
                 draggable={false}
                 loading="lazy"
                 sizes="(max-width: 720px) 82vw, min(56vw, 680px)"
               />
             </div>
-            <span className={styles.cardNum}>{o.n} · Named Object</span>
-            <div className={styles.cardTitle}>{o.t}</div>
-          </div>
+            <span className={styles.cardNum}>{String(i + 1).padStart(2, "0")} · {getRoom(piece.roomSlug)?.name}</span>
+            <div className={styles.cardTitle}>{piece.name}</div>
+          </Link>
         ))}
       </div>
       <div className={styles.progress}>

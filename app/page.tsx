@@ -2,14 +2,21 @@ import { WorldMoodProvider } from "@/components/three/vase-hero/WorldMoodProvide
 import { GalleryHero } from "@/components/three/gallery/GalleryHero";
 import { Manifesto } from "@/components/sections/Manifesto";
 import { FloorPlans } from "@/components/sections/FloorPlans";
-import { Stats } from "@/components/sections/Stats";
-import { Worlds } from "@/components/sections/Worlds";
+import { CatalogueGrid } from "@/components/sections/CatalogueGrid";
 import { Gallery } from "@/components/sections/Gallery";
+import { Stats } from "@/components/sections/Stats";
 import { Sojourn } from "@/components/sections/Sojourn";
-import { Ticker } from "@/components/sections/Ticker";
 import { Journal } from "@/components/sections/Journal";
 import { Footer } from "@/components/footer/Footer";
 
+// Order follows the buyer's actual question sequence: what is it (hero) ->
+// what does it contain (composition) -> show me one (rooms) -> what's it
+// built from (catalogue) -> individual proof (named pieces) -> credibility
+// (stats) -> how it happens (sojourn) -> depth (journal) -> act (footer).
+// Worlds moved to /the-wolf-way as anchored sections (it's the section that
+// most read as abstract, and it occupied the slot the catalogue needed).
+// Ticker dropped — a fourth abstract beat carrying no real information.
+//
 // The immersive gallery hero is the single heavy WebGL context on the page —
 // the Composed Room diorama (a second three/R3F context) was removed to avoid
 // GPU context contention and to consolidate on the stronger gallery moment.
@@ -20,11 +27,10 @@ export default function Home() {
       <GalleryHero />
       <Manifesto />
       <FloorPlans />
-      <Stats />
-      <Worlds />
+      <CatalogueGrid />
       <Gallery />
+      <Stats />
       <Sojourn />
-      <Ticker />
       <Journal />
       <Footer />
     </WorldMoodProvider>

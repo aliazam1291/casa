@@ -4,7 +4,10 @@ import Image from "next/image";
 import Link from "next/link";
 import { useCursor } from "@/components/cursor/CursorProvider";
 import { useReveal } from "@/hooks/useReveal";
+import { WORLDS } from "@/lib/worlds";
 import styles from "./TheWolfWay.module.css";
+
+const WORLD_SLUGS = ["heirloom", "low-house", "courtyard", "monastic", "ritual"];
 
 const DNA = [
   { tag: "01", title: "Instinct", body: "Order felt before it is read." },
@@ -66,6 +69,20 @@ export function TheWolfWay() {
               <span>{item.tag}</span>
               <strong>{item.title}</strong>
               <p>{item.body}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className={styles.worlds}>
+        <p className={styles.sectionLabel}>Five Worlds</p>
+        <h2>One doctrine, five atmospheres.</h2>
+        <div className={styles.worldList}>
+          {WORLDS.map((world, index) => (
+            <article key={world.name} id={WORLD_SLUGS[index]} className={styles.worldRow}>
+              <span>{String(index + 1).padStart(2, "0")} / 05</span>
+              <h3>{world.name}</h3>
+              <p>{world.desc}</p>
             </article>
           ))}
         </div>

@@ -54,13 +54,13 @@ export function Sojourn() {
   return (
     <section className={styles.section} id="sojourn">
       <div ref={ref} className={`${styles.header} reveal ${inView ? "in" : ""}`}>
-        <p className={styles.eyebrow}>§ 05 — Casa Sojourn / Home Interior Mall</p>
+        <p className={styles.eyebrow}>§ 05 — How A Room Gets Made</p>
         <h2>
           Source the home as a
           <span> complete composition.</span>
         </h2>
         <p>
-          Wolf Casa brings furniture, material selection, room planning and sourcing into one premium destination, so each decision belongs to the same home.
+          Wolf Casa brings furniture, material selection, room planning and sourcing into one considered process, so each decision belongs to the same home.
         </p>
       </div>
 

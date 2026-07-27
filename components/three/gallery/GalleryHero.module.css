@@ -42,14 +42,25 @@
 }
 
 .gateFloor {
+  max-width: min(880px, 90vw);
   font-family: var(--serif);
   font-weight: 300;
   font-style: italic;
-  font-size: clamp(40px, 6vw, 76px);
-  line-height: 1;
+  font-size: clamp(32px, 5vw, 64px);
+  line-height: 1.05;
   color: var(--fg);
   text-align: center;
   animation: fadeUp 1s var(--ease-gallery) 0.15s both;
+}
+
+.gateSub {
+  max-width: min(560px, 84vw);
+  color: var(--fg-dim);
+  font-family: var(--sans);
+  font-size: 14px;
+  line-height: 1.7;
+  text-align: center;
+  animation: fadeUp 1s var(--ease-gallery) 0.28s both;
 }
 
 .stepBtn {
@@ -205,7 +216,8 @@
 @media (max-width: 720px) {
   .hero { min-height: 560px; }
   .gate { padding: 0 22px 14vh; }
-  .gateFloor { font-size: clamp(42px, 12vw, 64px); }
+  .gateFloor { font-size: clamp(28px, 8.5vw, 44px); }
+  .gateSub { font-size: 13px; }
   .stepBtn { width: min(100%, 280px); padding: 15px 18px; }
   .pieceCard {
     bottom: 9vh;
