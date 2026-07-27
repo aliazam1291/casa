@@ -1,0 +1,27 @@
+.page { background: var(--bg); color: var(--fg); }
+
+.hero { position: relative; min-height: min(560px, 68svh); overflow: hidden; }
+.heroImage { object-fit: cover; }
+.heroShade { position: absolute; inset: 0; background: linear-gradient(0deg, rgba(20, 19, 17, .84), rgba(20, 19, 17, .3) 62%); }
+.heroFrame { position: relative; z-index: 1; display: flex; min-height: min(560px, 68svh); flex-direction: column; justify-content: flex-end; gap: 14px; padding: 18vh var(--gutter) 8vh; color: #fff; }
+.kicker { font-family: var(--sans); font-size: 10px; font-weight: 650; letter-spacing: .24em; text-transform: uppercase; color: var(--gold-light); }
+.heroFrame h1 { max-width: 760px; font-family: var(--serif); font-size: clamp(36px, 5.6vw, 78px); font-style: italic; font-weight: 400; line-height: .96; }
+.meta { color: rgba(255, 255, 255, .68); font-family: var(--sans); font-size: 11px; letter-spacing: .06em; text-transform: uppercase; }
+
+.body { max-width: 720px; margin: 0 auto; padding: 10vh var(--gutter); }
+.dek { margin-bottom: 6vh; font-family: var(--serif); font-size: clamp(20px, 2.2vw, 26px); font-style: italic; color: var(--fg-dim); line-height: 1.5; }
+.body p { margin-bottom: 26px; font-size: 16px; line-height: 1.9; color: var(--fg); }
+.body p:first-of-type::first-letter { float: left; margin-right: 10px; font-family: var(--serif); font-size: 68px; font-style: italic; line-height: .8; color: var(--walnut); }
+
+.related { padding: 10vh var(--gutter); border-top: 1px solid var(--line); background: var(--bg-2); }
+.related p { font-family: var(--sans); font-size: 10px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: var(--walnut); margin-bottom: 30px; }
+.relatedGrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: clamp(20px, 3vw, 40px); }
+.relatedCard span { color: var(--walnut); font-family: var(--sans); font-size: 10px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
+.relatedCard h3 { margin-top: 12px; font-family: var(--serif); font-size: clamp(19px, 1.9vw, 24px); font-style: italic; font-weight: 400; line-height: 1.15; }
+
+@media (max-width: 720px) {
+  .hero { min-height: 60svh; }
+  .heroFrame { min-height: 60svh; padding: 16vh var(--gutter) 6vh; }
+  .heroFrame h1 { font-size: clamp(30px, 11vw, 48px); }
+  .body, .related { padding-top: 72px; padding-bottom: 72px; }
+}

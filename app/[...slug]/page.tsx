@@ -48,9 +48,12 @@ export default async function EditorialRoute({ params }: Props) {
   return <EditorialExplorer page={page} />;
 }
 
+// Only exact SITE_PAGES keys resolve here now. /journal/[slug], /rooms/[slug],
+// /pieces/[slug] and /catalogue/** are real routes (see app/journal/[slug],
+// app/rooms/[slug], app/pieces/[slug], app/catalogue/**) that Next.js matches
+// before this catch-all. /the-wolf-way/{world} and /the-wolf-way/object/*
+// previously fell back to this page's parent content under a duplicate,
+// self-referencing canonical — next.config.ts now redirects those instead.
 function resolvePage(key: string) {
-  if (SITE_PAGES[key]) return SITE_PAGES[key];
-  if (key.startsWith("journal/")) return SITE_PAGES.journal;
-  if (key.startsWith("the-wolf-way/object/") || key.startsWith("the-wolf-way/")) return SITE_PAGES["the-wolf-way"];
-  return undefined;
+  return SITE_PAGES[key];
 }
