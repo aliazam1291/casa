@@ -11,16 +11,33 @@
 .floors button:hover, .floors .floorActive { padding-left: 9px; color: var(--fg); }
 .planWrap { position: relative; display: grid; min-height: 560px; place-items: center; padding: 12%; border-right: 1px solid var(--line); background: radial-gradient(circle at 50% 48%, rgba(212, 184, 122, .09), transparent 52%); }
 .plan { width: min(100%, 620px); overflow: visible; }
-.outline { fill: none; stroke: var(--fg); stroke-width: .4; }
-.room rect { fill: rgba(107, 88, 68, .04); stroke: rgba(42, 36, 32, .42); stroke-width: .35; transition: fill .45s ease, stroke .45s ease; }
-.room text, .roomActive text { fill: var(--fg-dim); font-family: var(--sans); font-size: 2.45px; font-weight: 600; letter-spacing: .04em; pointer-events: none; }
+.gridLine { fill: none; stroke: rgba(42, 36, 32, .07); stroke-width: .18; }
+.hatchLine { stroke: var(--walnut); stroke-width: .3; opacity: .32; }
+/* Poché — the solid cut through the outer wall that reads as built mass. */
+.poche { fill: none; stroke: var(--fg); stroke-width: 1.4; }
+.outline { fill: none; stroke: rgba(42, 36, 32, .3); stroke-width: .2; }
+
 .room, .roomActive, .plan g:focus { cursor: none; outline: none; }
-.room:hover rect, .room:focus rect, .roomActive rect { fill: rgba(212, 184, 122, .72); stroke: var(--walnut); stroke-width: .75; }
-.roomActive text { fill: var(--fg); }
-.detailLine { fill: none; stroke: var(--gold); stroke-width: .22; stroke-dasharray: 1.4 1.4; }
-.compass { position: absolute; top: 28px; right: 32px; color: var(--walnut); font-family: var(--sans); font-size: 9px; font-weight: 600; letter-spacing: .12em; line-height: 1.3; text-align: center; }
-.compass i { font-size: 16px; font-style: normal; }
-.scale { position: absolute; bottom: 28px; left: 32px; color: var(--fg-dim); font-family: var(--sans); font-size: 9px; letter-spacing: .13em; }
+.roomFill { fill: rgba(107, 88, 68, .035); transition: fill .4s ease; }
+.roomStroke { fill: none; stroke: rgba(42, 36, 32, .4); stroke-width: .3; transition: stroke .4s ease, stroke-width .4s ease; }
+.roomHatch { pointer-events: none; }
+.tick { fill: none; stroke: var(--walnut); stroke-width: .3; opacity: 0; transition: opacity .4s ease; }
+.roomLabel { fill: var(--fg-dim); font-family: var(--sans); font-size: 2.5px; font-weight: 600; letter-spacing: .06em; pointer-events: none; transition: fill .4s ease; }
+.roomArea { fill: var(--fg-faint); font-family: var(--mono); font-size: 1.9px; letter-spacing: .04em; pointer-events: none; }
+
+.room:hover .roomFill, .room:focus .roomFill, .roomActive .roomFill { fill: rgba(212, 184, 122, .18); }
+.room:hover .roomStroke, .room:focus .roomStroke, .roomActive .roomStroke { stroke: var(--walnut); stroke-width: .55; }
+.room:hover .tick, .room:focus .tick, .roomActive .tick { opacity: 1; }
+.roomActive .roomLabel { fill: var(--fg); }
+
+.dim { fill: none; stroke: var(--walnut); stroke-width: .22; opacity: .65; }
+.dim text { fill: var(--walnut); stroke: none; font-family: var(--mono); font-size: 2.1px; letter-spacing: .1em; }
+.compass { position: absolute; top: 28px; right: 32px; display: flex; width: 34px; height: 34px; align-items: center; justify-content: center; gap: 2px; border: 1px solid var(--line); border-radius: 50%; color: var(--walnut); font-family: var(--mono); font-size: 9px; font-weight: 600; letter-spacing: .1em; }
+.compass i { font-size: 13px; font-style: normal; line-height: 1; }
+.titleBlock { position: absolute; top: 28px; left: 32px; display: flex; flex-direction: column; gap: 3px; border-left: 1px solid var(--walnut); padding-left: 10px; }
+.titleBlock b { color: var(--fg); font-family: var(--sans); font-size: 9px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; }
+.titleBlock span { color: var(--fg-faint); font-family: var(--mono); font-size: 9px; letter-spacing: .08em; }
+.scale { position: absolute; bottom: 28px; left: 32px; color: var(--fg-faint); font-family: var(--mono); font-size: 9px; letter-spacing: .1em; }
 .note { display: flex; padding: 32px 0 32px 30px; flex-direction: column; }
 .floorNote { max-width: 250px; margin: 20px 0 auto; color: var(--fg-dim); font-size: 13px; line-height: 1.7; }
 .roomNote { margin-top: 42px; padding-top: 20px; border-top: 1px solid var(--line); }
@@ -35,4 +52,10 @@
 .note a { align-self: flex-start; margin-top: 42px; border-bottom: 1px solid currentColor; padding-bottom: 7px; font-family: var(--sans); font-size: 10px; font-weight: 600; letter-spacing: .13em; text-transform: uppercase; }
 .note a b { margin-left: 12px; font-size: 15px; font-weight: 400; }
 @media (max-width: 1000px) { .explorer { grid-template-columns: 1fr 1fr; } .floors { grid-column: 1 / -1; display: flex; gap: 20px; padding: 0; border-right: 0; } .floors button { grid-template-columns: 32px 1fr; } .note { border-top: 1px solid var(--line); } }
-@media (max-width: 680px) { .section { padding-top: 16vh; padding-bottom: 16vh; } .heading { display: block; } .heading > div { margin-bottom: 48px; } .explorer { grid-template-columns: 1fr; } .floors { display: block; } .planWrap { min-height: 420px; padding: 14%; border-right: 0; border-bottom: 1px solid var(--line); } .note { padding-left: 0; } .floorNote { margin-bottom: 10px; } .roomNote { margin-top: 30px; } }
+@media (max-width: 680px) { .section { padding-top: 16vh; padding-bottom: 16vh; } .heading { display: block; } .heading > div { margin-bottom: 48px; } .explorer { grid-template-columns: 1fr; } .floors { display: block; } .planWrap { min-height: 420px; padding: 16% 8% 12%; border-right: 0; border-bottom: 1px solid var(--line); } .note { padding-left: 0; } .floorNote { margin-bottom: 10px; } .roomNote { margin-top: 30px; }
+  /* The title block and compass would overlap the plan at this width. */
+  .titleBlock { top: 16px; left: 16px; }
+  .titleBlock span:last-child { display: none; }
+  .compass { top: 16px; right: 16px; width: 28px; height: 28px; }
+  .scale { bottom: 14px; left: 16px; }
+}

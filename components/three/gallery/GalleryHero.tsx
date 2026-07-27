@@ -24,6 +24,7 @@ type GallerySceneProps = {
   onRoomChange?: (i: number) => void;
   onFloorChange?: (i: number) => void;
   onPieceHover?: (info: PieceInfo | null) => void;
+  onReady?: () => void;
 };
 
 // ssr:false must live inside a Client Component in Next.js 16. The engine is
@@ -86,9 +87,19 @@ export function GalleryHero() {
   const [floorsOpen, setFloorsOpen] = useState(false);
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [piece, setPiece] = useState<PieceInfo | null>(null);
+  const [ready, setReady] = useState(false);
   const { setCursor, resetCursor } = useCursor();
 
   const onPieceHover = useCallback((info: PieceInfo | null) => setPiece(info), []);
+  const onReady = useCallback(() => setReady(true), []);
+
+  // Safety net: if the scene never reports a first frame — no WebGL, a lost
+  // context, a device that refuses the renderer — the loader must still lift
+  // rather than sit over the hero permanently.
+  useEffect(() => {
+    const id = setTimeout(() => setReady(true), 8000);
+    return () => clearTimeout(id);
+  }, []);
 
   useEffect(() => {
     const deepLink = readDeepLink();
@@ -145,8 +156,18 @@ export function GalleryHero() {
           onRoomChange={onRoomChange}
           onFloorChange={onFloorChange}
           onPieceHover={onPieceHover}
+          onReady={onReady}
         />
       </div>
+
+      {/* Held until the scene's first rendered frame, so the visitor never
+          sees an empty cream box while the rooms and textures are built. */}
+      <div className={`${styles.loader} ${ready ? styles.loaderDone : ""}`} aria-hidden={ready}>
+        <span className={styles.loaderMark}>Wolf Casa</span>
+        <div className={styles.loaderBar}><i /></div>
+        <span className={styles.loaderNote}>Composing the house</span>
+      </div>
+
       <div className={styles.overlay}>
         {!entered ? (
           <div className={styles.gate}>

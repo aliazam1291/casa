@@ -13,7 +13,7 @@ import { buildRoom, disposeGLTFCache } from './lib/buildRoom';
 import { findPiece } from './lib/interactive';
 import { moodForRoom, applyMood } from './lib/lightMoods';
 
-const GalleryScene = forwardRef(function GalleryScene({ onRoomChange, onFloorChange, onPieceHover }, ref) {
+const GalleryScene = forwardRef(function GalleryScene({ onRoomChange, onFloorChange, onPieceHover, onReady }, ref) {
   const mountRef = useRef(null);
   const internals = useRef(null);
 
@@ -436,6 +436,10 @@ const GalleryScene = forwardRef(function GalleryScene({ onRoomChange, onFloorCha
 
       camera.lookAt(s.camT[0] + s.pointerX * 0.1, s.camT[1], s.camT[2]);
       renderer.render(scene, camera);
+      if (!s.announcedReady) {
+        s.announcedReady = true;
+        onReady?.();
+      }
       raf = requestAnimationFrame(tick);
     };
     tick();
@@ -466,7 +470,7 @@ const GalleryScene = forwardRef(function GalleryScene({ onRoomChange, onFloorCha
       pmrem.dispose();
       if (renderer.domElement.parentNode === mount) mount.removeChild(renderer.domElement);
     };
-  }, [onRoomChange, onFloorChange, onPieceHover]);
+  }, [onRoomChange, onFloorChange, onPieceHover, onReady]);
 
   return (
     <div
