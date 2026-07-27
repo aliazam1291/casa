@@ -2,11 +2,10 @@
 // by the footer, /visit, /the-house and the JSON-LD in app/layout.tsx.
 //
 // Address is sourced from public directory listings for Wolf Casa's Indore
-// showroom. Phone and email are NOT included: no verified number or address
-// could be confirmed from available sources, and inventing one would be
-// worse than omitting it. Replace CONTACT.phone / CONTACT.email once you
-// have the real values — every consumer of this file already handles the
-// empty-string case by omitting that row rather than rendering it blank.
+// showroom. Phone is the number listed on the business's own site
+// (wolfcasa.nowfloats.com, tel: link in the page header). Email is still
+// unconfirmed and left blank — every consumer of this file already handles
+// the empty-string case by omitting that row rather than rendering it blank.
 export const CONTACT = {
   brand: "Wolf Casa",
   founded: 2007,
@@ -21,9 +20,9 @@ export const CONTACT = {
     size: "3,000 sq ft",
     mapQuery: "Wolf Casa, PU 4, Vijay Nagar, Indore",
   },
-  phone: "", // TODO: confirm and add — see note above
+  phone: "+91 98935 22569",
   email: "", // TODO: confirm and add — see note above
-  hours: "By appointment, Tuesday–Sunday",
+  hours: "Mon–Sun, 10:00 AM – 8:00 PM",
 } as const;
 
 export function contactMapUrl(): string {

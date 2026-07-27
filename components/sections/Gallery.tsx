@@ -9,7 +9,15 @@ import { useCursor } from "@/components/cursor/CursorProvider";
 import { useReveal } from "@/hooks/useReveal";
 import styles from "./Gallery.module.css";
 
+// The first six are real showroom photography (sourced from Wolf Casa's own
+// site); the rest fall back to the site's ambient editorial mood shots.
 const CARD_IMAGES = [
+  "/images/showroom/living-lounge-brass.webp",
+  "/images/showroom/dining-marble-mirror.webp",
+  "/images/showroom/bedroom-suite-warm.webp",
+  "/images/showroom/dining-set-black-gold.webp",
+  "/images/showroom/dining-room-mirrorwall.webp",
+  "/images/showroom/living-room-sectional.webp",
   "/images/editorial/light-form-atrium.png",
   "/images/editorial/villa-hero.png",
   "/images/editorial/materials.png",

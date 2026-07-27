@@ -42,10 +42,18 @@ export function VisitPage() {
           <span className={styles.sectionLabel}>{CONTACT.showroom.name}</span>
           <p>{CONTACT.showroom.line1}, {CONTACT.showroom.line2}</p>
           <p>{CONTACT.showroom.size} · {CONTACT.hours}</p>
+          {CONTACT.phone && <p>{CONTACT.phone}</p>}
         </div>
-        <a href={contactMapUrl()} target="_blank" rel="noreferrer" onMouseEnter={() => setCursor("hover", "Map")} onMouseLeave={resetCursor}>
-          Get directions <span aria-hidden>→</span>
-        </a>
+        <div className={styles.addressActions}>
+          {CONTACT.phone && (
+            <a href={`tel:${CONTACT.phone.replace(/\s+/g, "")}`} onMouseEnter={() => setCursor("hover", "Call")} onMouseLeave={resetCursor}>
+              Call the showroom <span aria-hidden>→</span>
+            </a>
+          )}
+          <a href={contactMapUrl()} target="_blank" rel="noreferrer" onMouseEnter={() => setCursor("hover", "Map")} onMouseLeave={resetCursor}>
+            Get directions <span aria-hidden>→</span>
+          </a>
+        </div>
       </section>
 
       <section className={styles.language}>

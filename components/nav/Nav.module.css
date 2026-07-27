@@ -3,8 +3,11 @@
 .nav.solid .bar { border-bottom-color: var(--line); background: rgba(244, 239, 230, .96); box-shadow: 0 12px 40px rgba(42, 36, 32, .1); }
 .wordmark { color: inherit; font-family: var(--serif); font-size: 22px; font-weight: 400; letter-spacing: .01em; text-transform: none; }
 .links { display: flex; gap: clamp(20px, 2.4vw, 42px); }
-.links a { opacity: .64; transition: opacity .3s ease, letter-spacing .3s ease; }
+.links a { display: inline-flex; align-items: center; gap: 7px; opacity: .64; transition: opacity .3s ease, letter-spacing .3s ease, color .3s ease; }
 .links a:hover { opacity: 1; letter-spacing: .18em; }
+.links a svg { width: 14px; height: 14px; opacity: .8; }
+.linkActive { opacity: 1 !important; color: var(--gold); }
+.linkActive svg { opacity: 1; color: var(--gold); }
 .cta { border: 1px solid var(--fg); padding: 11px 18px; transition: background .35s ease, color .35s ease; }
 .cta:hover { background: var(--fg); color: var(--cream-light); }
 .menuToggle, .mobilePanel { display: none; }
@@ -19,8 +22,12 @@
   .menuOpen .mobilePanel { visibility: visible; opacity: 1; pointer-events: auto; }
   .mobileKicker { color: var(--walnut); font-family: var(--sans); font-size: 10px; font-weight: 600; letter-spacing: .19em; text-transform: uppercase; }
   .mobileLinks { margin-top: auto; border-top: 1px solid var(--line); }
-  .mobileLinks a { display: grid; grid-template-columns: 42px 1fr 20px; align-items: center; border-bottom: 1px solid var(--line); padding: 19px 0; color: var(--fg); font-family: var(--serif); font-size: clamp(32px, 9vw, 52px); font-style: italic; letter-spacing: -.03em; }
+  .mobileLinks a { display: grid; grid-template-columns: 42px 1fr 20px; align-items: center; border-bottom: 1px solid var(--line); padding: 19px 0; color: var(--fg); font-family: var(--serif); font-size: clamp(32px, 9vw, 52px); font-style: italic; letter-spacing: -.03em; transition: color .25s ease; }
   .mobileLinks a span { color: var(--walnut); font-family: var(--sans); font-size: 10px; font-style: normal; font-weight: 600; letter-spacing: .12em; }
   .mobileLinks a i { color: var(--gold); font-family: var(--sans); font-size: 15px; font-style: normal; text-align: right; }
+  .mobileLinkLabel { display: flex; align-items: center; gap: 14px; color: inherit; font-size: inherit; }
+  .mobileLinkLabel svg { width: 26px; height: 26px; flex: 0 0 auto; opacity: .7; }
+  .linkActive { color: var(--gold); }
+  .linkActive .mobileLinkLabel svg { opacity: 1; }
   .mobileCta { display: flex; justify-content: space-between; margin-top: 34px; border-bottom: 1px solid var(--fg); padding-bottom: 12px; color: var(--fg); font-family: var(--sans); font-size: 11px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; }
 }

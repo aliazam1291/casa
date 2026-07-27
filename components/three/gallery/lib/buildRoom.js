@@ -439,8 +439,13 @@ export function buildRoom(def, roomIndex, floorIndex, sm) {
   // alternating marble/herringbone rule every other room follows — a foyer
   // floored in herringbone reads as a hallway, not an entrance.
   const isFoyer = roomName.includes('foyer');
+  // The Archive's own material list is leather, linen paper and dark timber —
+  // no stone at all — but the blanket "every basement room gets marble" rule
+  // put a cold stone floor under it anyway. It should read as a warm, dark
+  // timber study, not a cellar.
+  const isArchive = roomName.includes('archive');
 
-  const marbleFloor = !isTerrace && (isFoyer || floorIndex === 0 || (roomIndex % 2 === 1));
+  const marbleFloor = !isTerrace && !isArchive && (isFoyer || floorIndex === 0 || (roomIndex % 2 === 1));
   const wallB = getSurfBundle('plaster', def.wallColor, 3, 1.4);
   const floorB = isTerrace
     ? getSurfBundle('marble', 0xbdb2a2, 4, 4)  // riven stone paving

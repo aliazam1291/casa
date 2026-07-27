@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Archivo, Cormorant } from "next/font/google";
+import { Fraunces, Inter } from "next/font/google";
 import "./globals.css";
 import { CursorProvider } from "@/components/cursor/CursorProvider";
 import { CustomCursor } from "@/components/cursor/CustomCursor";
@@ -9,18 +9,21 @@ import { Spotlight } from "@/components/chrome/Spotlight";
 import { Nav } from "@/components/nav/Nav";
 import { CONTACT } from "@/lib/contact";
 
-const archivo = Archivo({
+// Fraunces + Inter replace the earlier Cormorant/Archivo pairing — Cormorant's
+// calligraphic italic read as too ornamental at heading scale; Fraunces has a
+// calmer, more structured italic while still reading as an editorial serif.
+const archivo = Inter({
   variable: "--font-archivo",
   subsets: ["latin"],
   weight: ["300", "400", "500", "600"],
   display: "swap",
 });
 
-const cormorant = Cormorant({
+const cormorant = Fraunces({
   variable: "--font-cormorant",
   subsets: ["latin"],
   style: ["normal", "italic"],
-  weight: ["300", "400", "500"],
+  weight: ["300", "400", "500", "600"],
   display: "swap",
 });
 

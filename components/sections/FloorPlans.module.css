@@ -2,7 +2,7 @@
 .heading { display: flex; justify-content: space-between; gap: 48px; margin-bottom: 14vh; }
 .heading > div > span, .note > span { color: var(--walnut); font-family: var(--sans); font-size: 10px; font-weight: 600; letter-spacing: .2em; text-transform: uppercase; }
 .heading > div > p { margin-top: 22px; color: var(--fg-dim); font-family: var(--serif); font-size: 21px; font-style: italic; line-height: 1.25; }
-.heading h2 { max-width: 720px; font-family: var(--serif); font-size: clamp(46px, 6.2vw, 98px); font-style: italic; font-weight: 400; letter-spacing: -.05em; line-height: .86; }
+.heading h2 { max-width: 720px; font-family: var(--serif); font-size: clamp(46px, 6.2vw, 98px); font-weight: 400; letter-spacing: -.05em; line-height: .86; }
 .heading h2 em { color: var(--walnut); }
 .explorer { display: grid; grid-template-columns: minmax(180px, .55fr) minmax(420px, 1.45fr) minmax(250px, .72fr); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
 .floors { padding: 24px 28px 24px 0; border-right: 1px solid var(--line); }
@@ -29,6 +29,15 @@
 .room:hover .roomStroke, .room:focus .roomStroke, .roomActive .roomStroke { stroke: var(--walnut); stroke-width: .55; }
 .room:hover .tick, .room:focus .tick, .roomActive .tick { opacity: 1; }
 .roomActive .roomLabel { fill: var(--fg); }
+
+.glyph { fill: none; stroke: var(--fg-dim); stroke-width: .22; opacity: .55; transition: opacity .4s ease, stroke .4s ease; }
+.room:hover .glyph, .room:focus .glyph, .roomActive .glyph { stroke: var(--walnut); opacity: .85; }
+
+/* Doorways: a break through the double wall line plus a swing arc, drawn
+   wherever two room rectangles actually share a wall. */
+.doorGap { fill: var(--cream-light); }
+.doorSwing { fill: none; stroke: rgba(42, 36, 32, .3); stroke-width: .16; stroke-dasharray: .4 .4; }
+.doorLeaf { stroke: var(--fg-dim); stroke-width: .3; }
 
 .dim { fill: none; stroke: var(--walnut); stroke-width: .22; opacity: .65; }
 .dim text { fill: var(--walnut); stroke: none; font-family: var(--mono); font-size: 2.1px; letter-spacing: .1em; }

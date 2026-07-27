@@ -13,14 +13,14 @@ const STEPS = [
     meta: "01 / Before buying",
     title: "Start with what the room is missing.",
     body: "We read light, scale, storage, circulation and existing pieces before suggesting furniture or finishes.",
-    image: "/images/editorial/light-form-atrium.png",
+    image: "/images/showroom/living-room-sectional.webp",
   },
   {
     label: "Sourcing Edit",
     meta: "02 / Furniture + objects",
     title: "Choose fewer, better pieces.",
     body: "Furniture, lighting, beds, dining and accessories are edited into one composition rather than bought as separate objects.",
-    image: "/images/editorial/sojourn.png",
+    image: "/images/showroom/dining-set-black-gold.webp",
   },
   {
     label: "Material Library",
@@ -34,7 +34,7 @@ const STEPS = [
     meta: "04 / Final composition",
     title: "Bring the mall into the house, calmly.",
     body: "The final room is planned through placement, styling, installation sequence and the small pauses that make it feel lived in.",
-    image: "/images/editorial/villa-hero.png",
+    image: "/images/showroom/bedroom-suite-warm.webp",
   },
 ] as const;
 

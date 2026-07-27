@@ -1,9 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState, type ReactNode } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { FLOORS } from "@/lib/rooms";
+import { FLOORS, type Room } from "@/lib/rooms";
 import { useCursor } from "@/components/cursor/CursorProvider";
 import { useReveal } from "@/hooks/useReveal";
 import styles from "./FloorPlans.module.css";
@@ -13,6 +13,132 @@ import styles from "./FloorPlans.module.css";
 // from that rather than an arbitrary divisor.
 const M_PER_UNIT = 18.4 / 80;
 
+type Door = { x: number; y: number; axis: "h" | "v"; len: number };
+
+// A real plan reads as a house because rooms connect through openings, not
+// because the rectangles are labelled well. This finds every pair of rooms
+// on a floor whose rectangles face each other across a wall and places a
+// doorway (gap + swing arc) at the middle of that shared run.
+function findDoors(rooms: Room[]): Door[] {
+  const doors: Door[] = [];
+  for (let i = 0; i < rooms.length; i++) {
+    for (let j = i + 1; j < rooms.length; j++) {
+      const a = rooms[i].plan;
+      const b = rooms[j].plan;
+      const aRight = a.x + a.w;
+      const bRight = b.x + b.w;
+      const aBottom = a.y + a.h;
+      const bBottom = b.y + b.h;
+
+      const vGap = Math.abs(aRight - b.x) < 3 ? aRight : Math.abs(bRight - a.x) < 3 ? bRight : null;
+      if (vGap !== null) {
+        const start = Math.max(a.y, b.y);
+        const end = Math.min(aBottom, bBottom);
+        if (end - start > 6) doors.push({ axis: "v", x: vGap, y: (start + end) / 2, len: 3.4 });
+      }
+
+      const hGap = Math.abs(aBottom - b.y) < 3 ? aBottom : Math.abs(bBottom - a.y) < 3 ? bBottom : null;
+      if (hGap !== null) {
+        const start = Math.max(a.x, b.x);
+        const end = Math.min(aRight, bRight);
+        if (end - start > 6) doors.push({ axis: "h", x: (start + end) / 2, y: hGap, len: 3.4 });
+      }
+    }
+  }
+  return doors;
+}
+
+// A small line-art furniture glyph per room, matched by name — the detail
+// that makes a plan read as "a bed goes here" rather than an abstract box.
+function RoomGlyph({ room }: { room: Room }) {
+  const n = room.name.toLowerCase();
+  const gx = room.plan.x + room.plan.w - 10.5;
+  const gy = room.plan.y + 2.6;
+
+  let content: ReactNode;
+  if (n.includes("bed") || n.includes("suite")) {
+    content = (
+      <>
+        <rect x="0" y="0" width="7.4" height="5.6" rx="0.5" />
+        <rect x="0" y="0" width="7.4" height="1.6" rx="0.4" />
+        <ellipse cx="1.7" cy="0.85" rx="1" ry="0.55" />
+        <ellipse cx="5.7" cy="0.85" rx="1" ry="0.55" />
+      </>
+    );
+  } else if (n.includes("bath") || n.includes("spa")) {
+    content = (
+      <>
+        <rect x="0" y="0.6" width="7.2" height="4" rx="2" />
+        <circle cx="6.2" cy="2.6" r="0.35" />
+      </>
+    );
+  } else if (n.includes("kitchen")) {
+    content = (
+      <>
+        <rect x="0" y="0" width="7.6" height="3.2" rx="0.3" />
+        <circle cx="1.7" cy="1.6" r="0.55" />
+        <circle cx="4" cy="1.6" r="0.55" />
+        <circle cx="6.2" cy="1.6" r="0.55" />
+      </>
+    );
+  } else if (n.includes("dining")) {
+    content = (
+      <>
+        <rect x="0.8" y="0.6" width="6" height="3.2" rx="0.3" />
+        {[0, 1, 2, 3].map((i) => (
+          <circle key={i} cx={1.6 + i * 1.5} cy={i % 2 === 0 ? -0.3 : 4.7} r="0.5" />
+        ))}
+      </>
+    );
+  } else if (n.includes("study")) {
+    content = (
+      <>
+        <rect x="0" y="0" width="6.2" height="2.4" rx="0.3" />
+        <path d="M6.2 2.4 a1.4 1.4 0 0 1 -1.4 1.4" fill="none" />
+      </>
+    );
+  } else if (n.includes("wine") || n.includes("vault")) {
+    content = (
+      <>
+        {[0, 1, 2].map((row) =>
+          [0, 1, 2, 3].map((col) => <circle key={`${row}-${col}`} cx={col * 1.7} cy={row * 1.7} r="0.4" />)
+        )}
+      </>
+    );
+  } else if (n.includes("archive")) {
+    content = (
+      <>
+        <line x1="0" y1="0" x2="7" y2="0" />
+        <line x1="0" y1="1.4" x2="7" y2="1.4" />
+        <line x1="0" y1="2.8" x2="5.2" y2="2.8" />
+      </>
+    );
+  } else if (n.includes("terrace")) {
+    content = (
+      <>
+        <rect x="0" y="0" width="3" height="5.6" rx="0.6" />
+        <circle cx="5.4" cy="4.4" r="1" />
+      </>
+    );
+  } else {
+    // living / atrium / salon / hall — a low sofa is the universal social anchor.
+    content = (
+      <>
+        <rect x="0" y="0.9" width="7.6" height="2.6" rx="0.6" />
+        <rect x="0" y="0" width="7.6" height="1.2" rx="0.4" />
+        <line x1="2.55" y1="0" x2="2.55" y2="3.5" />
+        <line x1="5.1" y1="0" x2="5.1" y2="3.5" />
+      </>
+    );
+  }
+
+  return (
+    <g transform={`translate(${gx} ${gy})`} className={styles.glyph} aria-hidden>
+      {content}
+    </g>
+  );
+}
+
 export function FloorPlans() {
   const [floorIndex, setFloorIndex] = useState(1);
   const [roomSlug, setRoomSlug] = useState(FLOORS[1].rooms[0].slug);
@@ -20,6 +146,7 @@ export function FloorPlans() {
   const { ref, inView } = useReveal<HTMLDivElement>();
   const floor = FLOORS[floorIndex];
   const room = floor.rooms.find((item) => item.slug === roomSlug) ?? floor.rooms[0];
+  const doors = useMemo(() => findDoors(floor.rooms), [floor]);
 
   const chooseFloor = (index: number) => { setFloorIndex(index); setRoomSlug(FLOORS[index].rooms[0].slug); };
   const chooseRoom = (slug: string) => setRoomSlug(slug);
@@ -73,6 +200,7 @@ export function FloorPlans() {
                         M${item.plan.x + item.plan.w} ${item.plan.y + item.plan.h - 2.4}v2.4h-2.4
                         M${item.plan.x + 2.4} ${item.plan.y + item.plan.h}h-2.4v-2.4`}
                   />
+                  <RoomGlyph room={item} />
                   <text x={cx} y={cy - 0.6} textAnchor="middle" className={styles.roomLabel}>{item.name}</text>
                   <text x={cx} y={cy + 3.4} textAnchor="middle" className={styles.roomArea}>
                     {Math.round(item.plan.w * item.plan.h * M_PER_UNIT * M_PER_UNIT)} m²
@@ -80,6 +208,26 @@ export function FloorPlans() {
                 </g>
               );
             })}
+
+            {/* Interior doorways: a gap through the double wall line plus a
+                quarter-circle swing, at every wall two rooms actually share. */}
+            <g className={styles.doors} aria-hidden>
+              {doors.map((d, i) =>
+                d.axis === "v" ? (
+                  <g key={i}>
+                    <rect x={d.x - 0.4} y={d.y - d.len / 2} width="0.8" height={d.len} className={styles.doorGap} />
+                    <path d={`M${d.x} ${d.y - d.len / 2} A${d.len} ${d.len} 0 0 1 ${d.x + d.len} ${d.y - d.len / 2}`} className={styles.doorSwing} />
+                    <line x1={d.x} y1={d.y - d.len / 2} x2={d.x} y2={d.y + d.len / 2} className={styles.doorLeaf} />
+                  </g>
+                ) : (
+                  <g key={i}>
+                    <rect x={d.x - d.len / 2} y={d.y - 0.4} width={d.len} height="0.8" className={styles.doorGap} />
+                    <path d={`M${d.x - d.len / 2} ${d.y} A${d.len} ${d.len} 0 0 1 ${d.x - d.len / 2} ${d.y - d.len}`} className={styles.doorSwing} />
+                    <line x1={d.x - d.len / 2} y1={d.y} x2={d.x + d.len / 2} y2={d.y} className={styles.doorLeaf} />
+                  </g>
+                )
+              )}
+            </g>
 
             {/* Dimension line along the bottom edge. */}
             <g className={styles.dim}>

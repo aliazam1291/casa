@@ -55,6 +55,11 @@ export function Footer() {
             <p className={styles.address}>
               {CONTACT.showroom.line1}, {CONTACT.showroom.line2}
             </p>
+            {CONTACT.phone && (
+              <a href={`tel:${CONTACT.phone.replace(/\s+/g, "")}`} className={styles.address}>
+                {CONTACT.phone}
+              </a>
+            )}
           </div>
           {COLUMNS.map((col) => (
             <div key={col.title}>

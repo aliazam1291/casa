@@ -85,6 +85,11 @@
   justify-content: flex-end;
   padding-bottom: 12vh;
   gap: 20px;
+  /* The text sits over a fully-rendered, detailed room — without a scrim it
+     reads fine over open wall but disappears against artwork/furniture
+     behind it. Fades from clear (top, room stays visible) to a soft cream
+     wash (bottom, where the copy lives). */
+  background: linear-gradient(to top, rgba(244, 239, 230, 0.92) 0%, rgba(244, 239, 230, 0.65) 34%, rgba(244, 239, 230, 0.06) 62%, transparent 80%);
 }
 
 .eyebrow {
@@ -99,8 +104,7 @@
 .gateFloor {
   max-width: min(880px, 90vw);
   font-family: var(--serif);
-  font-weight: 300;
-  font-style: italic;
+  font-weight: 400;
   font-size: clamp(32px, 5vw, 64px);
   line-height: 1.05;
   color: var(--fg);

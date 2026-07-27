@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { CATALOGUE } from "@/lib/catalogue";
+import { STOCK_PIECES } from "@/lib/products";
 import styles from "./page.module.css";
 
 export const metadata: Metadata = {
@@ -28,6 +30,25 @@ export default function CataloguePage() {
           </Link>
         ))}
       </nav>
+
+      <section className={styles.stock} aria-label="Currently in stock">
+        <div className={styles.stockHead}>
+          <span className={styles.sectionLabel}>On The Floor Now</span>
+          <h2>Real pieces, in stock this week.</h2>
+          <p>A rotating edit of accent seating currently on the Indore showroom floor — priced and ready, not a composed room.</p>
+        </div>
+        <div className={styles.stockGrid}>
+          {STOCK_PIECES.map((item) => (
+            <a key={item.name} href={item.href} target="_blank" rel="noreferrer" className={styles.stockCard}>
+              <div className={styles.stockImage}>
+                <Image src={item.image} alt={item.name} fill sizes="(max-width: 900px) 45vw, 16vw" />
+              </div>
+              <span className={styles.stockName}>{item.name}</span>
+              <span className={styles.stockPrice}>&#8377;{item.price.toLocaleString("en-IN")}</span>
+            </a>
+          ))}
+        </div>
+      </section>
 
       <section className={styles.note}>
         <p>Every category is drawn on inside a real room — see them composed, not shelved.</p>
