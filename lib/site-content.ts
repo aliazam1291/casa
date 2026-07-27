@@ -81,13 +81,13 @@ const journalDepartments = [
 ];
 
 const houseDepartments = [
-  { label: "15+ years", detail: "A working legacy built one home at a time." },
+  { label: "Since 2007", detail: "A working legacy built one home at a time." },
   { label: "110 hands", detail: "Designers, craftspeople and makers in-house." },
   { label: "40,000 sq ft", detail: "A production ecosystem built for care at scale." },
-  { label: "Indore", detail: "Central India, and every home built from here." },
+  { label: "Indore & Dewas", detail: "Both facilities, and every home built from here." },
 ];
 
-const tradeDepartments = [
+const architectDepartments = [
   { label: "Access", detail: "Finishes, dimensions and material support on request." },
   { label: "Edit", detail: "A room-led composition built to your brief." },
   { label: "Timeline", detail: "Lead times and capacity, shared upfront." },
@@ -97,8 +97,8 @@ const tradeDepartments = [
 const visitDepartments = [
   { label: "Showroom", detail: "Fully composed rooms, open in Indore." },
   { label: "By Appointment", detail: "Guided time with a curator, plans in hand." },
-  { label: "Specifier Desk", detail: "Samples, drawings and trade support." },
-  { label: "Directions", detail: "Central India — details on request." },
+  { label: "Architect Hub", detail: "Samples, drawings and project support." },
+  { label: "Directions", detail: "PU 4, Vijay Nagar, Indore — details on request." },
 ];
 
 const defaultPalette = [
@@ -112,9 +112,9 @@ export const SITE_PAGES: Record<string, SitePage> = {
   "way-of-light-form": {
     eyebrow: "Design philosophy · Internal",
     title: "Way of Light & Form",
-    description: "Light decides what the eye remembers. Premium is not more — premium is resolved. Our internal philosophy for illumination, proportion and material.",
+    description: "Light decides what the eye remembers. More is not the answer — resolved is. Our internal philosophy for illumination, proportion and material.",
     image: atrium,
-    imageAlt: "A luxury home interior where sunlight casts long shadows across wood and marble",
+    imageAlt: "A composed home interior where sunlight casts long shadows across wood and marble",
     intro:
       "Wolf Casa is a home interior mall for composed living. We bring furniture, materials, room planning and sourcing into one considered experience, so a home can be selected with feeling and built with clarity.",
     cards: [
@@ -128,7 +128,7 @@ export const SITE_PAGES: Record<string, SitePage> = {
     palette: defaultPalette,
     metrics: [
       { value: "40k", label: "sq ft interior experience" },
-      { value: "15+", label: "years of material knowledge" },
+      { value: "2007", label: "founded, in Indore" },
       { value: "1", label: "home destination" },
     ],
   },
@@ -270,37 +270,37 @@ export const SITE_PAGES: Record<string, SitePage> = {
     description: "Meet the people, craft and legacy behind Wolf Casa.",
     image: villa,
     imageAlt: "A warm contemporary Indian residence with crafted materials",
-    intro: "For over fifteen years, Wolf Casa has made homes through a close relationship with craft, international sourcing and the people who live in the rooms.",
+    intro: "Since 2007, Wolf Casa has made homes through a close relationship with craft, international sourcing and the people who live in the rooms — from Indore and, since expanding, Dewas.",
     cards: [
-      { eyebrow: "15 years", title: "A working legacy", body: "Built through long relationships with makers, materials and homes across India.", href: "/visit", signal: "Experience", image: villa },
-      { eyebrow: "110 hands", title: "A house of specialists", body: "Designers, craftspeople and makers who understand the value of a considered finish.", href: "/trade", signal: "Craft network", image: sojourn },
-      { eyebrow: "40,000 sq ft", title: "Made with capacity", body: "A production ecosystem that lets care survive at scale.", href: "/experiences/furniture-tourism", signal: "Scale and care", image: materials },
+      { eyebrow: "Since 2007", title: "A working legacy", body: "Built through long relationships with makers, materials and homes across India.", href: "/visit", signal: "Experience", image: villa },
+      { eyebrow: "110 hands", title: "A house of specialists", body: "Designers, craftspeople and makers who understand the value of a considered finish.", href: "/architects", signal: "Craft network", image: sojourn },
+      { eyebrow: "40,000 sq ft", title: "Made with capacity", body: "A production ecosystem across Indore and Dewas that lets care survive at scale.", href: "/experiences/furniture-tourism", signal: "Scale and care", image: materials },
     ],
     principles: ["Legacy is built through care.", "Craft belongs in contemporary life.", "The people behind the object matter."],
     cta: { label: "Visit Wolf Casa", href: "/visit" },
     departments: houseDepartments,
     palette: defaultPalette,
     metrics: [
-      { value: "15+", label: "years" },
+      { value: "2007", label: "founded, in Indore" },
       { value: "110", label: "specialist hands" },
-      { value: "40k", label: "sq ft capacity" },
+      { value: "40k", label: "sq ft across Indore & Dewas" },
     ],
   },
-  trade: {
-    eyebrow: "Specifier desk",
+  architects: {
+    eyebrow: "Architect hub",
     title: "For architects of atmosphere",
     description: "A dedicated Wolf Casa partnership for architects, designers and builders.",
     image: materials,
     imageAlt: "Material samples and interior finishes curated for a project",
-    intro: "The Specifier Desk is a practical door into our materials, named objects, technical information and project support.",
+    intro: "The Architect Hub is a practical door into our materials, named pieces, technical information and project support.",
     cards: [
       { eyebrow: "01", title: "Access the materials", body: "Request finishes, dimensions and curated material support for your project.", href: "/experiences/materials-library", signal: "Samples and specs", image: materials },
       { eyebrow: "02", title: "Build a project edit", body: "Work with our team to create a composition that fits the brief and the room.", href: "/experiences/consultation", signal: "Room-led edit", image: atrium },
       { eyebrow: "03", title: "Source with confidence", body: "Get visibility into lead times, craft, scale and installation considerations.", href: "/experiences/furniture-tourism", signal: "Project support", image: sojourn },
     ],
     principles: ["Technical detail without catalogue language.", "A clear route from concept to installation.", "Made for ambitious rooms."],
-    cta: { label: "Request trade access", href: "/visit" },
-    departments: tradeDepartments,
+    cta: { label: "Request project access", href: "/visit" },
+    departments: architectDepartments,
     palette: defaultPalette,
     metrics: [
       { value: "Specs", label: "for professionals" },
@@ -318,7 +318,7 @@ export const SITE_PAGES: Record<string, SitePage> = {
     cards: [
       { eyebrow: "Indore", title: "The experience showroom", body: "Walk through fully composed rooms and see how materials change with the light.", href: "/the-wolf-way", signal: "Walk the worlds", image: villa },
       { eyebrow: "By appointment", title: "Bring your plans", body: "Book time with a curator to talk through a room, a renovation or a whole house.", href: "/experiences/consultation", signal: "Plan in hand", image: atrium },
-      { eyebrow: "For professionals", title: "Visit the Specifier Desk", body: "Arrange samples, drawings and project support in one conversation.", href: "/trade", signal: "Trade desk", image: materials },
+      { eyebrow: "For professionals", title: "Visit the Architect Hub", body: "Arrange samples, drawings and project support in one conversation.", href: "/architects", signal: "Architect hub", image: materials },
     ],
     principles: ["A room is easier to understand in person.", "Bring the questions that matter.", "Leave with a clearer direction."],
     cta: { label: "Arrange a showroom visit", href: "/experiences/consultation" },

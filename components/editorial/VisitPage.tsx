@@ -4,13 +4,14 @@ import Image from "next/image";
 import Link from "next/link";
 import { useCursor } from "@/components/cursor/CursorProvider";
 import { useReveal } from "@/hooks/useReveal";
+import { CONTACT, contactMapUrl } from "@/lib/contact";
 import styles from "./VisitPage.module.css";
 
 const OPTIONS = [
   { tag: "Indore", title: "The experience showroom", body: "Walk through fully composed rooms and see how materials change with the light.", href: "/the-wolf-way" },
   { tag: "By appointment", title: "Bring your plans", body: "Book time with a curator to talk through a room, a renovation or a whole house.", href: "/experiences/consultation" },
-  { tag: "For professionals", title: "Visit the Specifier Desk", body: "Arrange samples, drawings and project support in one conversation.", href: "/trade" },
-  { tag: "Directions", title: "Central India", body: "Full directions and appointment windows shared on request.", href: "/experiences/consultation" },
+  { tag: "For professionals", title: "Visit the Architect Hub", body: "Arrange samples, drawings and project support in one conversation.", href: "/architects" },
+  { tag: "Directions", title: CONTACT.region, body: "Full directions and appointment windows shared on request.", href: "/experiences/consultation" },
 ];
 
 export function VisitPage() {
@@ -34,6 +35,17 @@ export function VisitPage() {
           <h1>Start in the room.</h1>
           <p>The showroom is designed for lingering. Come with a plan, a question, a room that is not yet right, or simply a curiosity about material.</p>
         </div>
+      </section>
+
+      <section className={styles.address} aria-label="Showroom address">
+        <div>
+          <span className={styles.sectionLabel}>{CONTACT.showroom.name}</span>
+          <p>{CONTACT.showroom.line1}, {CONTACT.showroom.line2}</p>
+          <p>{CONTACT.showroom.size} · {CONTACT.hours}</p>
+        </div>
+        <a href={contactMapUrl()} target="_blank" rel="noreferrer" onMouseEnter={() => setCursor("hover", "Map")} onMouseLeave={resetCursor}>
+          Get directions <span aria-hidden>→</span>
+        </a>
       </section>
 
       <section className={styles.language}>

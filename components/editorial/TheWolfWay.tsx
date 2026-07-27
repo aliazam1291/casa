@@ -22,7 +22,7 @@ const PRINCIPLES = [
   { title: "Begin with light", body: "Light decides mood before furniture." },
   { title: "Anchor the room", body: "One dominant form per composition." },
   { title: "Layer material", body: "Wood, fabric, stone, brass converse." },
-  { title: "Create a quiet edge", body: "Premium rooms need breathing space." },
+  { title: "Create a quiet edge", body: "Composed rooms need breathing space." },
   { title: "Comfort & command", body: "Invite use, but hold presence." },
   { title: "Sell the composition", body: "Never the sofa alone." },
   { title: "Texture as memory", body: "The hand confirms what the eye believes." },

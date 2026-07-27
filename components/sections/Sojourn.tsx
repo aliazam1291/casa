@@ -42,7 +42,7 @@ const DEPARTMENTS = [
   { title: "Furniture Gallery", detail: "Sofas, beds, dining, lounge chairs, consoles and accents." },
   { title: "Material Bar", detail: "Wood, marble, stone, metal, textile and finish consultations." },
   { title: "Room Planning", detail: "Floor-plan thinking for living, bedrooms, kitchens, baths and terraces." },
-  { title: "Specifier Desk", detail: "Support for architects, designers and whole-home projects." },
+  { title: "Architect Hub", detail: "Support for architects, designers and whole-home projects." },
 ];
 
 export function Sojourn() {

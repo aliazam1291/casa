@@ -3,34 +3,35 @@
 import Link from "next/link";
 import { HoverItem, Magnetic } from "@/components/cursor/HoverItem";
 import { useReveal } from "@/hooks/useReveal";
+import { CONTACT, contactMapUrl } from "@/lib/contact";
 import styles from "./Footer.module.css";
 
 const COLUMNS = [
+  {
+    title: "Shop",
+    links: [
+      { label: "Rooms", href: "/rooms" },
+      { label: "Catalogue", href: "/catalogue" },
+      { label: "Named Pieces", href: "/rooms" },
+      { label: "Journal", href: "/journal" },
+    ],
+  },
   {
     title: "The House",
     links: [
       { label: "Way of Light & Form", href: "/way-of-light-form" },
       { label: "The Wolf Way", href: "/the-wolf-way" },
       { label: "The House", href: "/the-house" },
-      { label: "Trade Desk", href: "/trade" },
-    ],
-  },
-  {
-    title: "Experiences",
-    links: [
-      { label: "Consultation", href: "/experiences/consultation" },
-      { label: "Casa Sojourn", href: "/experiences/furniture-tourism" },
-      { label: "Materials Library", href: "/experiences/materials-library" },
-      { label: "All Experiences", href: "/experiences" },
+      { label: "Architect Hub", href: "/architects" },
     ],
   },
   {
     title: "Visit",
     links: [
       { label: "Indore Showroom", href: "/visit" },
-      { label: "The Journal", href: "/journal" },
-      { label: "Contact", href: "/visit" },
       { label: "Book a Consultation", href: "/experiences/consultation" },
+      { label: "Get Directions", href: contactMapUrl() },
+      { label: "All Experiences", href: "/experiences" },
     ],
   },
 ];
@@ -50,7 +51,10 @@ export function Footer() {
         <div className={styles.grid}>
           <div className={styles.brand}>
             <div className={styles.wordmark}>Wolf Casa</div>
-            <p>Modern Indian living, carefully composed. Indore, Central India — 2011 to now.</p>
+            <p>Modern Indian living, carefully composed. Indore &amp; Dewas — since {CONTACT.founded}.</p>
+            <p className={styles.address}>
+              {CONTACT.showroom.line1}, {CONTACT.showroom.line2}
+            </p>
           </div>
           {COLUMNS.map((col) => (
             <div key={col.title}>
@@ -66,7 +70,7 @@ export function Footer() {
           ))}
         </div>
         <div className={styles.bottom}>
-          <span>© 2026 — Wolf Casa</span>
+          <span>© {new Date().getFullYear()} — Wolf Casa</span>
           <span>Way of Light & Form — Vol. I</span>
         </div>
       </div>

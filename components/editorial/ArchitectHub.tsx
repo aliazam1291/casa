@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useCursor } from "@/components/cursor/CursorProvider";
 import { useReveal } from "@/hooks/useReveal";
-import styles from "./TradeDesk.module.css";
+import styles from "./ArchitectHub.module.css";
 
 const SPEC = [
   { num: "01", title: "Access the materials", body: "Request finishes, dimensions and curated material support for your project." },
@@ -22,7 +22,7 @@ const COLOURS = [
   { name: "Casa Ivory", hex: "#E8E1D3" },
 ];
 
-export function TradeDesk() {
+export function ArchitectHub() {
   const { setCursor, resetCursor } = useCursor();
   const { ref, inView } = useReveal<HTMLDivElement>();
 
@@ -39,7 +39,7 @@ export function TradeDesk() {
         />
         <div className={styles.heroShade} />
         <div className={styles.heroFrame}>
-          <p className={styles.kicker}>Specifier Desk</p>
+          <p className={styles.kicker}>Architect Hub</p>
           <h1>For architects of atmosphere.</h1>
           <p>A dedicated Wolf Casa partnership for architects, designers and builders — technical detail without catalogue language.</p>
         </div>
@@ -70,9 +70,9 @@ export function TradeDesk() {
       </section>
 
       <section className={styles.cta}>
-        <p>Made for ambitious rooms — request trade access and speak with the Specifier Desk.</p>
+        <p>Made for ambitious rooms — reach the Architect Hub for project support.</p>
         <Link href="/visit" onMouseEnter={() => setCursor("hover", "Request")} onMouseLeave={resetCursor}>
-          Request trade access
+          Request project access
         </Link>
       </section>
     </main>

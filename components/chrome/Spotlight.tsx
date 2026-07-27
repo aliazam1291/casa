@@ -4,7 +4,7 @@ import { useEffect } from "react";
 
 /**
  * A soft warm spotlight that trails the cursor (soft-light blend) — the
- * quiet-luxury cursor glow from the handoff. Purely decorative; disabled
+ * quiet cursor glow from the handoff. Purely decorative; disabled
  * under reduced motion via the CSS in globals.css.
  */
 export function Spotlight() {

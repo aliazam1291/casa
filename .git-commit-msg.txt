@@ -1,0 +1,13 @@
+Phase 5: nav, footer, architects rename, corrected facts and language
+
+- Rename /trade -> /architects (ArchitectHub replaces TradeDesk), with a
+  permanent redirect from the old path and every internal href updated.
+- Rewrite Nav to the 5 buyer-facing links: Rooms, Catalogue, The House,
+  Journal, Visit.
+- Rewrite Footer with real Shop/House/Visit columns, the actual showroom
+  address, a working directions link, and the corrected founding year.
+- Add the real showroom address + directions link to /visit.
+- Correct remaining stale facts (2011 -> 2007, Indore-only -> Indore &
+  Dewas, "15+ years" -> "Since 2007") across TheHouse and site-content.
+- Finish the luxury/premium -> Light & Form language sweep in the last
+  few remaining spots (Sojourn, catalogue empty state).

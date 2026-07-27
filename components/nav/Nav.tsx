@@ -7,9 +7,9 @@ import { useStage } from "@/components/stage/StageProvider";
 import styles from "./Nav.module.css";
 
 const LINKS = [
-  { href: "/way-of-light-form", label: "The Way", cursor: "Read" },
-  { href: "/the-wolf-way", label: "Worlds", cursor: "Enter" },
-  { href: "/experiences", label: "Experiences", cursor: "Enter" },
+  { href: "/rooms", label: "Rooms", cursor: "Enter" },
+  { href: "/catalogue", label: "Catalogue", cursor: "Enter" },
+  { href: "/the-house", label: "The House", cursor: "Read" },
   { href: "/journal", label: "Journal", cursor: "Read" },
   { href: "/visit", label: "Visit", cursor: "Visit" },
 ];

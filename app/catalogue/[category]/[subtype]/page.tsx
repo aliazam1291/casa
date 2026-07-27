@@ -62,7 +62,7 @@ export default async function SubtypePage({ params }: Props) {
           </div>
         </section>
       ) : (
-        <p className={styles.empty}>No named piece from the 3D walkthrough is tagged in this sub-type yet — ask the Specifier Desk directly.</p>
+        <p className={styles.empty}>No named piece from the 3D walkthrough is tagged in this sub-type yet — ask the Architect Hub directly.</p>
       )}
 
       {rooms.length > 0 && (

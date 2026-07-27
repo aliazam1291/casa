@@ -6,7 +6,7 @@ import { TheWolfWay } from "@/components/editorial/TheWolfWay";
 import { ExperiencesPage } from "@/components/editorial/ExperiencesPage";
 import { JournalIndex } from "@/components/editorial/JournalIndex";
 import { TheHouse } from "@/components/editorial/TheHouse";
-import { TradeDesk } from "@/components/editorial/TradeDesk";
+import { ArchitectHub } from "@/components/editorial/ArchitectHub";
 import { VisitPage } from "@/components/editorial/VisitPage";
 import { ConsultationPage } from "@/components/editorial/ConsultationPage";
 import { SojournJourney } from "@/components/editorial/SojournJourney";
@@ -21,7 +21,7 @@ const CUSTOM_LAYOUTS: Record<string, () => React.JSX.Element> = {
   experiences: ExperiencesPage,
   journal: JournalIndex,
   "the-house": TheHouse,
-  trade: TradeDesk,
+  architects: ArchitectHub,
   visit: VisitPage,
   "experiences/consultation": ConsultationPage,
   "experiences/furniture-tourism": SojournJourney,

@@ -4,17 +4,18 @@ import Image from "next/image";
 import Link from "next/link";
 import { useCursor } from "@/components/cursor/CursorProvider";
 import { useReveal } from "@/hooks/useReveal";
+import { CONTACT } from "@/lib/contact";
 import styles from "./TheHouse.module.css";
 
 const STATS = [
-  { value: "15+", label: "Years, a working legacy" },
-  { value: "110", label: "Specialist hands in-house" },
-  { value: "40k", label: "Sq ft production ecosystem" },
-  { value: "Indore", label: "Central India, and every home" },
+  { value: `${new Date().getFullYear() - CONTACT.founded}+`, label: "Years, a working legacy" },
+  { value: "110+", label: "Specialist hands in-house" },
+  { value: "40k", label: "Sq ft across Indore & Dewas" },
+  { value: "Indore", label: "& Dewas, and every home" },
 ];
 
 const FRAMEWORK: [string, string][] = [
-  ["Category", "Premium interiors, furniture, lighting & materials"],
+  ["Category", "Composed interiors, furniture, lighting & materials"],
   ["Market role", "The Interio Mall for Composed Living"],
   ["Customer need", "“I want my home to feel complete.”"],
   ["Promise", "Complete living compositions under one roof"],
@@ -30,7 +31,7 @@ const STANDARD = [
   "Never crowd space.",
   "Materials need hierarchy.",
   "Always with atmosphere.",
-  "Premium beyond price.",
+  "Resolved beyond price.",
   "Showroom is not storage.",
   "Content teaches.",
   "Never generic.",
@@ -57,7 +58,7 @@ export function TheHouse() {
         <div className={styles.heroFrame}>
           <p className={styles.kicker}>The House</p>
           <h1>Modern Indian living, carefully composed.</h1>
-          <p>For over fifteen years, Wolf Casa has made homes through a close relationship with craft, international sourcing and the people who live in the rooms.</p>
+          <p>Since 2007, Wolf Casa has made homes through a close relationship with craft, international sourcing and the people who live in the rooms — from Indore and, since expanding, Dewas.</p>
         </div>
       </section>
 

@@ -28,6 +28,7 @@ const nextConfig: NextConfig = {
       { source: "/the-wolf-way/courtyard", destination: "/the-wolf-way#courtyard", permanent: true },
       { source: "/the-wolf-way/monastic", destination: "/the-wolf-way#monastic", permanent: true },
       { source: "/the-wolf-way/ritual", destination: "/the-wolf-way#ritual", permanent: true },
+      { source: "/trade", destination: "/architects", permanent: true },
     ];
   },
 };

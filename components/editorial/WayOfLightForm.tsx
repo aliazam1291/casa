@@ -17,7 +17,7 @@ const LENSES = [
   {
     tag: "02 / Form",
     title: "The honest weight of things.",
-    quote: "Premium is not more. Premium is resolved.",
+    quote: "More is not the answer. Resolved is.",
     body: "Every composition is built on proportion — the dialogue between heights, masses and the negative space that lets them breathe.",
     image: "/images/editorial/materials.png",
   },
