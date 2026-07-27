@@ -2,7 +2,7 @@
 import * as THREE from 'three';
 import { createRoundedBoxGeometry, createFlutedCylinderGeometry } from '../geometries.js';
 import { addContactShadow } from '../shadows.js';
-import { tagPiece } from '../interactive.js';
+import { tagPieceById } from '../interactive.js';
 
 export function addDiningFurniture(group, sm, matPanel, matAccent, W, H, D) {
   // Capsule Calacatta Marble Dining Table
@@ -17,11 +17,7 @@ export function addDiningFurniture(group, sm, matPanel, matAccent, W, H, D) {
   const top = new THREE.Mesh(tableGeo, sm.marble);
   top.position.set(0, 0.75, 0);
   top.castShadow = true; top.receiveShadow = true;
-  tagPiece(top, {
-    name: 'The Heirloom Table',
-    materials: ['Calacatta marble', 'Solid walnut'],
-    description: 'A softened-rectangle slab in honed Calacatta, seating eight. Cut, bevelled and polished by hand over eleven days.',
-  });
+  tagPieceById(top, 'courtyard-dining/the-heirloom-table');
   group.add(top);
 
   for (const bx of [-1.1, 1.1]) {
@@ -58,11 +54,7 @@ export function addDiningFurniture(group, sm, matPanel, matAccent, W, H, D) {
       addContactShadow(group, cx, cz, 0.6, 0.6, 0.35);
     }
   }
-  tagPiece(chairSet, {
-    name: 'The Dining Chairs',
-    materials: ['Bouclé', 'Solid walnut', 'Champagne brass'],
-    description: 'Six curved-back chairs in undyed bouclé on turned walnut legs with brass sabots, set three to a side.',
-  });
+  tagPieceById(chairSet, 'courtyard-dining/the-dining-chairs');
   group.add(chairSet);
 
   // Multi-Ring Sculptural Brass Chandelier
@@ -77,10 +69,6 @@ export function addDiningFurniture(group, sm, matPanel, matAccent, W, H, D) {
     orb.position.set(Math.cos(ang) * 0.7, H - 1.1, Math.sin(ang) * 0.7);
     chandelier.add(orb);
   }
-  tagPiece(chandelier, {
-    name: 'The Ring Chandelier',
-    materials: ['Champagne brass', 'Blown glass'],
-    description: 'A single brass ring set with six glass orbs, hung low enough to warm the table without blocking the view across it.',
-  });
+  tagPieceById(chandelier, 'courtyard-dining/the-ring-chandelier');
   group.add(chandelier);
 }

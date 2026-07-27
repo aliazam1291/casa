@@ -2,7 +2,7 @@
 import * as THREE from 'three';
 import { createRoundedBoxGeometry, createFlutedCylinderGeometry } from '../geometries.js';
 import { addContactShadow } from '../shadows.js';
-import { tagPiece } from '../interactive.js';
+import { tagPieceById } from '../interactive.js';
 
 export function addLivingFurniture(group, sm, matAccent, W, H, D) {
   const sofaGroup = new THREE.Group();
@@ -48,11 +48,7 @@ export function addLivingFurniture(group, sm, matAccent, W, H, D) {
     sofaGroup.add(foot);
   });
 
-  tagPiece(sofaGroup, {
-    name: 'The Low Sofa',
-    materials: ['Cognac saddle leather', 'Kiln-dried ash frame', 'Champagne brass'],
-    description: 'A tailored three-seat sectional in full-grain cognac leather that darkens with use. Track arms, feather-wrapped cushions, tapered brass feet.',
-  });
+  tagPieceById(sofaGroup, 'atrium-living/the-low-sofa');
   group.add(sofaGroup);
   addContactShadow(group, -1.2, -0.7, 3.7, 2.3, 0.6);
 
@@ -70,11 +66,7 @@ export function addLivingFurniture(group, sm, matAccent, W, H, D) {
   brassLip.rotation.x = Math.PI / 2;
   brassLip.position.set(0.6, 0.4, 0.3);
   tableGroup.add(brassLip);
-  tagPiece(tableGroup, {
-    name: 'The Stone Table',
-    materials: ['Calacatta marble', 'Nero Marquina', 'Champagne brass'],
-    description: 'A fluted drum turned from a single block of Calacatta, capped with a honed Nero Marquina top and a hand-set brass lip.',
-  });
+  tagPieceById(tableGroup, 'atrium-living/the-stone-table');
   group.add(tableGroup);
   addContactShadow(group, 0.6, 0.3, 1.5, 1.5, 0.5);
 
@@ -91,11 +83,7 @@ export function addLivingFurniture(group, sm, matAccent, W, H, D) {
   const brassBowl = new THREE.Mesh(new THREE.SphereGeometry(0.12, 20, 12, 0, Math.PI * 2, 0, Math.PI * 0.55), sm.metal);
   brassBowl.position.set(-3.5, 0.6, -1.0);
   sideTableGroup.add(brassBowl);
-  tagPiece(sideTableGroup, {
-    name: 'The Side Table',
-    materials: ['Calacatta marble', 'Nero Marquina', 'Champagne brass'],
-    description: 'A short marble drum with a dark cap and a hand-spun brass bowl for keys, rings, whatever the day leaves behind.',
-  });
+  tagPieceById(sideTableGroup, 'atrium-living/the-side-table');
   group.add(sideTableGroup);
   addContactShadow(group, -3.5, -1.0, 0.95, 0.95, 0.4);
 
@@ -125,11 +113,7 @@ export function addLivingFurniture(group, sm, matAccent, W, H, D) {
     wick.position.set(0.35 + c * 0.12, 0.40 + ch + 0.04, 0.42);
     stillLife.add(wick);
   }
-  tagPiece(stillLife, {
-    name: 'The Coffee Table Still Life',
-    materials: ['Smoked glass', 'Champagne brass', 'Cloth-bound books'],
-    description: 'A stack of cloth-bound editions, a smoked-glass vessel and three brass candle holders — styled, not collected.',
-  });
+  tagPieceById(stillLife, 'atrium-living/the-coffee-table-still-life');
   group.add(stillLife);
 
   // Designer Lounge Chair
@@ -161,11 +145,7 @@ export function addLivingFurniture(group, sm, matAccent, W, H, D) {
   chairCush.position.set(2.30, 0.50, -1.40);
   chairCush.rotation.y = -0.4;
   chairGroup.add(chairCush);
-  tagPiece(chairGroup, {
-    name: 'The Still Chair',
-    materials: ['Cognac saddle leather', 'Champagne brass'],
-    description: 'A single-seat lounge chair on a slim brass frame, its saddle-leather sling cut from one hide and stitched at the edge.',
-  });
+  tagPieceById(chairGroup, 'atrium-living/the-still-chair');
   group.add(chairGroup);
   addContactShadow(group, 2.4, -1.3, 1.2, 1.2, 0.45);
 }

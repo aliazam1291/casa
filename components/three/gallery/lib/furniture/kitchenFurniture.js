@@ -2,7 +2,7 @@
 import * as THREE from 'three';
 import { createRoundedBoxGeometry, createFlutedCylinderGeometry } from '../geometries.js';
 import { addContactShadow } from '../shadows.js';
-import { tagPiece } from '../interactive.js';
+import { tagPieceById } from '../interactive.js';
 
 export function addKitchenFurniture(group, sm, matPanel, matAccent, W, H, D) {
   // Full rear kitchen run: tall pantry/fridge towers, working counter,
@@ -89,22 +89,14 @@ export function addKitchenFurniture(group, sm, matPanel, matAccent, W, H, D) {
     utensil.position.set(-3.05 + i * 0.58, 1.45, backZ + 0.04);
     kitchenRun.add(utensil);
   }
-  tagPiece(kitchenRun, {
-    name: 'The Working Kitchen',
-    materials: ['Book-matched marble', 'Walnut cabinetry', 'Integrated steel'],
-    description: 'A complete working run: concealed refrigeration, induction cooking, an integrated oven and a deep stone preparation counter.',
-  });
+  tagPieceById(kitchenRun, 'gourmet-kitchen/the-working-kitchen');
   group.add(kitchenRun);
 
   // Nero Marquina Dark Marble Kitchen Island
   const island = new THREE.Mesh(createRoundedBoxGeometry(3.6, 0.94, 1.2, 0.03, 3), sm.marbleNero);
   island.position.set(0, 0.47, 0);
   island.castShadow = true; island.receiveShadow = true;
-  tagPiece(island, {
-    name: 'The Hearth Island',
-    materials: ['Nero Marquina marble', 'Champagne brass'],
-    description: 'A single 3.6-metre block of Nero Marquina with a mitred waterfall edge, the veining book-matched across every face.',
-  });
+  tagPieceById(island, 'gourmet-kitchen/the-hearth-island');
   group.add(island);
   addContactShadow(group, 0, 0, 3.9, 1.5, 0.55);
 
@@ -139,11 +131,7 @@ export function addKitchenFurniture(group, sm, matPanel, matAccent, W, H, D) {
     stoolGroup.add(footrest);
     addContactShadow(group, sx, 1.05, 0.55, 0.55, 0.35);
   }
-  tagPiece(stoolGroup, {
-    name: 'The Counter Stools',
-    materials: ['Cognac saddle leather', 'Champagne brass'],
-    description: 'Three backless stools in the same hide as the sofa, so the kitchen and the living room share one leather.',
-  });
+  tagPieceById(stoolGroup, 'gourmet-kitchen/the-counter-stools');
   group.add(stoolGroup);
 
   // Floating Brass Linear Pendant Light
@@ -160,10 +148,6 @@ export function addKitchenFurniture(group, sm, matPanel, matAccent, W, H, D) {
     bulb.position.set(cx, H - 1.24, 0);
     pendant.add(bulb);
   }
-  tagPiece(pendant, {
-    name: 'The Linear Pendant',
-    materials: ['Champagne brass', 'Blown glass'],
-    description: 'A single brass bar carrying three drop bulbs at even spacing over the island — no shade, so the filament is the fixture.',
-  });
+  tagPieceById(pendant, 'gourmet-kitchen/the-linear-pendant');
   group.add(pendant);
 }

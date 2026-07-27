@@ -2,7 +2,7 @@
 import * as THREE from 'three';
 import { createRoundedBoxGeometry, createFlutedCylinderGeometry } from '../geometries.js';
 import { addContactShadow } from '../shadows.js';
-import { tagPiece } from '../interactive.js';
+import { tagPieceById } from '../interactive.js';
 
 export function addBathFurniture(group, sm, matAccent, W, H, D) {
   // Freestanding Oval Soaking Tub in Honed Travertine
@@ -16,11 +16,7 @@ export function addBathFurniture(group, sm, matAccent, W, H, D) {
   const tub = new THREE.Mesh(tubGeo, sm.marble);
   tub.position.set(-2.2, 0.3, -1.2);
   tub.castShadow = true; tub.receiveShadow = true;
-  tagPiece(tub, {
-    name: 'The Still Bath',
-    materials: ['Calacatta marble', 'Polished brass'],
-    description: 'An oval bath carved from one block of Calacatta, walls honed to twenty millimetres so the stone warms with the water.',
-  });
+  tagPieceById(tub, 'spa-bath-en-suite/the-still-bath');
   group.add(tub);
   addContactShadow(group, -2.2, -1.2, 2.4, 1.4, 0.5);
 
@@ -50,11 +46,7 @@ export function addBathFurniture(group, sm, matAccent, W, H, D) {
   const mirror = new THREE.Mesh(new THREE.PlaneGeometry(1.32, 1.52), sm.glass);
   mirror.position.set(2.2, 2.05, -D / 2 + 0.04);
   vanityGroup.add(mirror);
-  tagPiece(vanityGroup, {
-    name: 'The Floating Vanity',
-    materials: ['Fluted walnut', 'Calacatta marble', 'Polished brass'],
-    description: 'A wall-hung walnut vanity with a marble top and a backlit arch mirror, floating clear of the floor so the stone reads uninterrupted.',
-  });
+  tagPieceById(vanityGroup, 'spa-bath-en-suite/the-floating-vanity');
   group.add(vanityGroup);
 
   // Toiletries on vanity top
@@ -68,7 +60,7 @@ export function addBathFurniture(group, sm, matAccent, W, H, D) {
   bottle2.position.set(1.5, 0.95, -D / 2 + 0.32);
   group.add(bottle2);
 
-  // Luxury walk-in glass shower stall
+  // Frameless walk-in glass shower stall
   const showerGroup = new THREE.Group();
   const glassPanel = new THREE.Mesh(new THREE.BoxGeometry(0.015, 2.4, 1.4), sm.glass);
   glassPanel.position.set(-W / 2 + 1.45, 1.2, 1.8);
@@ -89,11 +81,7 @@ export function addBathFurniture(group, sm, matAccent, W, H, D) {
   showerHead.rotation.x = Math.PI / 2;
   showerHead.position.set(-W / 2 + 0.25, 2.3, 1.8);
   showerGroup.add(showerHead);
-  tagPiece(showerGroup, {
-    name: 'The Rain Shower',
-    materials: ['Low-iron glass', 'Polished brass'],
-    description: 'A frameless glass enclosure with a single overhead rain head — no curtain, no threshold, just a change in the floor.',
-  });
+  tagPieceById(showerGroup, 'spa-bath-en-suite/the-rain-shower');
   group.add(showerGroup);
   addContactShadow(group, -W / 2 + 0.8, 1.8, 1.6, 1.6, 0.4);
 

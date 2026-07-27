@@ -2,7 +2,7 @@
 import * as THREE from 'three';
 import { createRoundedBoxGeometry, createFlutedCylinderGeometry } from '../geometries.js';
 import { addContactShadow } from '../shadows.js';
-import { tagPiece } from '../interactive.js';
+import { tagPieceById } from '../interactive.js';
 
 export function addHallFurniture(group, sm, matAccent, W, H, D) {
   // Round entry rug
@@ -16,11 +16,7 @@ export function addHallFurniture(group, sm, matAccent, W, H, D) {
   const benchTop = new THREE.Mesh(createRoundedBoxGeometry(2.0, 0.18, 0.62, 0.06, 4), sm.velvetForest);
   benchTop.position.set(0, 0.46, 0.3);
   benchTop.castShadow = true; benchTop.receiveShadow = true;
-  tagPiece(benchTop, {
-    name: 'The Arrival Bench',
-    materials: ['Forest cotton velvet', 'Champagne brass'],
-    description: 'A channel-tufted bench in forest velvet on tapered brass legs — the first place the house asks you to pause.',
-  });
+  tagPieceById(benchTop, 'grand-foyer/the-arrival-bench');
   group.add(benchTop);
   for (let t = 0; t < 4; t++) {
     const tuft = new THREE.Mesh(new THREE.BoxGeometry(0.44, 0.02, 0.58), sm.metalDark);
@@ -56,11 +52,7 @@ export function addHallFurniture(group, sm, matAccent, W, H, D) {
     }
     addContactShadow(group, sgn * 2.7, -1.6, 0.7, 0.7, 0.4);
   });
-  tagPiece(plinthSet, {
-    name: 'The Marble Plinths',
-    materials: ['Calacatta marble', 'Champagne brass', 'Glazed ceramic'],
-    description: 'A pair of square marble plinths flanking the entry, each carrying a single object rather than a display.',
-  });
+  tagPieceById(plinthSet, 'grand-foyer/the-marble-plinths');
   group.add(plinthSet);
 
   // Tall branch vase in the near corner
@@ -75,11 +67,7 @@ export function addHallFurniture(group, sm, matAccent, W, H, D) {
     stem.rotation.z = (s - 3) * 0.12;
     vaseGroup.add(stem);
   }
-  tagPiece(vaseGroup, {
-    name: 'The Branch Vase',
-    materials: ['Glazed ceramic', 'Dried walnut branch'],
-    description: 'A single glazed vessel holding bare walnut branches — the one note of the outdoors let inside the foyer.',
-  });
+  tagPieceById(vaseGroup, 'grand-foyer/the-branch-vase');
   group.add(vaseGroup);
   addContactShadow(group, -(W / 2) + 1.2, 1.9, 0.7, 0.7, 0.4);
 }

@@ -2,7 +2,7 @@
 import * as THREE from 'three';
 import { createRoundedBoxGeometry, createFlutedCylinderGeometry } from '../geometries.js';
 import { addContactShadow } from '../shadows.js';
-import { tagPiece } from '../interactive.js';
+import { tagPieceById } from '../interactive.js';
 
 export function addGalleryFurniture(group, sm, matAccent, W, H, D, name = '') {
   if (name.includes('pavilion') || name.includes('skyline')) {
@@ -31,11 +31,7 @@ export function addGalleryFurniture(group, sm, matAccent, W, H, D, name = '') {
       pillow.rotation.y = (i - 1) * 0.12;
       sofa.add(pillow);
     }
-    tagPiece(sofa, {
-      name: 'The Horizon Sofa',
-      materials: ['Ivory bouclé', 'Kiln-dried ash frame'],
-      description: 'An L-shaped sectional in heavy ivory bouclé, kept low so nothing interrupts the line of the horizon behind it.',
-    });
+    tagPieceById(sofa, 'skyline-salon/the-horizon-sofa');
     group.add(sofa);
     addContactShadow(group, 0.5, -0.9, 3.4, 2.4, 0.55);
 
@@ -99,11 +95,7 @@ export function addGalleryFurniture(group, sm, matAccent, W, H, D, name = '') {
       towel.position.set(lx, 0.52, 1.12);
       towel.castShadow = true;
       lounger.add(towel);
-      tagPiece(lounger, {
-        name: 'The Sun Lounger',
-        materials: ['Burmese teak', 'Outdoor linen', 'Terracotta velvet'],
-        description: 'A slatted teak lounger left unfinished so it silvers in the weather, dressed with a linen cushion and a rolled bolster.',
-      });
+      tagPieceById(lounger, 'penthouse-terrace/the-sun-lounger');
       group.add(lounger);
       addContactShadow(group, lx, 0.5, 0.95, 2.2, 0.45);
     }
@@ -120,11 +112,7 @@ export function addGalleryFurniture(group, sm, matAccent, W, H, D, name = '') {
     const glassCup = new THREE.Mesh(new THREE.CylinderGeometry(0.045, 0.035, 0.13, 14), sm.glass);
     glassCup.position.set(0.06, 0.55, 0.55);
     terraceSide.add(glassCup);
-    tagPiece(terraceSide, {
-      name: 'The Terrace Table',
-      materials: ['Weathered marble', 'Blackened steel'],
-      description: 'A marble-topped side table between the loungers, its steel stem left to weather rather than sealed against it.',
-    });
+    tagPieceById(terraceSide, 'penthouse-terrace/the-terrace-table');
     group.add(terraceSide);
     addContactShadow(group, 0, 0.55, 0.6, 0.6, 0.4);
 
@@ -132,11 +120,7 @@ export function addGalleryFurniture(group, sm, matAccent, W, H, D, name = '') {
     const fpTable = new THREE.Mesh(createRoundedBoxGeometry(0.85, 0.42, 2.0, 0.04, 3), sm.marbleNero);
     fpTable.position.set(0, 0.21, 2.6);
     fpTable.castShadow = true; fpTable.receiveShadow = true;
-    tagPiece(fpTable, {
-      name: 'The Fire Table',
-      materials: ['Nero Marquina', 'Champagne brass', 'Lava stone'],
-      description: 'A linear gas hearth set into a Nero Marquina block, its burner bedded in lava pebbles so the flame reads as a low line of light.',
-    });
+    tagPieceById(fpTable, 'penthouse-terrace/the-fire-table');
     group.add(fpTable);
     const fpTrim = new THREE.Mesh(new THREE.BoxGeometry(0.9, 0.03, 2.05), sm.metal);
     fpTrim.position.set(0, 0.43, 2.6);
@@ -171,11 +155,7 @@ export function addGalleryFurniture(group, sm, matAccent, W, H, D, name = '') {
       canopy.castShadow = true;
       oliveTree.add(canopy);
     }
-    tagPiece(oliveTree, {
-      name: 'The Olive Tree',
-      materials: ['Fluted marble', 'Mature olive'],
-      description: 'A single olive tree, decades old, in a fluted marble planter sized to hold it for another decade.',
-    });
+    tagPieceById(oliveTree, 'penthouse-terrace/the-olive-tree');
     group.add(oliveTree);
     addContactShadow(group, 3.9, 0.6, 1.1, 1.1, 0.45);
   }

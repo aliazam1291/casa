@@ -2,7 +2,7 @@
 import * as THREE from 'three';
 import { createRoundedBoxGeometry, createFlutedCylinderGeometry } from '../geometries.js';
 import { addContactShadow } from '../shadows.js';
-import { tagPiece } from '../interactive.js';
+import { tagPieceById } from '../interactive.js';
 
 function addWineCellarFurniture(group, sm, W, H, D) {
   // 1. Central Tasting Table (Walnut slab, brass/dark-metal legs)
@@ -17,11 +17,7 @@ function addWineCellarFurniture(group, sm, W, H, D) {
     leg.position.set(tx, 0.45, 0.5);
     tableGroup.add(leg);
   }
-  tagPiece(tableGroup, {
-    name: 'The Tasting Table',
-    materials: ['Solid walnut', 'Blackened steel'],
-    description: 'A single walnut slab on blackened steel legs, sized for a bottle, two glasses and nothing else.',
-  });
+  tagPieceById(tableGroup, 'wine-cellar/the-tasting-table');
   group.add(tableGroup);
   addContactShadow(group, 0, 0.5, 2.2, 1.0, 0.45);
 
@@ -37,11 +33,7 @@ function addWineCellarFurniture(group, sm, W, H, D) {
     stoolSet.add(sLeg);
     addContactShadow(group, sx, 1.2, 0.5, 0.5, 0.35);
   }
-  tagPiece(stoolSet, {
-    name: 'The Tasting Stools',
-    materials: ['Cognac saddle leather', 'Blackened steel'],
-    description: 'A pair of backless stools in the same cognac hide as the house leather, kept low so the wine wall stays the view.',
-  });
+  tagPieceById(stoolSet, 'wine-cellar/the-tasting-stools');
   group.add(stoolSet);
 
   // 3. Staged items on table (tray, bottle, 2 wine glasses)
@@ -185,11 +177,7 @@ function addWineCellarFurniture(group, sm, W, H, D) {
     }
   }
 
-  tagPiece(wineWall, {
-    name: 'The Wine Wall',
-    materials: ['Solid walnut', 'Blown glass', 'Champagne brass'],
-    description: 'A full-height cellar wall of hand-fitted walnut cubbies, backlit so the glass holds the light. Ninety-eight bottles, laid neck-out at a constant twelve degrees.',
-  });
+  tagPieceById(wineWall, 'wine-cellar/the-wine-wall');
   group.add(wineWall);
   addContactShadow(group, 0, wallZ, W - 0.5, 0.9, 0.55);
 
@@ -223,11 +211,7 @@ function addWineCellarFurniture(group, sm, W, H, D) {
       displayShelf.add(paperLabel);
     }
   }
-  tagPiece(displayShelf, {
-    name: 'The Wine Shelf',
-    materials: ['Solid walnut', 'Bottle glass', 'Antiqued brass'],
-    description: 'An open walnut shelf for the bottles being poured now, set apart from the cellar archive behind it.',
-  });
+  tagPieceById(displayShelf, 'wine-cellar/the-wine-shelf');
   group.add(displayShelf);
   addContactShadow(group, shelfX, shelfZ, shelfW + 0.25, 0.9, 0.5);
 
@@ -262,11 +246,7 @@ function addWineCellarFurniture(group, sm, W, H, D) {
       barrel.add(band);
     }
   });
-  tagPiece(barrelGroup, {
-    name: 'The Aging Barrels',
-    materials: ['French oak', 'Blackened steel bands'],
-    description: 'Three coopered oak barrels stacked in the corner — retired from the estate’s own reserve after a full ageing cycle.',
-  });
+  tagPieceById(barrelGroup, 'wine-cellar/the-aging-barrels');
   group.add(barrelGroup);
   addContactShadow(group, -3.9, 2.2, 1.8, 1.8, 0.5);
 
@@ -283,11 +263,7 @@ function addWineCellarFurniture(group, sm, W, H, D) {
   box2.rotation.y = -0.08;
   box2.castShadow = true;
   crateSet.add(box2);
-  tagPiece(crateSet, {
-    name: 'The Vintage Crates',
-    materials: ['Stamped pine', 'Iron corner brackets'],
-    description: 'Original shipping crates, kept as found — stencilled vintages still legible under the dust.',
-  });
+  tagPieceById(crateSet, 'wine-cellar/the-vintage-crates');
   group.add(crateSet);
   addContactShadow(group, -2.8, 2.2, 0.7, 0.7, 0.35);
 }
@@ -302,11 +278,7 @@ function addMaterialVaultFurniture(group, sm, W, H, D) {
   const trim = new THREE.Mesh(new THREE.BoxGeometry(2.44, 0.04, 1.14), sm.metal);
   trim.position.set(0, 0.9, 0.2);
   workbench.add(trim);
-  tagPiece(workbench, {
-    name: 'The Design Workbench',
-    materials: ['Nero Marquina marble', 'Champagne brass'],
-    description: 'A Nero Marquina slab on a brass-trimmed base — every material specification for the house is signed off at this table.',
-  });
+  tagPieceById(workbench, 'material-vault/the-design-workbench');
   group.add(workbench);
   addContactShadow(group, 0, 0.2, 2.7, 1.4, 0.55);
 
@@ -373,11 +345,7 @@ function addMaterialVaultFurniture(group, sm, W, H, D) {
         rackGroup.add(roll);
       }
     }
-    tagPiece(rackGroup, {
-      name: 'The Sample Racks',
-      materials: ['Dark oak', 'Bolt-end fabrics'],
-      description: 'Every fabric under consideration for the house lives here on the bolt, sorted so a whole season’s palette reads in one glance.',
-    });
+    tagPieceById(rackGroup, 'material-vault/the-sample-racks');
     group.add(rackGroup);
     addContactShadow(group, rx, -D / 2 + rackD / 2 + 0.1, rackW + 0.4, rackD + 0.4, 0.5);
   }
@@ -442,11 +410,7 @@ function addArchiveFurniture(group, sm, W, H, D) {
   const lGlow = new THREE.Mesh(new THREE.SphereGeometry(0.025, 8, 8), sm.fixtureGlow);
   lGlow.position.set(-1.1, 0.95, 0.42);
   lamp.add(lGlow);
-  tagPiece(lamp, {
-    name: 'The Banker’s Lamp',
-    materials: ['Green cased glass', 'Antiqued brass'],
-    description: 'A classic green-glass banker’s lamp, kept for the one task this room is built for: reading drawings by hand.',
-  });
+  tagPieceById(lamp, 'archive/the-bankers-lamp');
   tableGroup.add(lamp);
 
   for (const lx of [-0.6, 0.6]) {
@@ -454,11 +418,7 @@ function addArchiveFurniture(group, sm, W, H, D) {
     leg.position.set(-0.5 + lx, 0.37, 0.2);
     tableGroup.add(leg);
   }
-  tagPiece(tableGroup, {
-    name: 'The Drafting Table',
-    materials: ['Dark oak', 'Linen', 'Blackened steel'],
-    description: 'An inclined drafting table holding the house’s working drawings — the same table every floor plan in this archive was first drawn on.',
-  });
+  tagPieceById(tableGroup, 'archive/the-drafting-table');
   group.add(tableGroup);
   addContactShadow(group, -0.5, 0.2, 1.8, 1.1, 0.45);
 
@@ -479,11 +439,7 @@ function addArchiveFurniture(group, sm, W, H, D) {
   ott.rotation.y = -0.55;
   ott.castShadow = true;
   chairGroup.add(ott);
-  tagPiece(chairGroup, {
-    name: 'The Reading Chair',
-    materials: ['Cognac saddle leather', 'Solid walnut'],
-    description: 'A deep leather chair and ottoman angled toward the drafting table — the only concession to comfort in a working room.',
-  });
+  tagPieceById(chairGroup, 'archive/the-archive-reading-chair');
   group.add(chairGroup);
   addContactShadow(group, 2.4, -0.8, 1.4, 1.4, 0.5);
 
@@ -508,11 +464,7 @@ function addArchiveFurniture(group, sm, W, H, D) {
         cabinetGroup.add(file);
       }
     }
-    tagPiece(cabinetGroup, {
-      name: 'The Archive Cabinets',
-      materials: ['Dark oak', 'Cognac leather bindings'],
-      description: 'Floor-to-ceiling cabinets holding every drawing, invoice and correspondence the house has produced since the first stone was laid.',
-    });
+    tagPieceById(cabinetGroup, 'archive/the-archive-cabinets');
     group.add(cabinetGroup);
     addContactShadow(group, cx, -D / 2 + cabD / 2 + 0.1, cabW + 0.4, cabD + 0.4, 0.5);
   }

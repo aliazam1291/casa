@@ -2,7 +2,7 @@
 import * as THREE from 'three';
 import { createRoundedBoxGeometry, createFlutedCylinderGeometry } from '../geometries.js';
 import { addContactShadow } from '../shadows.js';
-import { tagPiece } from '../interactive.js';
+import { tagPieceById } from '../interactive.js';
 
 export function addBedroomFurniture(group, sm, matPanel, matAccent, W, H, D) {
   const bedW = 2.6, bedD = 3.1;
@@ -11,11 +11,7 @@ export function addBedroomFurniture(group, sm, matPanel, matAccent, W, H, D) {
   const headboard = new THREE.Mesh(createRoundedBoxGeometry(bedW + 0.5, 1.45, 0.12, 0.04, 4), sm.velvetTerracotta);
   headboard.position.set(0, 1.05, -D / 2 + 0.2);
   headboard.castShadow = true;
-  tagPiece(headboard, {
-    name: 'The Monastic Bed',
-    materials: ['Terracotta cotton velvet', 'Solid walnut', 'Washed linen'],
-    description: 'A channel-tufted headboard in terracotta velvet on a low walnut platform — six hand-run channels, each stuffed and closed by one maker.',
-  });
+  tagPieceById(headboard, 'master-suite/the-monastic-bed');
   group.add(headboard);
   for (let ch = 0; ch < 6; ch++) {
     const stitch = new THREE.Mesh(new THREE.BoxGeometry(bedW + 0.3, 0.008, 0.13), sm.metalDark);
@@ -62,11 +58,7 @@ export function addBedroomFurniture(group, sm, matPanel, matAccent, W, H, D) {
     const handle = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.015, 0.015), sm.metal);
     handle.position.set(nx * (bedW / 2 + 0.52), 0.24, -D / 2 + 0.74);
     nightstand.add(handle);
-    tagPiece(nightstand, {
-      name: 'The Marble Nightstand',
-      materials: ['Calacatta marble', 'Solid walnut', 'Champagne brass'],
-      description: 'A marble-faced nightstand with a single walnut drawer, its brass pull the only bright note in the room.',
-    });
+    tagPieceById(nightstand, 'master-suite/the-marble-nightstand');
     group.add(nightstand);
     addContactShadow(group, nx * (bedW / 2 + 0.52), -D / 2 + 0.5, 0.7, 0.6, 0.35);
 
