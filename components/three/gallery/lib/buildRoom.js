@@ -197,6 +197,44 @@ function addFalseCeiling(group, sm, W, H, D, roomName) {
     group.add(line);
   };
 
+  if (name.includes('foyer')) {
+    // Grand entrance: a two-tier plaster coffer with a brass ring and a
+    // radiating sunburst medallion overhead — the arrival room should
+    // announce itself, not blend into the same tray every social room gets.
+    const outerTray = new THREE.Mesh(new THREE.BoxGeometry(W - 0.9, 0.07, D - 0.9), recessMat);
+    outerTray.position.set(0, drop + 0.045, 0);
+    group.add(outerTray);
+    addPerimeter(0.45, 0.45, trimMat);
+
+    const medallionField = new THREE.Mesh(new THREE.CylinderGeometry(1.55, 1.55, 0.05, 32), recessMat);
+    medallionField.position.set(0, drop - 0.005, 0.2);
+    group.add(medallionField);
+
+    for (const r of [1.55, 0.9]) {
+      const ring = new THREE.Mesh(new THREE.TorusGeometry(r, 0.032, 10, 40), trimMat);
+      ring.rotation.x = Math.PI / 2;
+      ring.position.set(0, drop - 0.03, 0.2);
+      group.add(ring);
+    }
+
+    const spokeCount = 12;
+    for (let i = 0; i < spokeCount; i++) {
+      const angle = (i / spokeCount) * Math.PI * 2;
+      const spoke = new THREE.Mesh(new THREE.BoxGeometry(0.032, 0.018, 3.0), trimMat);
+      spoke.position.set(0, drop - 0.03, 0.2);
+      spoke.rotation.y = angle;
+      group.add(spoke);
+    }
+
+    const canopyGlow = new THREE.Mesh(new THREE.CircleGeometry(0.46, 28), sm.glow);
+    canopyGlow.rotation.x = Math.PI / 2;
+    canopyGlow.position.set(0, drop - 0.09, 0.2);
+    group.add(canopyGlow);
+
+    addGlowLine(0, -D / 2 + 0.62, W - 1.4, 0.045);
+    return;
+  }
+
   if (name.includes('wine') || name.includes('archive') || name.includes('study')) {
     // Dark timber coffer ceiling for the cellar and more intimate rooms.
     const inset = new THREE.Mesh(new THREE.BoxGeometry(W - 0.8, 0.055, D - 0.8), darkRecessMat);
@@ -397,12 +435,16 @@ export function buildRoom(def, roomIndex, floorIndex, sm) {
   // the slat wall, hero painting or console ledge stacked on the same surface.
   const isWineCellar = roomName.includes('wine');
   const isKitchen = roomName.includes('kitchen');
+  // The arrival room gets book-matched travertine regardless of the
+  // alternating marble/herringbone rule every other room follows — a foyer
+  // floored in herringbone reads as a hallway, not an entrance.
+  const isFoyer = roomName.includes('foyer');
 
-  const marbleFloor = !isTerrace && (floorIndex === 0 || (roomIndex % 2 === 1));
+  const marbleFloor = !isTerrace && (isFoyer || floorIndex === 0 || (roomIndex % 2 === 1));
   const wallB = getSurfBundle('plaster', def.wallColor, 3, 1.4);
   const floorB = isTerrace
     ? getSurfBundle('marble', 0xbdb2a2, 4, 4)  // riven stone paving
-    : getSurfBundle(marbleFloor ? 'marble' : 'herringbone', def.floorColor, marbleFloor ? 1.5 : 3, marbleFloor ? 1.5 : 3);
+    : getSurfBundle(marbleFloor ? 'marble' : 'herringbone', def.floorColor, marbleFloor ? (isFoyer ? 1.1 : 1.5) : 3, marbleFloor ? (isFoyer ? 1.1 : 1.5) : 3);
   const panelB = getSurfBundle('wood', def.panelColor, 1, 2);
 
   const matWall = new THREE.MeshStandardMaterial({
@@ -413,9 +455,9 @@ export function buildRoom(def, roomIndex, floorIndex, sm) {
     // Outdoor paving reads matte and coarse; interior stone stays polished.
     normalScale: new THREE.Vector2(isTerrace ? 1.15 : 0.6, isTerrace ? 1.15 : 0.6),
     roughness: 1.0, metalness: isTerrace ? 0.0 : (marbleFloor ? 0.08 : 0.02),
-    envMapIntensity: isTerrace ? 1.15 : (marbleFloor ? 2.0 : 0.9),
-    clearcoat: isTerrace ? 0.0 : (marbleFloor ? 0.85 : 0.2),
-    clearcoatRoughness: marbleFloor ? 0.06 : 0.2,
+    envMapIntensity: isTerrace ? 1.15 : (isFoyer ? 2.4 : (marbleFloor ? 2.0 : 0.9)),
+    clearcoat: isTerrace ? 0.0 : (isFoyer ? 0.95 : (marbleFloor ? 0.85 : 0.2)),
+    clearcoatRoughness: isFoyer ? 0.04 : (marbleFloor ? 0.06 : 0.2),
   });
   const matPanel = new THREE.MeshStandardMaterial({
     color: 0xffffff, map: panelB.map, normalMap: panelB.normalMap, roughnessMap: panelB.roughnessMap, normalScale: new THREE.Vector2(0.5, 0.5), roughness: 1.0, metalness: 0.02,
@@ -427,6 +469,30 @@ export function buildRoom(def, roomIndex, floorIndex, sm) {
   floor.rotation.x = -Math.PI / 2;
   floor.receiveShadow = true;
   group.add(floor);
+
+  if (isFoyer) {
+    // A brass-inlaid marble medallion underfoot, mirroring the ceiling
+    // medallion above — the arrival ritual reads top and bottom, not just up.
+    const medallionFloor = new THREE.Mesh(
+      new THREE.CircleGeometry(1.55, 48),
+      new THREE.MeshPhysicalMaterial({
+        color: 0xf1e6d2, roughness: 0.1, metalness: 0.04,
+        clearcoat: 0.95, clearcoatRoughness: 0.04, envMapIntensity: 2.4,
+      })
+    );
+    medallionFloor.rotation.x = -Math.PI / 2;
+    medallionFloor.position.set(0, 0.005, 0.2);
+    medallionFloor.receiveShadow = true;
+    group.add(medallionFloor);
+
+    const brassMat = new THREE.MeshStandardMaterial({ color: 0xc9a35a, roughness: 0.28, metalness: 0.65 });
+    for (const r of [1.55, 0.88]) {
+      const ring = new THREE.Mesh(new THREE.RingGeometry(r - 0.028, r + 0.028, 56), brassMat);
+      ring.rotation.x = -Math.PI / 2;
+      ring.position.set(0, 0.0055, 0.2);
+      group.add(ring);
+    }
+  }
 
   if (isTerrace) {
     // Open sky overhead + a slatted timber pergola casting real shadow bars.

@@ -2,7 +2,6 @@
 
 import dynamic from "next/dynamic";
 import {
-  Suspense,
   useCallback,
   useEffect,
   useRef,
@@ -10,7 +9,6 @@ import {
   type ForwardRefExoticComponent,
   type RefAttributes,
 } from "react";
-import { useSearchParams } from "next/navigation";
 import { FLOORS } from "./galleryData";
 import { useCursor } from "@/components/cursor/CursorProvider";
 import styles from "./GalleryHero.module.css";
@@ -64,10 +62,14 @@ function Chevron({ dir }: { dir: "left" | "right" }) {
  */
 // Deep link from /rooms/[slug]'s "Step inside in 3D" — e.g. /?floor=2&room=1
 // should skip the gate and drop the visitor straight into that room.
-// Computed once from the initial URL, not re-derived on every param change.
-function readDeepLink(searchParams: URLSearchParams): { floorIdx: number; roomIdx: number } | null {
-  const floorParam = searchParams.get("floor");
-  const roomParam = searchParams.get("room");
+// Read from window.location rather than useSearchParams: that hook forces a
+// Suspense boundary around this component, and a suspended boundary parks its
+// children in a display:none container — which hid the whole 3D hero on load.
+function readDeepLink(): { floorIdx: number; roomIdx: number } | null {
+  if (typeof window === "undefined") return null;
+  const params = new URLSearchParams(window.location.search);
+  const floorParam = params.get("floor");
+  const roomParam = params.get("room");
   if (floorParam === null || roomParam === null) return null;
   const floorIdx = Math.max(0, Math.min(FLOOR_LIST.length - 1, Number(floorParam)));
   if (Number.isNaN(floorIdx)) return null;
@@ -76,13 +78,11 @@ function readDeepLink(searchParams: URLSearchParams): { floorIdx: number; roomId
   return { floorIdx, roomIdx };
 }
 
-function GalleryHeroInner() {
+export function GalleryHero() {
   const sceneRef = useRef<SceneHandle | null>(null);
-  const searchParams = useSearchParams();
-  const [deepLink] = useState(() => readDeepLink(searchParams));
-  const [currentRoom, setCurrentRoom] = useState(deepLink?.roomIdx ?? 0);
-  const [currentFloor, setCurrentFloor] = useState(deepLink?.floorIdx ?? 1);
-  const [entered, setEntered] = useState(deepLink !== null);
+  const [currentRoom, setCurrentRoom] = useState(0);
+  const [currentFloor, setCurrentFloor] = useState(1);
+  const [entered, setEntered] = useState(false);
   const [floorsOpen, setFloorsOpen] = useState(false);
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [piece, setPiece] = useState<PieceInfo | null>(null);
@@ -91,16 +91,33 @@ function GalleryHeroInner() {
   const onPieceHover = useCallback((info: PieceInfo | null) => setPiece(info), []);
 
   useEffect(() => {
+    const deepLink = readDeepLink();
     if (!deepLink) return;
-    // The scene mounts on ssr:false + entered=true, so give it a tick before
-    // driving the imperative handle — this only calls the Three.js scene's
-    // own methods, not a React state setter.
-    const id = requestAnimationFrame(() => {
-      sceneRef.current?.setFloor(deepLink.floorIdx);
-      sceneRef.current?.goToRoom(deepLink.roomIdx);
-    });
-    return () => cancelAnimationFrame(id);
-  }, [deepLink]);
+    // Applied after mount rather than at declaration time: the server render
+    // has no access to the query string, so deriving it eagerly desyncs
+    // hydration. Timers rather than rAF, which never fires on a backgrounded
+    // tab — the deep link must still resolve if the visitor opens it in a
+    // background tab and switches to it later.
+    const timers: ReturnType<typeof setTimeout>[] = [];
+    timers.push(setTimeout(() => {
+      setEntered(true);
+      setCurrentFloor(deepLink.floorIdx);
+      setCurrentRoom(deepLink.roomIdx);
+      // GalleryScene is a dynamic ssr:false import, so its imperative handle
+      // may not exist yet; poll briefly rather than firing once and missing.
+      let tries = 0;
+      const drive = () => {
+        if (sceneRef.current) {
+          sceneRef.current.setFloor(deepLink.floorIdx);
+          sceneRef.current.goToRoom(deepLink.roomIdx);
+        } else if (tries++ < 60) {
+          timers.push(setTimeout(drive, 50));
+        }
+      };
+      drive();
+    }, 0));
+    return () => timers.forEach(clearTimeout);
+  }, []);
 
   const floor = FLOOR_LIST[currentFloor];
   const roomNames = floor.rooms.map((r) => r.name);
@@ -338,15 +355,5 @@ function GalleryHeroInner() {
         )}
       </div>
     </section>
-  );
-}
-
-/** useSearchParams requires a Suspense boundary; kept at the module's public
- * export so callers (app/page.tsx) don't need to know about it. */
-export function GalleryHero() {
-  return (
-    <Suspense fallback={null}>
-      <GalleryHeroInner />
-    </Suspense>
   );
 }
