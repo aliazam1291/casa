@@ -41,7 +41,7 @@ export function Footer() {
   const { ref, inView } = useReveal<HTMLDivElement>();
 
   return (
-    <footer className={styles.footer}>
+    <footer className={`${styles.footer} leather`}>
       <div className={styles.inner}>
         <div ref={ref} className={`${styles.hero} reveal ${inView ? "in" : ""}`}>
           <em>Homes</em> <span className="upright">with</span>

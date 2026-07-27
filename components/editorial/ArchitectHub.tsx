@@ -13,13 +13,16 @@ const SPEC = [
   { num: "04", title: "Install with support", body: "Placement, sequencing and the small pauses that make it feel resolved." },
 ];
 
+// Exact eight from the Brand Book's Colour System (§08).
 const COLOURS = [
-  { name: "Wolf Charcoal", hex: "#141311" },
-  { name: "Burnt Walnut", hex: "#5A3D2E" },
-  { name: "Saddle Leather", hex: "#8A5938" },
-  { name: "Aged Brass", hex: "#A78657" },
-  { name: "Linen Sand", hex: "#C9BDA6" },
-  { name: "Casa Ivory", hex: "#E8E1D3" },
+  { name: "Soft Black", hex: "#0E0E0C" },
+  { name: "Charcoal", hex: "#141311" },
+  { name: "Walnut", hex: "#5A3D2E" },
+  { name: "Green", hex: "#253528" },
+  { name: "Brass", hex: "#A78657" },
+  { name: "Saddle", hex: "#8A5938" },
+  { name: "Sand", hex: "#C9BDA6" },
+  { name: "Ivory", hex: "#E8E1D3" },
 ];
 
 export function ArchitectHub() {
@@ -69,7 +72,7 @@ export function ArchitectHub() {
         </div>
       </section>
 
-      <section className={styles.cta}>
+      <section className={`${styles.cta} leather`}>
         <p>Made for ambitious rooms — reach the Architect Hub for project support.</p>
         <Link href="/visit" onMouseEnter={() => setCursor("hover", "Request")} onMouseLeave={resetCursor}>
           Request project access

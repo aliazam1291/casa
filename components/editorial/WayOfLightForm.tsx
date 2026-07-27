@@ -17,21 +17,23 @@ const LENSES = [
   {
     tag: "02 / Form",
     title: "The honest weight of things.",
-    quote: "More is not the answer. Resolved is.",
+    quote: "Premium is not more. Premium is resolved.",
     body: "Every composition is built on proportion — the dialogue between heights, masses and the negative space that lets them breathe.",
     image: "/images/editorial/materials.png",
   },
 ];
 
+// Exact eight from the Brand Book's Colour System (§08) — page grounds
+// through to the voice colour, in the book's own order.
 const COLOURS = [
-  { name: "Wolf Charcoal", hex: "#141311" },
-  { name: "Territory Green", hex: "#253528" },
-  { name: "Burnt Walnut", hex: "#5A3D2E" },
-  { name: "Saddle Leather", hex: "#8A5938" },
-  { name: "Aged Brass", hex: "#A78657" },
-  { name: "Linen Sand", hex: "#C9BDA6" },
-  { name: "Casa Ivory", hex: "#E8E1D3" },
-  { name: "Warm Stone", hex: "#8A8376" },
+  { name: "Soft Black", hex: "#0E0E0C" },
+  { name: "Charcoal", hex: "#141311" },
+  { name: "Walnut", hex: "#5A3D2E" },
+  { name: "Green", hex: "#253528" },
+  { name: "Brass", hex: "#A78657" },
+  { name: "Saddle", hex: "#8A5938" },
+  { name: "Sand", hex: "#C9BDA6" },
+  { name: "Ivory", hex: "#E8E1D3" },
 ];
 
 const BUILDER = [

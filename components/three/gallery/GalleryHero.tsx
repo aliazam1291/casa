@@ -171,7 +171,7 @@ export function GalleryHero() {
       <div className={styles.overlay}>
         {!entered ? (
           <div className={styles.gate}>
-            <span className={styles.eyebrow}>Wolf Casa · Indore, since 2007</span>
+            <span className={styles.eyebrow}>Wolf Casa · Indore, established 2024</span>
             <h1 className={styles.gateFloor}>A room is not furnished. It is composed.</h1>
             <p className={styles.gateSub}>Step inside thirteen complete rooms — furniture, lighting, stone, joinery, greenery. One house, one composition.</p>
             <button
@@ -351,17 +351,17 @@ export function GalleryHero() {
                         cx={mapX}
                         cy={mapZ}
                         r={isActive ? 3.8 : 2.4}
-                        fill={isActive ? '#8b7355' : 'rgba(160, 140, 120, 0.5)'}
+                        fill={isActive ? '#A78657' : 'rgba(201, 168, 126, 0.5)'}
                       />
                       {isActive && (
-                        <circle cx={mapX} cy={mapZ} r="7" fill="none" stroke="#8b7355" strokeWidth="0.8" className={styles.pulseRing} />
+                        <circle cx={mapX} cy={mapZ} r="7" fill="none" stroke="#A78657" strokeWidth="0.8" className={styles.pulseRing} />
                       )}
                       <text
                         x={mapX}
                         y={mapZ + (isActive ? 8 : 6.5)}
                         textAnchor="middle"
                         fontSize="3.4"
-                        fill={isActive ? '#2b1d14' : '#8b7a6c'}
+                        fill={isActive ? '#E8E1D3' : '#a89a8c'}
                         fontWeight={isActive ? '700' : '400'}
                       >
                         {isActive ? r.name : `0${idx + 1}`}

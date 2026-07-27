@@ -81,7 +81,7 @@ const journalDepartments = [
 ];
 
 const houseDepartments = [
-  { label: "Since 2007", detail: "A working legacy built one home at a time." },
+  { label: "Since 2024", detail: "A working legacy built one home at a time." },
   { label: "110 hands", detail: "Designers, craftspeople and makers in-house." },
   { label: "40,000 sq ft", detail: "A production ecosystem built for care at scale." },
   { label: "Indore & Dewas", detail: "Both facilities, and every home built from here." },
@@ -102,10 +102,10 @@ const visitDepartments = [
 ];
 
 const defaultPalette = [
-  { name: "Shadow Ivory", material: "Lime plaster", value: "#f4efe6", note: "A quiet wall finish that lets sunlight draw the room." },
-  { name: "Walnut Grain", material: "Wood", value: "#6f4b2f", note: "Warm joinery and furniture forms with visible depth." },
-  { name: "Honed Marble", material: "Stone", value: "#d9d0c0", note: "A cool, permanent counterpoint to soft upholstery." },
-  { name: "Patinated Brass", material: "Metal", value: "#b89357", note: "Small highlights used with restraint, never as noise." },
+  { name: "Ivory", material: "Lime plaster", value: "#E8E1D3", note: "A quiet wall finish that lets sunlight draw the room." },
+  { name: "Walnut", material: "Wood", value: "#5A3D2E", note: "Warm joinery and furniture forms with visible depth." },
+  { name: "Sand", material: "Stone", value: "#C9BDA6", note: "A cool, permanent counterpoint to soft upholstery." },
+  { name: "Brass", material: "Metal", value: "#A78657", note: "Small highlights used with restraint, never as noise." },
 ];
 
 export const SITE_PAGES: Record<string, SitePage> = {
@@ -128,7 +128,7 @@ export const SITE_PAGES: Record<string, SitePage> = {
     palette: defaultPalette,
     metrics: [
       { value: "40k", label: "sq ft interior experience" },
-      { value: "2007", label: "founded, in Indore" },
+      { value: "2024", label: "founded, in Indore" },
       { value: "1", label: "home destination" },
     ],
   },
@@ -270,9 +270,9 @@ export const SITE_PAGES: Record<string, SitePage> = {
     description: "Meet the people, craft and legacy behind Wolf Casa.",
     image: villa,
     imageAlt: "A warm contemporary Indian residence with crafted materials",
-    intro: "Since 2007, Wolf Casa has made homes through a close relationship with craft, international sourcing and the people who live in the rooms — from Indore and, since expanding, Dewas.",
+    intro: "Established 2024, Wolf Casa makes homes through a close relationship with craft, international sourcing and the people who live in the rooms — from Indore and, since expanding, Dewas.",
     cards: [
-      { eyebrow: "Since 2007", title: "A working legacy", body: "Built through long relationships with makers, materials and homes across India.", href: "/visit", signal: "Experience", image: villa },
+      { eyebrow: "Since 2024", title: "A working legacy", body: "Built through long relationships with makers, materials and homes across India.", href: "/visit", signal: "Experience", image: villa },
       { eyebrow: "110 hands", title: "A house of specialists", body: "Designers, craftspeople and makers who understand the value of a considered finish.", href: "/architects", signal: "Craft network", image: sojourn },
       { eyebrow: "40,000 sq ft", title: "Made with capacity", body: "A production ecosystem across Indore and Dewas that lets care survive at scale.", href: "/experiences/furniture-tourism", signal: "Scale and care", image: materials },
     ],
@@ -281,7 +281,7 @@ export const SITE_PAGES: Record<string, SitePage> = {
     departments: houseDepartments,
     palette: defaultPalette,
     metrics: [
-      { value: "2007", label: "founded, in Indore" },
+      { value: "2024", label: "founded, in Indore" },
       { value: "110", label: "specialist hands" },
       { value: "40k", label: "sq ft across Indore & Dewas" },
     ],

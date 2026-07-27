@@ -58,7 +58,7 @@ export function TheHouse() {
         <div className={styles.heroFrame}>
           <p className={styles.kicker}>The House</p>
           <h1>Modern Indian living, carefully composed.</h1>
-          <p>Since 2007, Wolf Casa has made homes through a close relationship with craft, international sourcing and the people who live in the rooms — from Indore and, since expanding, Dewas.</p>
+          <p>Established 2024, Wolf Casa makes homes through a close relationship with craft, international sourcing and the people who live in the rooms — from Indore and, since expanding, Dewas.</p>
         </div>
       </section>
 

@@ -4,10 +4,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { useCursor } from "@/components/cursor/CursorProvider";
 import { useReveal } from "@/hooks/useReveal";
-import { WORLDS } from "@/lib/worlds";
+import { COMPOSITIONS } from "@/lib/compositions";
 import styles from "./TheWolfWay.module.css";
-
-const WORLD_SLUGS = ["heirloom", "low-house", "courtyard", "monastic", "ritual"];
 
 const DNA = [
   { tag: "01", title: "Instinct", body: "Order felt before it is read." },
@@ -18,17 +16,18 @@ const DNA = [
   { tag: "06", title: "Precision", body: "Nothing accidental. Everything placed." },
 ];
 
+// Book-exact titles (Brand Book §03 The Wolf Way — Ten Principles).
 const PRINCIPLES = [
   { title: "Begin with light", body: "Light decides mood before furniture." },
-  { title: "Anchor the room", body: "One dominant form per composition." },
-  { title: "Layer material", body: "Wood, fabric, stone, brass converse." },
+  { title: "Anchor the room with one form", body: "One dominant form per composition." },
+  { title: "Layer the material", body: "Wood, fabric, stone, brass converse." },
   { title: "Create a quiet edge", body: "Composed rooms need breathing space." },
-  { title: "Comfort & command", body: "Invite use, but hold presence." },
+  { title: "Balance comfort and command", body: "Invite use, but hold presence." },
   { title: "Sell the composition", body: "Never the sofa alone." },
-  { title: "Texture as memory", body: "The hand confirms what the eye believes." },
+  { title: "Use texture as memory", body: "The hand confirms what the eye believes." },
   { title: "Let silence work", body: "Empty space carries value." },
   { title: "Design for ritual", body: "Every room suggests a way of living." },
-  { title: "Place them inside", body: "The sale begins in the imagination." },
+  { title: "Place the customer inside it", body: "The sale begins in the imagination." },
 ];
 
 export function TheWolfWay() {
@@ -75,14 +74,15 @@ export function TheWolfWay() {
       </section>
 
       <section className={styles.worlds}>
-        <p className={styles.sectionLabel}>Five Worlds</p>
-        <h2>One doctrine, five atmospheres.</h2>
+        <p className={styles.sectionLabel}>Eight Signature Compositions</p>
+        <h2>One doctrine, eight named rooms.</h2>
         <div className={styles.worldList}>
-          {WORLDS.map((world, index) => (
-            <article key={world.name} id={WORLD_SLUGS[index]} className={styles.worldRow}>
-              <span>{String(index + 1).padStart(2, "0")} / 05</span>
-              <h3>{world.name}</h3>
-              <p>{world.desc}</p>
+          {COMPOSITIONS.map((composition, index) => (
+            <article key={composition.slug} id={composition.slug} className={styles.worldRow}>
+              <span>{String(index + 1).padStart(2, "0")} / 08</span>
+              <h3>{composition.name}</h3>
+              <p>{composition.blurb}</p>
+              <blockquote>&ldquo;{composition.pullQuote}&rdquo;</blockquote>
             </article>
           ))}
         </div>

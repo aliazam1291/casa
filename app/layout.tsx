@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Fraunces, Inter } from "next/font/google";
+import { Cormorant, Jost } from "next/font/google";
 import "./globals.css";
 import { CursorProvider } from "@/components/cursor/CursorProvider";
 import { CustomCursor } from "@/components/cursor/CustomCursor";
@@ -9,17 +9,20 @@ import { Spotlight } from "@/components/chrome/Spotlight";
 import { Nav } from "@/components/nav/Nav";
 import { CONTACT } from "@/lib/contact";
 
-// Fraunces + Inter replace the earlier Cormorant/Archivo pairing — Cormorant's
-// calligraphic italic read as too ornamental at heading scale; Fraunces has a
-// calmer, more structured italic while still reading as an editorial serif.
-const archivo = Inter({
+// Cormorant (display/voice — headlines, pull-quotes, italic accent) + Jost
+// (system/labels — labels, captions, specs, interface): the Brand Book's
+// two-role type system. ("Posterama," the book's third, display-only face
+// for the wordmark and composition names, is a licensed face we don't have
+// access to — dropped per the client's own call; Jost at display scale
+// carries those roles instead.)
+const archivo = Jost({
   variable: "--font-archivo",
   subsets: ["latin"],
   weight: ["300", "400", "500", "600"],
   display: "swap",
 });
 
-const cormorant = Fraunces({
+const cormorant = Cormorant({
   variable: "--font-cormorant",
   subsets: ["latin"],
   style: ["normal", "italic"],
@@ -36,7 +39,7 @@ export const metadata: Metadata = {
   robots: { index: true, follow: true },
   title: "Wolf Casa — Way of Light & Form",
   description:
-    "A room is not furnished. It is composed. Thirteen complete rooms, one house — Indore, India, since 2007.",
+    "A room is not furnished. It is composed. Thirteen complete rooms, one house — Indore, India, established 2024.",
 };
 
 export default function RootLayout({
@@ -47,7 +50,6 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${archivo.variable} ${cormorant.variable}`} suppressHydrationWarning>
       <head>
-        <link rel="preconnect" href="https://images.unsplash.com" crossOrigin="anonymous" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{

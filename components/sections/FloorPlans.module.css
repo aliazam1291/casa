@@ -1,4 +1,4 @@
-.section { padding: 22vh var(--gutter); background: var(--cream-light); color: var(--fg); }
+.section { padding: 22vh var(--gutter); background: var(--bg-2); color: var(--fg); }
 .heading { display: flex; justify-content: space-between; gap: 48px; margin-bottom: 14vh; }
 .heading > div > span, .note > span { color: var(--walnut); font-family: var(--sans); font-size: 10px; font-weight: 600; letter-spacing: .2em; text-transform: uppercase; }
 .heading > div > p { margin-top: 22px; color: var(--fg-dim); font-family: var(--serif); font-size: 21px; font-style: italic; line-height: 1.25; }
@@ -11,15 +11,15 @@
 .floors button:hover, .floors .floorActive { padding-left: 9px; color: var(--fg); }
 .planWrap { position: relative; display: grid; min-height: 560px; place-items: center; padding: 12%; border-right: 1px solid var(--line); background: radial-gradient(circle at 50% 48%, rgba(212, 184, 122, .09), transparent 52%); }
 .plan { width: min(100%, 620px); overflow: visible; }
-.gridLine { fill: none; stroke: rgba(42, 36, 32, .07); stroke-width: .18; }
+.gridLine { fill: none; stroke: rgba(232, 225, 211, .07); stroke-width: .18; }
 .hatchLine { stroke: var(--walnut); stroke-width: .3; opacity: .32; }
 /* Poché — the solid cut through the outer wall that reads as built mass. */
 .poche { fill: none; stroke: var(--fg); stroke-width: 1.4; }
-.outline { fill: none; stroke: rgba(42, 36, 32, .3); stroke-width: .2; }
+.outline { fill: none; stroke: rgba(232, 225, 211, .3); stroke-width: .2; }
 
 .room, .roomActive, .plan g:focus { cursor: none; outline: none; }
-.roomFill { fill: rgba(107, 88, 68, .035); transition: fill .4s ease; }
-.roomStroke { fill: none; stroke: rgba(42, 36, 32, .4); stroke-width: .3; transition: stroke .4s ease, stroke-width .4s ease; }
+.roomFill { fill: rgba(201, 168, 126, .05); transition: fill .4s ease; }
+.roomStroke { fill: none; stroke: rgba(232, 225, 211, .4); stroke-width: .3; transition: stroke .4s ease, stroke-width .4s ease; }
 .roomHatch { pointer-events: none; }
 .tick { fill: none; stroke: var(--walnut); stroke-width: .3; opacity: 0; transition: opacity .4s ease; }
 .roomLabel { fill: var(--fg-dim); font-family: var(--sans); font-size: 2.5px; font-weight: 600; letter-spacing: .06em; pointer-events: none; transition: fill .4s ease; }
@@ -35,8 +35,8 @@
 
 /* Doorways: a break through the double wall line plus a swing arc, drawn
    wherever two room rectangles actually share a wall. */
-.doorGap { fill: var(--cream-light); }
-.doorSwing { fill: none; stroke: rgba(42, 36, 32, .3); stroke-width: .16; stroke-dasharray: .4 .4; }
+.doorGap { fill: var(--bg-2); }
+.doorSwing { fill: none; stroke: rgba(232, 225, 211, .3); stroke-width: .16; stroke-dasharray: .4 .4; }
 .doorLeaf { stroke: var(--fg-dim); stroke-width: .3; }
 
 .dim { fill: none; stroke: var(--walnut); stroke-width: .22; opacity: .65; }

@@ -148,14 +148,18 @@ const GalleryScene = forwardRef(function GalleryScene({ onRoomChange, onFloorCha
     const onContextLost = (e) => { e.preventDefault(); };
     renderer.domElement.addEventListener('webglcontextlost', onContextLost, false);
 
+    // Evening re-grade: initial background/fog match the Grand Foyer mood
+    // (the room the scene opens in) instead of the old daylight cream —
+    // applyMood() takes over every frame after mount and lerps both toward
+    // whichever room is active.
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0xece3d2);
-    scene.fog = new THREE.FogExp2(0xece3d2, 0.012);
+    scene.background = new THREE.Color(0x231f18);
+    scene.fog = new THREE.FogExp2(0x231f18, 0.012);
 
     const pmrem = new THREE.PMREMGenerator(renderer);
     const envRT = pmrem.fromScene(new RoomEnvironment(), 0.04);
     scene.environment = envRT.texture;
-    scene.environmentIntensity = 0.48;
+    scene.environmentIntensity = 0.32;
 
     const camera = new THREE.PerspectiveCamera(42, W / H, 0.1, 140);
     const initialCam = getRoomCamAnchor(1, 0);

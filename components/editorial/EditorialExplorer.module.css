@@ -30,10 +30,10 @@
 .materialLab { display: grid; grid-template-columns: minmax(0, 1fr) minmax(340px, 520px); gap: clamp(40px, 9vw, 150px); align-items: center; padding: 16vh var(--gutter); background: var(--bg-2); }
 .materialCopy h2 { max-width: 740px; margin: 24px 0; font-family: var(--serif); font-size: clamp(42px, 5.4vw, 84px); font-style: italic; font-weight: 400; line-height: .92; }
 .materialCopy > p:last-child { max-width: 520px; color: var(--fg-dim); font-size: 15px; line-height: 1.75; }
-.swatchPanel { border: 1px solid var(--line); background: rgba(255, 255, 255, .28); }
+.swatchPanel { border: 1px solid var(--line); background: rgba(20, 19, 17, .55); }
 .swatches { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px; background: var(--line); }
 .swatches button { display: flex; min-height: 78px; align-items: center; gap: 14px; border: 0; background: var(--bg); padding: 18px; color: var(--fg); font-family: var(--sans); font-size: 11px; font-weight: 650; letter-spacing: .1em; text-align: left; text-transform: uppercase; cursor: pointer; }
-.swatches i { width: 28px; height: 28px; flex: 0 0 auto; border: 1px solid rgba(0, 0, 0, .16); border-radius: 999px; box-shadow: inset 0 0 0 5px rgba(255, 255, 255, .28); }
+.swatches i { width: 28px; height: 28px; flex: 0 0 auto; border: 1px solid rgba(232, 225, 211, .22); border-radius: 999px; box-shadow: inset 0 0 0 5px rgba(20, 19, 17, .35); }
 .swatches .activeSwatch { background: var(--fg); color: var(--bg); }
 .materialCard { min-height: 250px; padding: 34px; }
 .materialCard h3 { margin: 18px 0; font-family: var(--serif); font-size: clamp(38px, 4vw, 62px); font-style: italic; font-weight: 400; line-height: .9; }
@@ -58,13 +58,13 @@
 .featureBody p { max-width: 390px; color: var(--fg-dim); font-size: 15px; line-height: 1.75; }
 .chapterFeature a { margin-top: 34px; }
 
-.principles { display: grid; grid-template-columns: minmax(150px, .55fr) minmax(0, 2fr); gap: clamp(30px, 8vw, 150px); padding: 14vh var(--gutter); background: #1d1814; color: var(--bg); }
-.principles .sectionLabel { color: rgba(244, 239, 230, .58); }
-.principles button { display: grid; width: 100%; grid-template-columns: 64px 1fr 28px; gap: 18px; border: 0; border-top: 1px solid rgba(244, 239, 230, .18); background: transparent; padding: 30px 0; color: inherit; text-align: left; cursor: pointer; }
+.principles { display: grid; grid-template-columns: minmax(150px, .55fr) minmax(0, 2fr); gap: clamp(30px, 8vw, 150px); padding: 14vh var(--gutter); background: #1d1814; color: var(--cream-light); }
+.principles .sectionLabel { color: rgba(232, 225, 211, .58); }
+.principles button { display: grid; width: 100%; grid-template-columns: 64px 1fr 28px; gap: 18px; border: 0; border-top: 1px solid rgba(232, 225, 211, .18); background: transparent; padding: 30px 0; color: inherit; text-align: left; cursor: pointer; }
 .principles button span { color: var(--page-accent); font-family: var(--sans); font-size: 10px; font-weight: 700; letter-spacing: .16em; }
 .principles button strong { font-family: var(--serif); font-size: clamp(28px, 3.5vw, 54px); font-style: italic; font-weight: 400; line-height: .96; }
 .principles button i { font-size: 22px; font-style: normal; text-align: right; }
-.principles button p { grid-column: 2 / 4; max-width: 520px; color: rgba(244, 239, 230, .68); font-size: 14px; line-height: 1.7; }
+.principles button p { grid-column: 2 / 4; max-width: 520px; color: rgba(232, 225, 211, .68); font-size: 14px; line-height: 1.7; }
 
 @media (max-width: 1100px) {
   .heroFrame, .materialLab, .chapterGrid, .chapterFeature { grid-template-columns: 1fr; }

@@ -64,11 +64,11 @@ export function VisitPage() {
         <div className={styles.compare}>
           <article>
             <span>The Old Way</span>
-            <p>&ldquo;This sofa is available in this colour and size.&rdquo;</p>
+            <p>&ldquo;This sofa comes in three fabrics and two sizes.&rdquo;</p>
           </article>
           <article className={styles.wolfWay}>
             <span>The Wolf Casa Way</span>
-            <p>&ldquo;This sofa anchors the room. With the rug, brass lamp and wall texture, it becomes a complete evening lounge. You are buying the room&rsquo;s mood.&rdquo;</p>
+            <p>&ldquo;This sofa anchors the room. With the rug, the low light and the stone table, it becomes an evening you&rsquo;ll want to come home to.&rdquo;</p>
           </article>
         </div>
       </section>

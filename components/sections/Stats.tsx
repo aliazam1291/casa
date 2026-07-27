@@ -9,10 +9,10 @@ import styles from "./Stats.module.css";
 
 type Stat = { target: number; suffix: string; label: string };
 
-const FOUNDED_YEAR = 2007;
+const FOUNDED_YEAR = 2024;
 
 const STATS: Stat[] = [
-  { target: new Date().getFullYear() - FOUNDED_YEAR, suffix: " yrs", label: "Since 2007 — Indore & Dewas" },
+  { target: FOUNDED_YEAR, suffix: "", label: "Established — Indore & Dewas" },
   { target: 40, suffix: "k ft²", label: "Across both facilities" },
   { target: 110, suffix: "+", label: "Specialist hands in-house" },
   { target: PIECES.length, suffix: "", label: `Named pieces across ${ROOMS.length} rooms` },

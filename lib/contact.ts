@@ -6,9 +6,13 @@
 // (wolfcasa.nowfloats.com, tel: link in the page header). Email is still
 // unconfirmed and left blank — every consumer of this file already handles
 // the empty-string case by omitting that row rather than rendering it blank.
+//
+// founded: 2024 per the client's own Brand Book ("Established since 2024"),
+// per explicit instruction — this supersedes the earlier 2007 figure sourced
+// from public directory listings.
 export const CONTACT = {
   brand: "Wolf Casa",
-  founded: 2007,
+  founded: 2024,
   city: "Indore",
   region: "Madhya Pradesh, India",
   facilities: "A combined 40,000 sq ft across Indore and Dewas",

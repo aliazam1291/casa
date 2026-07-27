@@ -25,6 +25,7 @@
 .worldRow span { color: var(--walnut); font-family: var(--sans); font-size: 10px; font-weight: 700; letter-spacing: .12em; }
 .worldRow h3 { font-family: var(--serif); font-size: clamp(22px, 2.4vw, 32px); font-style: italic; font-weight: 400; }
 .worldRow p { color: var(--fg-dim); font-size: 13.5px; line-height: 1.6; }
+.worldRow blockquote { grid-column: 2 / 4; margin-top: 12px; color: var(--walnut); font-family: var(--serif); font-size: 15px; font-style: italic; line-height: 1.5; }
 
 /* ---- Ten principles, editorial index ---- */
 .principles { padding: 6vh var(--gutter) 14vh; }
@@ -39,7 +40,7 @@
 .desc { color: var(--fg-dim); font-size: 13.5px; line-height: 1.65; }
 
 /* ---- Closing manifesto ---- */
-.manifesto { display: flex; flex-direction: column; align-items: center; gap: 34px; padding: 16vh var(--gutter); border-top: 1px solid rgba(244, 239, 230, .18); background: var(--espresso); color: var(--cream-light); text-align: center; }
+.manifesto { display: flex; flex-direction: column; align-items: center; gap: 34px; padding: 16vh var(--gutter); border-top: 1px solid rgba(232, 225, 211, .18); background: var(--espresso); color: var(--cream-light); text-align: center; }
 .manifesto p { max-width: 780px; font-family: var(--serif); font-size: clamp(30px, 4.6vw, 60px); font-style: italic; font-weight: 400; line-height: 1.12; }
 .manifesto a { display: inline-flex; min-height: 46px; align-items: center; border: 1px solid var(--cream-light); padding: 0 22px; font-family: var(--sans); font-size: 10px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; transition: background .25s ease, color .25s ease; }
 .manifesto a:hover { background: var(--gold); border-color: var(--gold); color: var(--espresso); }
@@ -49,7 +50,7 @@
   .row { grid-template-columns: 90px minmax(0, 1fr); }
   .desc { grid-column: 1 / 3; }
   .worldRow { grid-template-columns: 70px minmax(0, 1fr); }
-  .worldRow p { grid-column: 1 / 3; }
+  .worldRow p, .worldRow blockquote { grid-column: 1 / 3; }
 }
 
 @media (max-width: 720px) {

@@ -160,7 +160,7 @@
   border-right: 1px solid var(--line);
   border-bottom: 1px solid var(--line);
   padding: clamp(24px, 3vw, 40px);
-  background: rgba(255, 255, 255, .28);
+  background: rgba(20, 19, 17, .5);
 }
 
 .departments h3 {
