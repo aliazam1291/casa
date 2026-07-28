@@ -49,6 +49,43 @@ function makeLineLoop(rect, y, color, opacity) {
   return new THREE.Line(geo, mat);
 }
 
+// A rectangle drawn on a *vertical* facade plane (fixed Z, X/Y vary) —
+// the window/door motif, as opposed to makeLineLoop's horizontal roof-plan
+// rectangles (fixed Y, X/Z vary).
+function makeFacadeRect(cx, y0, w, h, z, color, opacity) {
+  const pts = [
+    [cx - w / 2, y0], [cx + w / 2, y0], [cx + w / 2, y0 + h], [cx - w / 2, y0 + h], [cx - w / 2, y0],
+  ].map(([x, y]) => new THREE.Vector3(x, y, z));
+  const geo = new THREE.BufferGeometry().setFromPoints(pts);
+  return new THREE.Line(geo, new THREE.LineBasicMaterial({ color, transparent: true, opacity }));
+}
+
+// Windows along the front/back facades, plus a door on the ground floor —
+// the detail that reads "house" instead of "box." Sketch-weight ink lines
+// only, no glass fill.
+function addFacadeDetails(group, envSize, floorY, isGround) {
+  const count = 4;
+  const usableW = envSize.w * 0.72;
+  const startX = envSize.cx - usableW / 2;
+  const winW = (usableW / count) * 0.5;
+  const winH = WALL_HEIGHT * 0.42;
+  const winY = floorY + WALL_HEIGHT * 0.32;
+  const doorW = winW * 1.15;
+  const doorH = WALL_HEIGHT * 0.62;
+  const doorIndex = Math.floor(count / 2);
+
+  [envSize.cz - envSize.d / 2, envSize.cz + envSize.d / 2].forEach((z, faceIdx) => {
+    for (let i = 0; i < count; i++) {
+      const cx = startX + (usableW * (i + 0.5)) / count;
+      if (isGround && faceIdx === 0 && i === doorIndex) {
+        group.add(makeFacadeRect(cx, floorY, doorW, doorH, z, IVORY, 0.55));
+        continue;
+      }
+      group.add(makeFacadeRect(cx, winY, winW, winH, z, IVORY, 0.4));
+    }
+  });
+}
+
 const VillaScene = forwardRef(function VillaScene({ onRoomHover, onRoomClick }, ref) {
   const mountRef = useRef(null);
 
@@ -100,15 +137,12 @@ const VillaScene = forwardRef(function VillaScene({ onRoomHover, onRoomClick }, 
     const cornerPoints = []; // per-floor envelope TOP corners, for vertical connectors
 
     const envSize = rectSize(ENVELOPE);
-    const wallMat = new THREE.MeshStandardMaterial({
-      color: 0x18140f,
-      transparent: true,
-      opacity: 0.62,
-      roughness: 0.9,
-      metalness: 0.05,
-      side: THREE.DoubleSide,
-    });
-    const roofMat = new THREE.MeshStandardMaterial({ color: 0x141311, roughness: 0.85, side: THREE.DoubleSide });
+    // Unlit and nearly transparent — a sketch reads through its ink lines,
+    // not through a shaded, lit solid. The previous MeshStandardMaterial at
+    // 0.62 opacity, catching a directional light, is exactly what made this
+    // look like rendered CAD boxes instead of a drawing.
+    const wallMat = new THREE.MeshBasicMaterial({ color: 0x18140f, transparent: true, opacity: 0.07, side: THREE.DoubleSide });
+    const roofMat = new THREE.MeshBasicMaterial({ color: 0x18140f, transparent: true, opacity: 0.12, side: THREE.DoubleSide });
 
     FLOORS.forEach((floor, floorIndex) => {
       const y = floorIndex * FLOOR_GAP;
@@ -128,6 +162,8 @@ const VillaScene = forwardRef(function VillaScene({ onRoomHover, onRoomClick }, 
       );
       edges.position.copy(box.position);
       group.add(edges);
+
+      addFacadeDetails(group, envSize, 0, floorIndex === 0);
 
       cornerPoints.push(rectCorners(ENVELOPE).map(([x, z]) => new THREE.Vector3(x, y + WALL_HEIGHT, z)));
 
@@ -184,12 +220,6 @@ const VillaScene = forwardRef(function VillaScene({ onRoomHover, onRoomClick }, 
         scene.add(line);
       }
     }
-
-    const ambient = new THREE.AmbientLight(0xfff1dc, 0.7);
-    scene.add(ambient);
-    const key = new THREE.DirectionalLight(0xffe8c8, 0.9);
-    key.position.set(8, 14, 6);
-    scene.add(key);
 
     const raycaster = new THREE.Raycaster();
     const pointer = new THREE.Vector2();
