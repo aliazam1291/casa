@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useState } from "react";
+import * as Tabs from "@radix-ui/react-tabs";
 import { useCursor } from "@/components/cursor/CursorProvider";
 import { useReveal } from "@/hooks/useReveal";
 import { MATERIAL_IMAGES } from "@/lib/library-images";
@@ -90,53 +91,59 @@ export function MaterialsBoard() {
         </p>
       </div>
 
-      {/* Material selector tabs */}
-      <nav className={styles.tabs} aria-label="Material categories">
-        {MATERIALS.map((m) => (
-          <button
-            key={m.id}
-            type="button"
-            className={`${styles.tab} ${active === m.id ? styles.tabActive : ""}`}
-            onClick={() => setActive(m.id)}
-            onMouseEnter={() => setCursor("hover", m.label)}
-            onMouseLeave={resetCursor}
-            style={{ "--tab-accent": m.accent } as React.CSSProperties}
-          >
-            <span className={styles.tabLabel}>{m.label}</span>
-            <span className={styles.tabSub}>{m.subtitle}</span>
-          </button>
-        ))}
-      </nav>
+      {/* Material selector tabs — Radix gives this real tablist semantics
+          (roving tabindex, arrow-key navigation, aria-selected/aria-controls)
+          instead of a row of plain buttons faking the role. */}
+      <Tabs.Root value={active} onValueChange={setActive}>
+        <Tabs.List className={styles.tabs} aria-label="Material categories">
+          {MATERIALS.map((m) => (
+            <Tabs.Trigger
+              key={m.id}
+              value={m.id}
+              className={`${styles.tab} ${active === m.id ? styles.tabActive : ""}`}
+              onMouseEnter={() => setCursor("hover", m.label)}
+              onMouseLeave={resetCursor}
+              style={{ "--tab-accent": m.accent } as React.CSSProperties}
+            >
+              <span className={styles.tabLabel}>{m.label}</span>
+              <span className={styles.tabSub}>{m.subtitle}</span>
+            </Tabs.Trigger>
+          ))}
+        </Tabs.List>
 
-      {/* Active material detail panel */}
-      <div className={styles.panel} key={material.id}>
-        <div className={styles.panelImage}>
-          <Image
-            src={material.image}
-            alt={material.heading}
-            fill
-            sizes="(max-width: 900px) 100vw, 55vw"
-            priority={active === "marble"}
-          />
-          <div className={styles.panelImageOverlay} />
-          <span className={styles.panelTag}>{material.label} · Wolf Casa Library</span>
-        </div>
-        <div className={styles.panelInfo}>
-          <small className={styles.panelEyebrow}>{material.subtitle}</small>
-          <h3 className={styles.panelTitle}>{material.heading}</h3>
-          <p className={styles.panelBody}>{material.body}</p>
-          <dl className={styles.specList}>
-            {material.specs.map((s) => (
-              <div key={s.key} className={styles.specRow}>
-                <dt>{s.key}</dt>
-                <dd>{s.value}</dd>
-              </div>
-            ))}
-          </dl>
-        </div>
-      </div>
+        {/* Active material detail panel */}
+        <Tabs.Content value={active} asChild>
+          <div className={styles.panel} key={material.id}>
+            <div className={styles.panelImage}>
+              <Image
+                src={material.image}
+                alt={material.heading}
+                fill
+                sizes="(max-width: 900px) 100vw, 55vw"
+                priority={active === "marble"}
+              />
+              <div className={styles.panelImageOverlay} />
+              <span className={styles.panelTag}>{material.label} · Wolf Casa Library</span>
+            </div>
+            <div className={styles.panelInfo}>
+              <small className={styles.panelEyebrow}>{material.subtitle}</small>
+              <h3 className={styles.panelTitle}>{material.heading}</h3>
+              <p className={styles.panelBody}>{material.body}</p>
+              <dl className={styles.specList}>
+                {material.specs.map((s) => (
+                  <div key={s.key} className={styles.specRow}>
+                    <dt>{s.key}</dt>
+                    <dd>{s.value}</dd>
+                  </div>
+                ))}
+              </dl>
+            </div>
+          </div>
+        </Tabs.Content>
+      </Tabs.Root>
 
-      {/* Grid of all 4 material thumbnails */}
+      {/* Grid of all 4 material thumbnails — a second, always-visible way to
+          switch material alongside the tablist above. */}
       <div className={styles.thumbGrid}>
         {MATERIALS.map((m, i) => (
           <div

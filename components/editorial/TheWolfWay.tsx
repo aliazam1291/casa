@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import * as Accordion from "@radix-ui/react-accordion";
 import { useCursor } from "@/components/cursor/CursorProvider";
 import { useReveal } from "@/hooks/useReveal";
 import { CompositionExhibit } from "./CompositionExhibit";
@@ -82,20 +83,30 @@ export function TheWolfWay() {
             <p className={styles.sectionLabel}>The Wolf Way / The Method</p>
           </div>
         </div>
-        <div className={styles.index}>
+        {/* Radix Accordion: one principle open at a time, real keyboard
+            support (Space/Enter to toggle, Home/End to jump), correct
+            aria-expanded/aria-controls — replacing a row that used to show
+            every description at once regardless of interest. */}
+        <Accordion.Root type="single" collapsible className={styles.index}>
           {PRINCIPLES.map((item, index) => (
-            <div
-              key={item.title}
-              className={styles.row}
-              onMouseEnter={() => setCursor("hover", String(index + 1).padStart(2, "0"))}
-              onMouseLeave={resetCursor}
-            >
-              <span className={styles.num}>{String(index + 1).padStart(2, "0")}</span>
-              <span className={styles.title}>{item.title}</span>
-              <span className={styles.desc}>{item.body}</span>
-            </div>
+            <Accordion.Item key={item.title} value={item.title} className={styles.row}>
+              <Accordion.Header asChild>
+                <Accordion.Trigger
+                  className={styles.rowTrigger}
+                  onMouseEnter={() => setCursor("hover", String(index + 1).padStart(2, "0"))}
+                  onMouseLeave={resetCursor}
+                >
+                  <span className={styles.num}>{String(index + 1).padStart(2, "0")}</span>
+                  <span className={styles.title}>{item.title}</span>
+                  <span className={styles.rowIcon} aria-hidden>+</span>
+                </Accordion.Trigger>
+              </Accordion.Header>
+              <Accordion.Content className={styles.accordionContent}>
+                <span className={styles.desc}>{item.body}</span>
+              </Accordion.Content>
+            </Accordion.Item>
           ))}
-        </div>
+        </Accordion.Root>
       </section>
 
       <section className={styles.manifesto}>

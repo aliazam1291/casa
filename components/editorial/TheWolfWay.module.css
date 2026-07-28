@@ -32,12 +32,40 @@
 .principlesHead { display: flex; align-items: baseline; justify-content: space-between; gap: 20px; margin-bottom: 20px; padding-top: 40px; border-top: 1px solid var(--line); }
 .principlesHead h2 { max-width: 560px; font-family: var(--serif); font-size: clamp(34px, 4.4vw, 66px); font-style: italic; font-weight: 400; line-height: .98; }
 .index { border-top: 1px solid var(--fg); }
-.row { display: grid; grid-template-columns: 140px minmax(0, 1fr) minmax(220px, .5fr); gap: clamp(16px, 3vw, 40px); align-items: center; border-bottom: 1px solid var(--line); padding: clamp(22px, 3vw, 34px) 0; transition: background .25s ease, padding-left .25s ease; }
-.row:hover { padding-left: 14px; background: var(--bg-2); }
+.row { border-bottom: 1px solid var(--line); }
+.rowTrigger {
+  display: grid;
+  width: 100%;
+  grid-template-columns: 140px minmax(0, 1fr) 40px;
+  gap: clamp(16px, 3vw, 40px);
+  align-items: center;
+  background: none;
+  border: 0;
+  padding: clamp(22px, 3vw, 34px) 0;
+  cursor: none;
+  text-align: left;
+  transition: background .25s ease, padding-left .25s ease;
+}
+.rowTrigger:hover, .rowTrigger[data-state="open"] { padding-left: 14px; background: var(--bg-2); }
 .num { font-family: var(--serif); font-size: clamp(38px, 4.2vw, 62px); font-style: italic; font-weight: 400; color: var(--fg-faint); line-height: 1; }
-.row:hover .num { color: var(--gold); }
+.rowTrigger:hover .num, .rowTrigger[data-state="open"] .num { color: var(--gold); }
 .title { font-family: var(--serif); font-size: clamp(22px, 2.4vw, 34px); font-style: italic; font-weight: 400; line-height: 1.08; }
-.desc { color: var(--fg-dim); font-size: 13.5px; line-height: 1.65; }
+.rowIcon {
+  justify-self: end;
+  font-family: var(--sans);
+  font-size: 20px;
+  font-weight: 300;
+  color: var(--fg-faint);
+  transition: transform .3s ease, color .3s ease;
+}
+.rowTrigger[data-state="open"] .rowIcon { color: var(--gold); transform: rotate(45deg); }
+
+.accordionContent { overflow: hidden; }
+.accordionContent[data-state="open"] { animation: accordionOpen 280ms var(--ease-gallery, ease) both; }
+.accordionContent[data-state="closed"] { animation: accordionClose 220ms var(--ease-gallery, ease) both; }
+@keyframes accordionOpen { from { height: 0; } to { height: var(--radix-accordion-content-height); } }
+@keyframes accordionClose { from { height: var(--radix-accordion-content-height); } to { height: 0; } }
+.desc { display: block; max-width: 640px; margin: 0 0 28px 140px; color: var(--fg-dim); font-size: 13.5px; line-height: 1.65; }
 
 /* ---- Closing manifesto ---- */
 .manifesto { display: flex; flex-direction: column; align-items: center; gap: 34px; padding: 16vh var(--gutter); border-top: 1px solid rgba(232, 225, 211, .18); background: var(--espresso); color: var(--cream-light); text-align: center; }
@@ -47,8 +75,8 @@
 
 @media (max-width: 1100px) {
   .dnaGrid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-  .row { grid-template-columns: 90px minmax(0, 1fr); }
-  .desc { grid-column: 1 / 3; }
+  .rowTrigger { grid-template-columns: 90px minmax(0, 1fr) 32px; }
+  .desc { margin-left: 90px; }
   .worldRow { grid-template-columns: 70px minmax(0, 1fr); }
   .worldRow p, .worldRow blockquote { grid-column: 1 / 3; }
 }

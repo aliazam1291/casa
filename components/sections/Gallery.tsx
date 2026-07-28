@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import * as Dialog from "@radix-ui/react-dialog";
 import Image from "next/image";
 import Link from "next/link";
 import { PIECES, type Piece } from "@/lib/pieces";
@@ -134,81 +135,93 @@ export function Gallery() {
         ))}
       </div>
 
-      {/* Lightbox / Curation Detail Modal */}
-      {selectedPiece && (
-        <div className={styles.modalOverlay} onClick={() => setSelectedPiece(null)}>
-          <div className={styles.modalCard} onClick={(e) => e.stopPropagation()}>
-            <button
-              className={styles.closeBtn}
-              onClick={() => setSelectedPiece(null)}
-              onMouseEnter={() => setCursor("hover", "Close")}
-              onMouseLeave={resetCursor}
-            >
-              ✕
-            </button>
-            <div className={styles.modalGrid}>
-              <div className={styles.modalImageWrap}>
-                <Image
-                  src={getPieceImage(selectedPiece.slug, PIECES.indexOf(selectedPiece))}
-                  alt={selectedPiece.name}
-                  fill
-                  sizes="(max-width: 1000px) 100vw, 50vw"
-                />
-              </div>
-              <div className={styles.modalInfo}>
-                <span className={styles.modalLabel}>§ Curation Spec Sheets</span>
-                <h3 className={styles.modalTitle}>{selectedPiece.name}</h3>
-                
-                <div className={styles.metaRow}>
-                  <div>
-                    <small>Room Location</small>
-                    <p>{getRoom(selectedPiece.roomSlug)?.name}</p>
-                  </div>
-                  <div>
-                    <small>Classification</small>
-                    <p>{selectedPiece.categorySlug.replace("-", " ")}</p>
-                  </div>
-                </div>
+      {/* Lightbox / Curation Detail Modal — Radix Dialog underneath so ESC,
+          focus trap, scroll lock, outside-click and ARIA all come for free.
+          Visual design is untouched: same classNames, same CSS module. */}
+      <Dialog.Root open={selectedPiece !== null} onOpenChange={(open) => { if (!open) setSelectedPiece(null); }}>
+        <Dialog.Portal>
+          <Dialog.Overlay className={styles.modalOverlay}>
+            <Dialog.Content className={styles.modalCard} onClick={(e) => e.stopPropagation()}>
+              {selectedPiece && (
+                <>
+                  <Dialog.Close asChild>
+                    <button
+                      className={styles.closeBtn}
+                      onMouseEnter={() => setCursor("hover", "Close")}
+                      onMouseLeave={resetCursor}
+                      aria-label="Close"
+                    >
+                      ✕
+                    </button>
+                  </Dialog.Close>
+                  <div className={styles.modalGrid}>
+                    <div className={styles.modalImageWrap}>
+                      <Image
+                        src={getPieceImage(selectedPiece.slug, PIECES.indexOf(selectedPiece))}
+                        alt={selectedPiece.name}
+                        fill
+                        sizes="(max-width: 1000px) 100vw, 50vw"
+                      />
+                    </div>
+                    <div className={styles.modalInfo}>
+                      <span className={styles.modalLabel}>§ Curation Spec Sheets</span>
+                      <Dialog.Title className={styles.modalTitle}>{selectedPiece.name}</Dialog.Title>
 
-                <div className={styles.modalDesc}>
-                  <small>The Composition Note</small>
-                  <p>{selectedPiece.description}</p>
-                </div>
+                      <div className={styles.metaRow}>
+                        <div>
+                          <small>Room Location</small>
+                          <p>{getRoom(selectedPiece.roomSlug)?.name}</p>
+                        </div>
+                        <div>
+                          <small>Classification</small>
+                          <p>{selectedPiece.categorySlug.replace("-", " ")}</p>
+                        </div>
+                      </div>
 
-                <div className={styles.modalMaterials}>
-                  <small>Materials & Finishes</small>
-                  <div className={styles.tagWrap}>
-                    {selectedPiece.materials.map((m) => (
-                      <span key={m} className={styles.tag}>{m}</span>
-                    ))}
+                      <Dialog.Description asChild>
+                        <div className={styles.modalDesc}>
+                          <small>The Composition Note</small>
+                          <p>{selectedPiece.description}</p>
+                        </div>
+                      </Dialog.Description>
+
+                      <div className={styles.modalMaterials}>
+                        <small>Materials & Finishes</small>
+                        <div className={styles.tagWrap}>
+                          {selectedPiece.materials.map((m) => (
+                            <span key={m} className={styles.tag}>{m}</span>
+                          ))}
+                        </div>
+                      </div>
+
+                      <div className={styles.modalActions}>
+                        <Link
+                          href={`/rooms/${selectedPiece.roomSlug}`}
+                          className={styles.primaryAction}
+                          onClick={() => setSelectedPiece(null)}
+                          onMouseEnter={() => setCursor("hover", "Go")}
+                          onMouseLeave={resetCursor}
+                        >
+                          View Room in 3D Walkthrough <span>→</span>
+                        </Link>
+                        <Link
+                          href={`/pieces/${selectedPiece.slug}`}
+                          className={styles.secondaryAction}
+                          onClick={() => setSelectedPiece(null)}
+                          onMouseEnter={() => setCursor("hover", "Info")}
+                          onMouseLeave={resetCursor}
+                        >
+                          Bespoke Product Details
+                        </Link>
+                      </div>
+                    </div>
                   </div>
-                </div>
-
-                <div className={styles.modalActions}>
-                  <Link
-                    href={`/rooms/${selectedPiece.roomSlug}`}
-                    className={styles.primaryAction}
-                    onClick={() => setSelectedPiece(null)}
-                    onMouseEnter={() => setCursor("hover", "Go")}
-                    onMouseLeave={resetCursor}
-                  >
-                    View Room in 3D Walkthrough <span>→</span>
-                  </Link>
-                  <Link
-                    href={`/pieces/${selectedPiece.slug}`}
-                    className={styles.secondaryAction}
-                    onClick={() => setSelectedPiece(null)}
-                    onMouseEnter={() => setCursor("hover", "Info")}
-                    onMouseLeave={resetCursor}
-                  >
-                    Bespoke Product Details
-                  </Link>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+                </>
+              )}
+            </Dialog.Content>
+          </Dialog.Overlay>
+        </Dialog.Portal>
+      </Dialog.Root>
     </section>
   );
 }
