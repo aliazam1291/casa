@@ -10,7 +10,7 @@
 .linkActive { opacity: 1 !important; color: var(--gold); }
 .linkActive svg { opacity: 1; color: var(--gold); }
 .cta { border: 1px solid var(--fg); padding: 11px 18px; transition: background .35s ease, color .35s ease; }
-.cta:hover { background: var(--fg); color: var(--cream-light); }
+.cta:hover { background: var(--fg); color: var(--bg); }
 .menuToggle, .mobilePanel { display: none; }
 @media (max-width: 900px) {
   .bar { min-height: 76px; padding: 16px var(--gutter); }

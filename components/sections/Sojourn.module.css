@@ -1,5 +1,5 @@
 .section {
-  background: var(--cream-light);
+  background: var(--bg-2);
   color: var(--fg);
   padding: 15vh var(--gutter);
   border-top: 1px solid var(--line);

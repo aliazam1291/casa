@@ -16,21 +16,6 @@ function splitName(name: string): [string, string] {
   return [name.slice(0, cut), name.slice(cut)];
 }
 
-function FloorPlanSketch() {
-  return (
-    <svg viewBox="0 0 64 48" className={styles.sketchIcon} aria-hidden>
-      <rect x="1" y="1" width="62" height="46" />
-      <line x1="34" y1="1" x2="34" y2="24" />
-      <line x1="34" y1="24" x2="63" y2="24" />
-      <line x1="1" y1="30" x2="22" y2="30" />
-      <line x1="22" y1="30" x2="22" y2="47" />
-      {/* door swings */}
-      <path d="M34 24a9 9 0 0 1 9 9" strokeDasharray="1.5 1.5" />
-      <path d="M22 30a7 7 0 0 1-7 7" strokeDasharray="1.5 1.5" />
-    </svg>
-  );
-}
-
 function TimeOfDaySketch({ time }: { time: TimeOfDay }) {
   if (time === "night") {
     return (
@@ -53,19 +38,6 @@ function TimeOfDaySketch({ time }: { time: TimeOfDay }) {
       <path d="M4 34 Q32 2 60 34" strokeDasharray="1.5 1.5" />
       <circle cx={x} cy={y} r="3.4" />
     </svg>
-  );
-}
-
-function MaterialSketch({ materials, accent }: { materials: string[]; accent: string }) {
-  return (
-    <div className={styles.materials}>
-      {materials.map((m) => (
-        <span key={m}>
-          <i style={{ background: accent }} aria-hidden />
-          {m}
-        </span>
-      ))}
-    </div>
   );
 }
 
@@ -113,16 +85,8 @@ function ExhibitSlide({ composition, index }: { composition: Composition; index:
         </blockquote>
         <div className={styles.sketchRow}>
           <div className={styles.sketchCell}>
-            <FloorPlanSketch />
-            <span>Floor plan</span>
-          </div>
-          <div className={styles.sketchCell}>
             <TimeOfDaySketch time={composition.timeOfDay} />
             <span>{TIME_LABEL[composition.timeOfDay]}</span>
-          </div>
-          <div className={styles.sketchCell}>
-            <MaterialSketch materials={composition.materials} accent={accentHex} />
-            <span>Materials</span>
           </div>
         </div>
       </div>

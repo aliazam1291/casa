@@ -39,14 +39,18 @@ export default function CataloguePage() {
         </div>
         <div className={styles.stockGrid}>
           {STOCK_PIECES.map((item) => (
-            <a key={item.name} href={item.href} target="_blank" rel="noreferrer" className={styles.stockCard}>
+            <div key={item.name} className={styles.stockCard}>
               <div className={styles.stockImage}>
                 <Image src={item.image} alt={item.name} fill sizes="(max-width: 900px) 45vw, 16vw" />
               </div>
               <span className={styles.stockName}>{item.name}</span>
+              <span className={styles.stockDesc}>{item.desc}</span>
               <span className={styles.stockPrice}>&#8377;{item.price.toLocaleString("en-IN")}</span>
-            </a>
+            </div>
           ))}
+        </div>
+        <div className={styles.stockFoot}>
+          <Link href="/visit">Enquire at the showroom &rarr;</Link>
         </div>
       </section>
 

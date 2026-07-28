@@ -28,7 +28,7 @@ export function Journal() {
             <span className="upright">The</span> <em>Journal.</em>
           </h2>
           <div className={styles.meta}>
-            § 06
+            § 05
             <br />
             Teaching taste,
             <br />

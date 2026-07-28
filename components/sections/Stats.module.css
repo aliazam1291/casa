@@ -58,7 +58,7 @@
 }
 .stat:hover .val,
 .stat:hover .lbl {
-  color: var(--cream-light);
+  color: var(--bg);
 }
 .stat .val em {
   color: var(--gold);
