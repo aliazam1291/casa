@@ -7,12 +7,17 @@ import { useCursor } from "@/components/cursor/CursorProvider";
 import { useReveal } from "@/hooks/useReveal";
 import styles from "./CatalogueGrid.module.css";
 
-// Real photography only exists for two categories so far; the rest use the
-// site's ambient architectural mood shots (not literal product photos, so
-// there's no risk of mislabeling a piece under the wrong category).
+// Curated Unsplash images per catalogue category — editorial quality,
+// matching the aesthetic of each Wolf Casa product family.
 const CATEGORY_IMAGES: Record<string, string> = {
   seating: "/images/catalogue/seating-sofas.webp",
   "bespoke-interiors": "/images/catalogue/bespoke-interiors-beds.webp",
+  "kitchen-bath": "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?auto=format&fit=crop&q=80&w=800",
+  lighting: "https://images.unsplash.com/photo-1504208434309-cb69f4fe52b0?auto=format&fit=crop&q=80&w=800",
+  "decor-finishes": "https://images.unsplash.com/photo-1615873968403-89e068629265?auto=format&fit=crop&q=80&w=800",
+  "office-outdoor": "https://images.unsplash.com/photo-1524758631624-e2822e304c36?auto=format&fit=crop&q=80&w=800",
+  "greenery-entertainment": "https://images.unsplash.com/photo-1416879595882-3373a0480b5b?auto=format&fit=crop&q=80&w=800",
+  "lighting-smart-living": "https://images.unsplash.com/photo-1504208434309-cb69f4fe52b0?auto=format&fit=crop&q=80&w=800",
 };
 const MOOD_IMAGES = [
   "/images/editorial/materials.png",
@@ -20,6 +25,7 @@ const MOOD_IMAGES = [
   "/images/editorial/villa-hero.png",
   "/images/editorial/sojourn.png",
 ] as const;
+
 
 /** What a composition draws on — deliberately placed after the rooms
  * section, so it reads as "the material a room is built from" rather

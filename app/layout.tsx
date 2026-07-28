@@ -7,6 +7,7 @@ import { StageProvider } from "@/components/stage/StageProvider";
 import { StageBackground } from "@/components/stage/StageBackground";
 import { Spotlight } from "@/components/chrome/Spotlight";
 import { Nav } from "@/components/nav/Nav";
+import { Footer } from "@/components/footer/Footer";
 import { CONTACT } from "@/lib/contact";
 
 // The Brand Book's type system: Cormorant (display/voice — headlines,
@@ -102,6 +103,10 @@ export default function RootLayout({
             <CustomCursor />
             <Nav />
             {children}
+            {/* Global: the footer used to render only inside app/page.tsx, so
+                /rooms, /catalogue, /pieces, /journal and every editorial route
+                ended with no footer at all. */}
+            <Footer />
           </CursorProvider>
         </StageProvider>
       </body>

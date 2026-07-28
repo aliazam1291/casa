@@ -17,6 +17,7 @@
 :root {
   /* Black-first palette (Brand Book §08 Colour) */
   --bg: #0e0e0c; /* Soft Black — page grounds, ~70% of every surface */
+  --bg-1: #0e0e0c; /* alias for bg — used in newer section modules */
   --bg-2: #141311; /* Charcoal — panels, insets, product fields against the black */
   --cream-light: #e8e1d3; /* Ivory — "the voice: all type and marks on black" */
   --warm-white: #e8e1d3;
