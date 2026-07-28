@@ -5,7 +5,6 @@ import { FLOORS } from "@/lib/rooms";
 import { ROOM_IMAGES } from "@/lib/library-images";
 import { DomeGallery } from "@/components/sections/DomeGallery";
 import { VillaSection } from "@/components/three/villa-section/VillaSection";
-import { FloorPlans } from "@/components/sections/FloorPlans";
 import { MaterialsBoard } from "@/components/sections/MaterialsBoard";
 import styles from "./page.module.css";
 
@@ -39,8 +38,10 @@ export default function RoomsPage() {
       </section>
 
       <DomeGallery />
+      {/* The floor plans now live inside VillaSection, beside the drawing —
+          the standalone <FloorPlans /> section repeated the same four plans
+          a screen further down. The component is kept for reuse. */}
       <VillaSection />
-      <FloorPlans />
       <MaterialsBoard />
 
       {FLOORS.map((floor, floorIdx) => {

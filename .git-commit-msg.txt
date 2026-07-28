@@ -1,0 +1,34 @@
+Draw the villa as a mansion; plan + compositions beside it
+
+The villa view had been three different things in three attempts (exploded
+WebGL slabs, a flat elevation, a narrow gabled tower) and two of them were
+live at once on /rooms and /the-house. It is now one shared drawing.
+
+components/house/IsoHouse: a true 30-degree isometric mansion. Wide and low
+(facade reads 2.5:1 against wall height, was 1.1:1), under a shallow hipped
+roof — a ridge 69% of the building length, hipped back at both ends, rising
+31px on screen instead of the 70px gable that read as a lean-to slab. Cornice
+and base course carry the classical banding; the portico is drawn as an OPEN
+colonnade with pointer-events off, so it reads as an entrance without
+occluding or blocking the room panels behind it. Rooms are panels on the
+facade, sized from their real plan widths.
+
+Geometry is SVG, not a WebGL camera, because these coordinates can be checked
+by hand — the viewBox is derived from the vertex extents rather than guessed,
+which is what the previous camera-framing attempts kept getting wrong.
+
+components/house/FloorPlanKey: a key plan of the selected floor, rooms
+numbered rather than labelled in place (a name like "Spa Bath En-Suite"
+cannot fit a 23-unit room without colliding with its neighbour) with the
+names carried in the schedule beneath. Hovering a room in the drawing, the
+plan or the schedule lights it in all three.
+
+VillaSection: two columns — drawing left, plan + schedule + the compositions
+that floor is usually specified in on the right. The standalone <FloorPlans />
+section is dropped from /rooms, since it repeated the same four plans one
+screen further down; the component itself is kept.
+
+Catalogue sub-type chips move from a wrapping row, which stretched cards to
+uneven heights and broke the grid's alignment, to a single-line scroll strip.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>

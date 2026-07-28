@@ -1,0 +1,45 @@
+.plan {
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.envelope {
+  fill: none;
+  stroke: rgba(232, 225, 211, 0.34);
+  stroke-width: 0.9;
+}
+
+.room {
+  fill: rgba(232, 225, 211, 0.04);
+  stroke: rgba(232, 225, 211, 0.24);
+  stroke-width: 0.6;
+  cursor: none;
+  transition: fill 200ms ease, stroke 200ms ease;
+}
+.room:hover {
+  fill: rgba(167, 134, 87, 0.18);
+}
+.roomHot {
+  fill: rgba(167, 134, 87, 0.34);
+  stroke: var(--gold);
+  stroke-width: 0.9;
+  cursor: none;
+}
+
+.roomNum {
+  fill: var(--fg-dim);
+  font-family: var(--mono);
+  font-size: 3.4px;
+  letter-spacing: 0.04em;
+  pointer-events: none;
+  user-select: none;
+}
+
+.north line {
+  stroke: var(--fg-faint);
+  stroke-width: 0.5;
+}
+.north polygon {
+  fill: var(--fg-faint);
+}

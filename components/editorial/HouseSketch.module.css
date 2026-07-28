@@ -42,35 +42,8 @@
   margin: 0 auto;
 }
 
-.svg {
-  width: 100%;
-  height: auto;
-  overflow: visible;
-}
-
-.slab {
-  cursor: none;
-}
-.face {
-  stroke: var(--fg-dim);
-  stroke-width: 1;
-  transition: fill 300ms ease, stroke 300ms ease, opacity 300ms ease;
-}
-.faceTop { fill: rgba(232, 225, 211, 0.1); }
-.faceRight { fill: rgba(0, 0, 0, 0.28); }
-.faceLeft { fill: rgba(0, 0, 0, 0.16); }
-.slab:hover .face { stroke: var(--gold-light); }
-.faceActive.faceTop { fill: rgba(201, 168, 126, 0.22); }
-.faceActive.faceRight { fill: rgba(167, 134, 87, 0.28); }
-.faceActive.faceLeft { fill: rgba(167, 134, 87, 0.16); }
-.faceActive { stroke: var(--gold); stroke-width: 1.4; }
-
-.slabLabel {
-  font-family: var(--mono);
-  font-size: 11px;
-  letter-spacing: 0.1em;
-  fill: var(--fg-dim);
-  pointer-events: none;
+.stage {
+  height: clamp(320px, 42vw, 460px);
 }
 
 .panel {
@@ -101,11 +74,6 @@
   max-width: 40ch;
   margin-bottom: 22px;
 }
-.panelHint {
-  color: var(--fg-faint);
-  font-size: 13px;
-  font-style: italic;
-}
 .roomList {
   display: flex;
   flex-direction: column;
@@ -120,9 +88,57 @@
   color: var(--fg);
   transition: color 0.25s ease, padding-left 0.25s ease;
 }
-.roomList a:hover {
+.roomList a:hover,
+.roomLinkActive {
   color: var(--gold-light);
   padding-left: 6px;
+}
+
+/* Level selector, under the drawing — the same control the level tags on
+   the facade drive, spelled out. */
+.levels {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1px;
+  max-width: 1200px;
+  margin: 7vh auto 0;
+  background: var(--line);
+  border: 1px solid var(--line);
+}
+.levelBtn,
+.levelBtnActive {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  flex: 1 1 auto;
+  justify-content: center;
+  padding: 14px 18px;
+  border: 0;
+  background: var(--bg-2);
+  font-family: var(--sans);
+  font-size: 10px;
+  font-weight: 650;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  cursor: none;
+  transition: background 0.25s ease, color 0.25s ease;
+}
+.levelBtn {
+  color: var(--fg-faint);
+}
+.levelBtn:hover {
+  color: var(--fg);
+  background: rgba(232, 225, 211, 0.05);
+}
+.levelBtnActive {
+  color: var(--gold);
+  background: rgba(167, 134, 87, 0.12);
+}
+.levelNum {
+  font-family: var(--mono);
+  font-size: 9px;
+  opacity: 0.7;
 }
 
 @media (max-width: 900px) {

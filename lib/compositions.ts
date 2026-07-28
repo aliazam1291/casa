@@ -119,3 +119,32 @@ export const COMPOSITIONS: Composition[] = [
     timeOfDay: "dusk",
   },
 ];
+
+export const COMPOSITIONS_BY_SLUG: Record<string, Composition> = Object.fromEntries(
+  COMPOSITIONS.map((c) => [c.slug, c])
+);
+
+/**
+ * Which compositions a given floor is most often specified in — matched on
+ * the light and use of the level, not split arbitrarily: the cellar takes the
+ * two night/dusk moods, the social ground floor the warm and planted ones,
+ * the private first floor the restful and ordered ones, and the sky pavilion
+ * the two that live on daylight. Keyed by Floor.index (0 = cellar).
+ */
+const FLOOR_COMPOSITION_SLUGS: Record<number, [string, string]> = {
+  0: ["nocturne", "forest-silence"],
+  1: ["golden-hour", "urban-oasis"],
+  2: ["luxe-minimal", "monochrome"],
+  3: ["terra-form", "artisan-layer"],
+};
+
+export const COMPOSITIONS_BY_FLOOR: Record<number, Composition[]> = Object.fromEntries(
+  Object.entries(FLOOR_COMPOSITION_SLUGS).map(([index, slugs]) => [
+    Number(index),
+    slugs.map((slug) => {
+      const composition = COMPOSITIONS_BY_SLUG[slug];
+      if (!composition) throw new Error(`lib/compositions.ts: unknown composition slug "${slug}".`);
+      return composition;
+    }),
+  ])
+);

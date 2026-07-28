@@ -1,0 +1,158 @@
+.svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+/* Two wall planes at different values so the volume reads solid — the front
+   catching a little more light than the return. */
+.wallFront {
+  fill: rgba(232, 225, 211, 0.05);
+  stroke: rgba(232, 225, 211, 0.34);
+  stroke-width: 1;
+  stroke-linejoin: round;
+}
+.wallSide {
+  fill: rgba(0, 0, 0, 0.38);
+  stroke: rgba(232, 225, 211, 0.2);
+  stroke-width: 1;
+  stroke-linejoin: round;
+}
+.belowGrade {
+  fill: rgba(0, 0, 0, 0.32);
+  stroke: none;
+  pointer-events: none;
+}
+
+/* Shallow hipped roof — the front slope reads lighter than the hip return. */
+.roof {
+  fill: rgba(167, 134, 87, 0.16);
+  stroke: var(--gold);
+  stroke-width: 1.1;
+  stroke-linejoin: round;
+  pointer-events: none;
+}
+.roofHip {
+  fill: rgba(167, 134, 87, 0.08);
+  stroke: var(--gold);
+  stroke-width: 1;
+  stroke-linejoin: round;
+  pointer-events: none;
+}
+.ridge {
+  fill: none;
+  stroke: var(--gold);
+  stroke-width: 1.2;
+  pointer-events: none;
+}
+
+/* Cornice + base course: the two horizontal bands that read "classical". */
+.cornice,
+.base {
+  fill: rgba(167, 134, 87, 0.16);
+  stroke: rgba(167, 134, 87, 0.5);
+  stroke-width: 0.8;
+  pointer-events: none;
+}
+.corniceSide,
+.baseSide {
+  fill: rgba(167, 134, 87, 0.09);
+  stroke: rgba(167, 134, 87, 0.34);
+  stroke-width: 0.8;
+  pointer-events: none;
+}
+
+.floorLine {
+  fill: none;
+  stroke: rgba(167, 134, 87, 0.32);
+  stroke-width: 0.8;
+  pointer-events: none;
+}
+
+.floorLit,
+.floorDim {
+  transition: opacity 350ms ease;
+}
+.floorLit {
+  opacity: 1;
+}
+.floorDim {
+  opacity: 0.3;
+}
+
+.room {
+  fill: rgba(232, 225, 211, 0.05);
+  stroke: rgba(232, 225, 211, 0.26);
+  stroke-width: 0.9;
+  cursor: none;
+  transition: fill 220ms ease, stroke 220ms ease;
+}
+.room:hover {
+  fill: rgba(167, 134, 87, 0.18);
+}
+.roomHot {
+  fill: rgba(167, 134, 87, 0.36);
+  stroke: var(--gold);
+  stroke-width: 1.3;
+  cursor: none;
+}
+
+.sideWindow {
+  fill: rgba(232, 225, 211, 0.07);
+  stroke: rgba(232, 225, 211, 0.16);
+  stroke-width: 0.7;
+  pointer-events: none;
+}
+
+.door {
+  fill: rgba(167, 134, 87, 0.28);
+  stroke: rgba(167, 134, 87, 0.7);
+  stroke-width: 0.9;
+  pointer-events: none;
+}
+
+/* The portico is drawn as an OPEN colonnade — no solid front plane — so it
+   never occludes or blocks the room panels behind it. */
+.portico {
+  pointer-events: none;
+}
+.column {
+  fill: rgba(232, 225, 211, 0.14);
+  stroke: rgba(232, 225, 211, 0.45);
+  stroke-width: 0.8;
+}
+.entablature,
+.pediment {
+  fill: rgba(167, 134, 87, 0.22);
+  stroke: var(--gold);
+  stroke-width: 1;
+  stroke-linejoin: round;
+}
+.porticoReturn {
+  fill: rgba(0, 0, 0, 0.35);
+  stroke: rgba(167, 134, 87, 0.4);
+  stroke-width: 0.8;
+}
+
+.grade {
+  fill: none;
+  stroke: rgba(232, 225, 211, 0.3);
+  stroke-width: 1;
+  stroke-dasharray: 5 4;
+  pointer-events: none;
+}
+
+.levelTag,
+.levelTagActive {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  cursor: none;
+  transition: fill 250ms ease;
+}
+.levelTag {
+  fill: var(--fg-faint);
+}
+.levelTagActive {
+  fill: var(--gold);
+}

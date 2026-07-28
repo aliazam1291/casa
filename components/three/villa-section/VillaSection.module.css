@@ -29,18 +29,34 @@
   color: var(--gold);
 }
 
-.stage {
-  position: relative;
-  height: min(76vh, 720px);
-  min-height: 460px;
+/* Drawing on the left, the same floor read as plan + compositions on the
+   right — one object, three views. */
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.45fr) minmax(300px, 0.85fr);
+  gap: 1px;
+  background: var(--line);
   border: 1px solid var(--line);
-  background: radial-gradient(ellipse at 50% 60%, rgba(167, 134, 87, 0.06), transparent 65%);
-  cursor: none;
 }
 
-.canvasMount {
-  position: absolute;
-  inset: 0;
+.stage {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 540px;
+  background: var(--bg);
+  background-image: radial-gradient(ellipse at 50% 60%, rgba(167, 134, 87, 0.07), transparent 65%);
+  cursor: none;
+  --tilt-x: 0deg;
+  --tilt-y: 0deg;
+}
+
+.houseWrap {
+  width: min(100%, 620px);
+  height: 86%;
+  transform: perspective(1600px) rotateX(var(--tilt-x)) rotateY(var(--tilt-y));
+  transition: transform 400ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .legend {
@@ -50,20 +66,28 @@
   display: flex;
   flex-direction: column;
   gap: 2px;
-  pointer-events: none;
+  pointer-events: auto;
 }
 .legendRow,
 .legendRowActive {
   display: flex;
   align-items: baseline;
   gap: 10px;
-  padding: 6px 0;
+  padding: 6px 8px;
+  background: none;
+  border: 0;
+  cursor: none;
   font-family: var(--sans);
   font-size: 11px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
+  text-align: left;
   color: var(--fg-faint);
-  transition: color 0.3s ease;
+  transition: color 0.3s ease, background 0.3s ease;
+}
+.legendRow:hover {
+  color: var(--fg);
+  background: rgba(232, 225, 211, 0.06);
 }
 .legendLevel {
   font-family: var(--mono);
@@ -72,6 +96,7 @@
 }
 .legendRowActive {
   color: var(--gold);
+  background: rgba(167, 134, 87, 0.1);
 }
 
 .hint {
@@ -87,44 +112,170 @@
   pointer-events: none;
 }
 
-.tooltip {
-  position: absolute;
-  bottom: 24px;
-  right: 24px;
+/* ── right column: plan + schedule + compositions ─────────────── */
+.side {
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  width: min(260px, 44vw);
-  padding: 16px 18px;
-  border: 1px solid rgba(167, 134, 87, 0.35);
-  background: rgba(20, 19, 17, 0.85);
-  backdrop-filter: blur(10px);
-  pointer-events: auto;
-}
-.tooltipEyebrow {
-  font-family: var(--sans);
-  font-size: 9px;
-  font-weight: 600;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--gold);
-}
-.tooltipName {
-  font-family: var(--serif);
-  font-size: clamp(20px, 2vw, 26px);
-  font-style: italic;
-  font-weight: 400;
-  color: var(--fg);
-}
-.tooltipRitual {
-  font-family: var(--sans);
-  font-size: 11px;
-  color: var(--fg-dim);
+  gap: 26px;
+  padding: clamp(22px, 2.4vw, 34px);
+  background: var(--bg-2);
+  overflow-y: auto;
+  max-height: 860px;
 }
 
+.sideEyebrow {
+  display: block;
+  font-family: var(--mono);
+  font-size: 9.5px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 12px;
+}
+.sideTitle {
+  font-family: var(--serif);
+  font-size: clamp(26px, 2.4vw, 34px);
+  font-style: italic;
+  font-weight: 300;
+  line-height: 1;
+  margin-bottom: 10px;
+}
+.sideNote {
+  color: var(--fg-dim);
+  font-size: 12.5px;
+  line-height: 1.65;
+}
+
+.planBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding-top: 22px;
+  border-top: 1px solid var(--line);
+}
+
+.schedule {
+  display: flex;
+  flex-direction: column;
+  list-style: none;
+}
+.scheduleRow,
+.scheduleRowActive {
+  display: grid;
+  grid-template-columns: 26px 1fr;
+  gap: 4px 10px;
+  padding: 9px 8px;
+  border-bottom: 1px solid var(--line);
+  transition: background 0.22s ease, color 0.22s ease;
+}
+.scheduleRowActive {
+  background: rgba(167, 134, 87, 0.12);
+}
+.scheduleNum {
+  font-family: var(--mono);
+  font-size: 9.5px;
+  color: var(--gold);
+  padding-top: 2px;
+}
+.scheduleName {
+  font-family: var(--sans);
+  font-size: 12.5px;
+  color: var(--fg);
+}
+.scheduleRitual {
+  grid-column: 2;
+  font-family: var(--sans);
+  font-size: 10.5px;
+  color: var(--fg-faint);
+}
+.scheduleRow:hover .scheduleName,
+.scheduleRowActive .scheduleName {
+  color: var(--gold-light);
+}
+
+.compBlock {
+  padding-top: 22px;
+  border-top: 1px solid var(--line);
+}
+.compLabel {
+  display: block;
+  font-family: var(--sans);
+  font-size: 9.5px;
+  font-weight: 650;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--walnut);
+  margin-bottom: 16px;
+}
+.compGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.compCard {
+  display: grid;
+  grid-template-columns: 74px 1fr;
+  gap: 14px;
+  padding: 10px;
+  border: 1px solid var(--line);
+  background: var(--bg);
+  transition: border-color 0.25s ease, background 0.25s ease;
+}
+.compCard:hover {
+  border-color: rgba(167, 134, 87, 0.55);
+  background: rgba(167, 134, 87, 0.06);
+}
+.compThumb {
+  position: relative;
+  display: block;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  background: var(--bg-2);
+}
+.compThumb img {
+  object-fit: cover;
+  filter: saturate(0.7) brightness(0.82);
+  transition: transform 0.5s ease;
+}
+.compCard:hover .compThumb img {
+  transform: scale(1.06);
+}
+.compBody {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+}
+.compName {
+  font-family: var(--serif);
+  font-size: 17px;
+  font-style: italic;
+  color: var(--cream-light);
+  line-height: 1;
+}
+.compBlurb {
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--fg-dim);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.compMaterials {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.06em;
+  color: var(--fg-faint);
+}
+
+@media (max-width: 1080px) {
+  .layout { grid-template-columns: 1fr; }
+  .side { max-height: none; }
+}
 @media (max-width: 900px) {
   .heading { margin-left: 0; }
   .legend { top: 16px; left: 16px; }
   .hint { display: none; }
-  .tooltip { left: 16px; right: 16px; width: auto; bottom: 16px; }
+  .stage { min-height: 420px; }
 }
