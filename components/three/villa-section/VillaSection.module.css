@@ -1,0 +1,130 @@
+.section {
+  padding: 18vh var(--gutter) 12vh;
+  border-top: 1px solid var(--line);
+  background: var(--bg);
+}
+
+.head {
+  margin-bottom: 7vh;
+}
+.num {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--fg-dim);
+  display: block;
+  margin-bottom: 24px;
+}
+.heading {
+  max-width: 780px;
+  font-family: var(--serif);
+  font-size: clamp(38px, 5.4vw, 84px);
+  font-weight: 300;
+  line-height: 0.98;
+  letter-spacing: -0.02em;
+  margin-left: 16.66%;
+}
+.heading em {
+  color: var(--gold);
+}
+
+.stage {
+  position: relative;
+  height: min(76vh, 720px);
+  min-height: 460px;
+  border: 1px solid var(--line);
+  background: radial-gradient(ellipse at 50% 60%, rgba(167, 134, 87, 0.06), transparent 65%);
+  cursor: none;
+}
+
+.canvasMount {
+  position: absolute;
+  inset: 0;
+}
+
+.legend {
+  position: absolute;
+  top: 24px;
+  left: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  pointer-events: none;
+}
+.legendRow,
+.legendRowActive {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 6px 0;
+  font-family: var(--sans);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--fg-faint);
+  transition: color 0.3s ease;
+}
+.legendLevel {
+  font-family: var(--mono);
+  font-size: 10px;
+  width: 22px;
+}
+.legendRowActive {
+  color: var(--gold);
+}
+
+.hint {
+  position: absolute;
+  bottom: 22px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--sans);
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--fg-faint);
+  pointer-events: none;
+}
+
+.tooltip {
+  position: absolute;
+  bottom: 24px;
+  right: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: min(260px, 44vw);
+  padding: 16px 18px;
+  border: 1px solid rgba(167, 134, 87, 0.35);
+  background: rgba(20, 19, 17, 0.85);
+  backdrop-filter: blur(10px);
+  pointer-events: auto;
+}
+.tooltipEyebrow {
+  font-family: var(--sans);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+.tooltipName {
+  font-family: var(--serif);
+  font-size: clamp(20px, 2vw, 26px);
+  font-style: italic;
+  font-weight: 400;
+  color: var(--fg);
+}
+.tooltipRitual {
+  font-family: var(--sans);
+  font-size: 11px;
+  color: var(--fg-dim);
+}
+
+@media (max-width: 900px) {
+  .heading { margin-left: 0; }
+  .legend { top: 16px; left: 16px; }
+  .hint { display: none; }
+  .tooltip { left: 16px; right: 16px; width: auto; bottom: 16px; }
+}

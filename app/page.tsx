@@ -1,10 +1,11 @@
 import { WorldMoodProvider } from "@/components/three/vase-hero/WorldMoodProvider";
 import { GalleryHero } from "@/components/three/gallery/GalleryHero";
 import { Manifesto } from "@/components/sections/Manifesto";
+import { DomeGallery } from "@/components/sections/DomeGallery";
+import { VillaSection } from "@/components/three/villa-section/VillaSection";
 import { FloorPlans } from "@/components/sections/FloorPlans";
 import { MaterialsBoard } from "@/components/sections/MaterialsBoard";
 import { CatalogueGrid } from "@/components/sections/CatalogueGrid";
-import { DomeGallery } from "@/components/sections/DomeGallery";
 import { Gallery } from "@/components/sections/Gallery";
 import { Stats } from "@/components/sections/Stats";
 import { Sojourn } from "@/components/sections/Sojourn";
@@ -33,6 +34,7 @@ export default function Home() {
       <GalleryHero />
       <Manifesto />
       <DomeGallery />
+      <VillaSection />
       <FloorPlans />
       <MaterialsBoard />
       <CatalogueGrid />

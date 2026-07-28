@@ -100,7 +100,7 @@ export function Gallery() {
           <svg viewBox="0 0 120 40"><circle cx="60" cy="6" r="3" /><path d="M14 40 L60 9 L106 40" fill="none" /></svg>
         </div>
         <div className={styles.plaque}>
-          <span className={styles.num}>§ 04 — Curation Gallery</span>
+          <span className={styles.num}>§ 06 — Curation Gallery</span>
           <h2 className={styles.heading}>
             <span className="upright">{PIECES.length}</span> <em>composed pieces.</em>
           </h2>

@@ -103,7 +103,7 @@ export function DomeGallery() {
   const goToIndex = (i: number) => {
     const segment = 360 / COUNT;
     const itemAngle = i * segment;
-    let current = rotation.current % 360;
+    const current = rotation.current % 360;
     let delta = (itemAngle + current) % 360;
     if (delta > 180) delta -= 360;
     if (delta < -180) delta += 360;
