@@ -1,0 +1,205 @@
+.root {
+  display: grid;
+  grid-template-columns: 300px minmax(0, 1fr);
+  border: 1px solid var(--line);
+  background: var(--line);
+  gap: 1px;
+}
+
+/* ── the rail: all eight categories always visible ────────────── */
+.rail {
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-2);
+}
+.railItem {
+  display: grid;
+  grid-template-columns: 26px 1fr auto;
+  align-items: baseline;
+  gap: 10px;
+  padding: 16px 20px;
+  border: 0;
+  border-bottom: 1px solid var(--line);
+  background: none;
+  text-align: left;
+  cursor: none;
+  transition: background 0.22s ease, color 0.22s ease;
+}
+.railNum {
+  font-family: var(--mono);
+  font-size: 9.5px;
+  color: var(--fg-faint);
+}
+.railName {
+  font-family: var(--sans);
+  font-size: 12.5px;
+  letter-spacing: 0.03em;
+  color: var(--fg-dim);
+}
+.railCount {
+  font-family: var(--mono);
+  font-size: 9.5px;
+  color: var(--fg-faint);
+}
+.railItem:hover {
+  background: rgba(232, 225, 211, 0.04);
+}
+.railItem[data-state="active"] {
+  background: rgba(167, 134, 87, 0.12);
+}
+.railItem[data-state="active"] .railName {
+  color: var(--gold-light);
+}
+.railItem[data-state="active"] .railNum {
+  color: var(--gold);
+}
+.railItem:focus-visible {
+  outline: 1px solid var(--gold);
+  outline-offset: -1px;
+}
+
+/* ── the panel: photography, description, sub-types with rooms ─ */
+.panel {
+  background: var(--bg);
+  padding: clamp(22px, 3vw, 40px);
+  outline: none;
+}
+.panel[data-state="inactive"] {
+  display: none;
+}
+
+.panelHead {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: clamp(20px, 3vw, 40px);
+  margin-bottom: clamp(28px, 3.4vw, 44px);
+}
+.panelImage {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  background: var(--bg-2);
+  overflow: hidden;
+}
+.panelImage img {
+  object-fit: cover;
+  filter: saturate(0.75) brightness(0.8);
+}
+.panelIntro {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 14px;
+}
+.panelTitle {
+  font-family: var(--serif);
+  font-size: clamp(30px, 3.2vw, 46px);
+  font-weight: 400;
+  line-height: 0.98;
+  color: var(--cream-light);
+}
+.panelDesc {
+  max-width: 42ch;
+  color: var(--fg-dim);
+  font-size: 13.5px;
+  line-height: 1.75;
+}
+.panelLink {
+  align-self: flex-start;
+  margin-top: 4px;
+  font-family: var(--sans);
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gold);
+  border-bottom: 1px solid rgba(167, 134, 87, 0.4);
+  padding-bottom: 3px;
+  transition: color 0.22s ease, border-color 0.22s ease;
+}
+.panelLink:hover {
+  color: var(--gold-light);
+  border-color: var(--gold-light);
+}
+
+.subtypes {
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid var(--line);
+}
+.subtype {
+  display: grid;
+  grid-template-columns: 30px 1fr 20px;
+  gap: 16px;
+  align-items: start;
+  padding: 18px 4px;
+  border-bottom: 1px solid var(--line);
+  transition: background 0.22s ease;
+}
+.subtype:hover {
+  background: rgba(167, 134, 87, 0.05);
+}
+.subtypeNum {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--fg-faint);
+  padding-top: 3px;
+}
+.subtypeBody {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+}
+.subtypeName {
+  font-family: var(--serif);
+  font-size: 19px;
+  font-weight: 500;
+  color: var(--fg);
+  transition: color 0.22s ease;
+}
+.subtype:hover .subtypeName {
+  color: var(--gold-light);
+}
+.subtypeDesc {
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: var(--fg-dim);
+  max-width: 62ch;
+}
+.subtypeRooms {
+  font-family: var(--sans);
+  font-size: 10.5px;
+  letter-spacing: 0.02em;
+  color: var(--walnut);
+}
+.subtypeArrow {
+  padding-top: 4px;
+  color: var(--fg-faint);
+  transition: transform 0.22s ease, color 0.22s ease;
+}
+.subtype:hover .subtypeArrow {
+  color: var(--gold);
+  transform: translateX(4px);
+}
+
+@media (max-width: 900px) {
+  .root {
+    grid-template-columns: 1fr;
+  }
+  .rail {
+    flex-direction: row;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .railItem {
+    flex: 0 0 auto;
+    grid-template-columns: auto 1fr;
+    border-bottom: 0;
+    border-right: 1px solid var(--line);
+    white-space: nowrap;
+  }
+  .railCount { display: none; }
+  .panelHead { grid-template-columns: 1fr; }
+  .subtype { grid-template-columns: 24px 1fr; }
+  .subtypeArrow { display: none; }
+}

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { CATALOGUE } from "@/lib/catalogue";
 import { useCursor } from "@/components/cursor/CursorProvider";
 import { useReveal } from "@/hooks/useReveal";
+import { useTilt } from "@/hooks/useTilt";
 import { KITCHEN_BATH_IMAGES, LIGHTING_IMAGES, DECOR_IMAGES } from "@/lib/library-images";
 import styles from "./CatalogueGrid.module.css";
 
@@ -27,6 +28,46 @@ const MOOD_IMAGES = [
   "/images/editorial/sojourn.png",
 ] as const;
 
+function GridCard({
+  href,
+  num,
+  title,
+  image,
+  terminal,
+}: {
+  href: string;
+  num: string;
+  title: string;
+  image?: string;
+  terminal?: boolean;
+}) {
+  const { setCursor, resetCursor } = useCursor();
+  const { ref, onPointerMove, onPointerLeave } = useTilt<HTMLAnchorElement>(4);
+
+  return (
+    <Link
+      ref={ref}
+      href={href}
+      className={terminal ? `${styles.card} ${styles.cardTerminal}` : styles.card}
+      onPointerMove={onPointerMove}
+      onPointerLeave={() => {
+        onPointerLeave();
+        resetCursor();
+      }}
+      onMouseEnter={() => setCursor("hover", terminal ? "Enter" : "View")}
+    >
+      {image && (
+        <div className={styles.cardImage}>
+          <Image src={image} alt={title} fill loading="lazy" sizes="(max-width: 1100px) 50vw, 25vw" />
+        </div>
+      )}
+      <div className={styles.cardBody}>
+        <span>{num}</span>
+        <h3>{title}</h3>
+      </div>
+    </Link>
+  );
+}
 
 /** What a composition draws on — deliberately placed after the rooms
  * section, so it reads as "the material a room is built from" rather
@@ -49,36 +90,18 @@ export function CatalogueGrid() {
         {CATALOGUE.map((cat, i) => {
           const image = CATEGORY_IMAGES[cat.slug] ?? MOOD_IMAGES[moodIndex++ % MOOD_IMAGES.length];
           return (
-            <Link
+            <GridCard
               key={cat.slug}
               href={`/catalogue/${cat.slug}`}
-              className={styles.card}
-              onMouseEnter={() => setCursor("hover", "View")}
-              onMouseLeave={resetCursor}
-            >
-              <div className={styles.cardImage}>
-                <Image src={image} alt={cat.name} fill loading="lazy" sizes="(max-width: 1100px) 50vw, 25vw" />
-              </div>
-              <div className={styles.cardBody}>
-                <span>{String(i + 1).padStart(2, "0")}</span>
-                <h3>{cat.name}</h3>
-              </div>
-            </Link>
+              num={String(i + 1).padStart(2, "0")}
+              title={cat.name}
+              image={image}
+            />
           );
         })}
         {/* The terminal cell of the reference grid — the whole taxonomy
             resolving to one thing. Brass, per "punctuation only". */}
-        <Link
-          href="/rooms"
-          className={`${styles.card} ${styles.cardTerminal}`}
-          onMouseEnter={() => setCursor("hover", "Enter")}
-          onMouseLeave={resetCursor}
-        >
-          <div className={styles.cardBody}>
-            <span>09</span>
-            <h3>The Room</h3>
-          </div>
-        </Link>
+        <GridCard href="/rooms" num="09" title="The Room" terminal />
       </nav>
       <div className={styles.foot}>
         <Link href="/catalogue" onMouseEnter={() => setCursor("hover", "Browse")} onMouseLeave={resetCursor}>

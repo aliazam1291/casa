@@ -4,7 +4,7 @@ import Link from "next/link";
 import { CATALOGUE } from "@/lib/catalogue";
 import { STOCK_PIECES } from "@/lib/products";
 import { KITCHEN_BATH_IMAGES, LIGHTING_IMAGES, DECOR_IMAGES, SEATING_IMAGES } from "@/lib/library-images";
-import { CatalogueCard } from "./CatalogueCard";
+import { CatalogueIndex } from "./CatalogueIndex";
 import styles from "./page.module.css";
 
 export const metadata: Metadata = {
@@ -33,11 +33,9 @@ export default function CataloguePage() {
         <p>Not a shop menu — the material and product language every Wolf Casa room is composed from. Each category indexes into the same rooms and named pieces, not a separate catalogue.</p>
       </section>
 
-      <nav className={styles.grid} aria-label="Catalogue categories">
-        {CATALOGUE.map((cat, i) => (
-          <CatalogueCard key={cat.slug} category={cat} index={i} image={CATEGORY_IMAGES[cat.slug]} />
-        ))}
-      </nav>
+      <section className={styles.indexWrap}>
+        <CatalogueIndex categories={CATALOGUE} images={CATEGORY_IMAGES} />
+      </section>
 
       <section className={styles.stock} aria-label="Currently in stock">
         <div className={styles.stockHead}>

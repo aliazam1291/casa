@@ -8,7 +8,15 @@
 .head h2 { max-width: 780px; margin-top: 40px; font-family: var(--serif); font-size: clamp(36px, 4.6vw, 74px); font-weight: 400; line-height: .96; }
 
 .grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); }
-.card { display: flex; flex-direction: column; background: var(--bg); transition: background .25s ease; }
+.card {
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+  --tilt-x: 0deg;
+  --tilt-y: 0deg;
+  transform: perspective(1000px) rotateX(var(--tilt-x)) rotateY(var(--tilt-y));
+  transition: transform .4s cubic-bezier(0.22, 1, 0.36, 1), background .25s ease;
+}
 .card:hover { background: var(--bg-2); }
 .card:hover .cardImage img { transform: scale(1.04); }
 .cardImage { position: relative; aspect-ratio: 4 / 3; overflow: hidden; background: var(--bg-2); }
