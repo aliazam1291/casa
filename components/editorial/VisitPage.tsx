@@ -1,9 +1,11 @@
 "use client";
 
+import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useCursor } from "@/components/cursor/CursorProvider";
 import { useReveal } from "@/hooks/useReveal";
+import { useTilt } from "@/hooks/useTilt";
 import { CONTACT, contactMapUrl } from "@/lib/contact";
 import styles from "./VisitPage.module.css";
 
@@ -14,9 +16,40 @@ const OPTIONS = [
   { tag: "Directions", title: CONTACT.region, body: "Full directions and appointment windows shared on request.", href: "/experiences/consultation" },
 ];
 
+const JOURNEY = [
+  { num: "01", label: "Discover", detail: "You find Wolf Casa the way we sell — by the room, not the object." },
+  { num: "02", label: "Explore Site", detail: "Rooms, not products, as the entry point — the composed catalogue, browsed." },
+  { num: "03", label: "WhatsApp", detail: "The showroom, in a thread — ask a question before you arrive." },
+  { num: "04", label: "Book Visit", detail: "A curator's time reserved, against your own room and plan." },
+  { num: "05", label: "Arrive", detail: "Walk the compositions in person. The room does the rest of the selling." },
+];
+
+function OptionCard({ item }: { item: (typeof OPTIONS)[number] }) {
+  const { setCursor, resetCursor } = useCursor();
+  const { ref, onPointerMove, onPointerLeave } = useTilt<HTMLAnchorElement>(6);
+  return (
+    <Link
+      ref={ref}
+      href={item.href}
+      onPointerMove={onPointerMove}
+      onPointerLeave={() => {
+        onPointerLeave();
+        resetCursor();
+      }}
+      onMouseEnter={() => setCursor("hover", "Go")}
+    >
+      <span>{item.tag}</span>
+      <h3>{item.title}</h3>
+      <p>{item.body}</p>
+    </Link>
+  );
+}
+
 export function VisitPage() {
   const { setCursor, resetCursor } = useCursor();
   const { ref, inView } = useReveal<HTMLDivElement>();
+  const { ref: journeyRef, inView: journeyIn } = useReveal<HTMLDivElement>();
+  const [activeStep, setActiveStep] = useState(0);
 
   return (
     <main className={styles.page}>
@@ -73,18 +106,37 @@ export function VisitPage() {
         </div>
       </section>
 
+      {/* The path in — an interactive route, walked step by step */}
+      <section className={styles.journey} aria-label="How a visit unfolds">
+        <div ref={journeyRef} className={`reveal ${journeyIn ? "in" : ""}`}>
+          <p className={styles.sectionLabel}>The Path In</p>
+          <h2>Five steps, from a screen to the room.</h2>
+        </div>
+        <div className={styles.track} role="tablist" aria-label="Visit steps">
+          {JOURNEY.map((step, i) => (
+            <button
+              key={step.num}
+              type="button"
+              role="tab"
+              aria-selected={i === activeStep}
+              className={`${styles.step} ${i === activeStep ? styles.stepActive : ""}`}
+              onClick={() => setActiveStep(i)}
+              onMouseEnter={() => setCursor("hover", step.label)}
+              onMouseLeave={resetCursor}
+            >
+              <span className={styles.stepNum}>{step.num}</span>
+              <span className={styles.stepLabel}>{step.label}</span>
+            </button>
+          ))}
+        </div>
+        <p className={styles.stepDetail} key={activeStep}>
+          {JOURNEY[activeStep].detail}
+        </p>
+      </section>
+
       <section className={styles.options} aria-label="Ways to visit">
         {OPTIONS.map((item) => (
-          <Link
-            key={item.tag}
-            href={item.href}
-            onMouseEnter={() => setCursor("hover", "Go")}
-            onMouseLeave={resetCursor}
-          >
-            <span>{item.tag}</span>
-            <h3>{item.title}</h3>
-            <p>{item.body}</p>
-          </Link>
+          <OptionCard key={item.tag} item={item} />
         ))}
       </section>
 

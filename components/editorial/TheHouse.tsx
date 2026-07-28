@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useCursor } from "@/components/cursor/CursorProvider";
 import { useReveal } from "@/hooks/useReveal";
 import { CONTACT } from "@/lib/contact";
+import { HouseSketch } from "./HouseSketch";
 import styles from "./TheHouse.module.css";
 
 const STATS = [
@@ -70,6 +71,8 @@ export function TheHouse() {
           </article>
         ))}
       </section>
+
+      <HouseSketch />
 
       <section className={styles.framework}>
         <div ref={fwRef} className={`reveal ${fwIn ? "in" : ""}`}>

@@ -3,12 +3,25 @@ import Image from "next/image";
 import Link from "next/link";
 import { CATALOGUE } from "@/lib/catalogue";
 import { STOCK_PIECES } from "@/lib/products";
+import { KITCHEN_BATH_IMAGES, LIGHTING_IMAGES, DECOR_IMAGES, SEATING_IMAGES } from "@/lib/library-images";
+import { CatalogueCard } from "./CatalogueCard";
 import styles from "./page.module.css";
 
 export const metadata: Metadata = {
   title: "Catalogue — Wolf Casa",
   description: "Eight categories Wolf Casa composes with — bespoke interiors, seating, kitchen & bath, lighting, doors, office & outdoor, décor and greenery.",
   alternates: { canonical: "/catalogue" },
+};
+
+const CATEGORY_IMAGES: Record<string, string> = {
+  "bespoke-interiors": "/images/catalogue/bespoke-interiors-beds.webp",
+  seating: "/images/catalogue/seating-sofas.webp",
+  "kitchen-bath": KITCHEN_BATH_IMAGES[0],
+  "lighting-smart-living": LIGHTING_IMAGES[0],
+  "doors-windows": DECOR_IMAGES[5],
+  "office-outdoor": DECOR_IMAGES[4],
+  "decor-finishes": DECOR_IMAGES[0],
+  "greenery-entertainment": SEATING_IMAGES[7],
 };
 
 export default function CataloguePage() {
@@ -22,12 +35,7 @@ export default function CataloguePage() {
 
       <nav className={styles.grid} aria-label="Catalogue categories">
         {CATALOGUE.map((cat, i) => (
-          <Link key={cat.slug} href={`/catalogue/${cat.slug}`} className={styles.card}>
-            <span>{String(i + 1).padStart(2, "0")}</span>
-            <h2>{cat.name}</h2>
-            <p>{cat.description}</p>
-            <b>{cat.subtypes.length} sub-types &rarr;</b>
-          </Link>
+          <CatalogueCard key={cat.slug} category={cat} index={i} image={CATEGORY_IMAGES[cat.slug]} />
         ))}
       </nav>
 

@@ -34,43 +34,60 @@ export default function RoomsPage() {
         </div>
       </section>
 
-      {FLOORS.map((floor) => (
-        <section key={floor.name} className={styles.floor}>
-          <div className={styles.floorHead}>
-            <h2>{floor.label}</h2>
-            <span>{floor.level} · {floor.note}</span>
-          </div>
-          <div className={styles.grid}>
-            {floor.rooms.map((room, i) => {
-              const img = ROOM_IMAGES[room.slug] ?? "/images/editorial/villa-hero.png";
-              const ratio = RATIOS[i % RATIOS.length];
-              return (
-                <Link key={room.slug} href={`/rooms/${room.slug}`} className={styles.card}>
-                  <div className={styles.cardThumb} style={{ aspectRatio: ratio }}>
-                    <Image
-                      src={img}
-                      alt={room.name}
-                      fill
-                      loading="lazy"
-                      sizes="(max-width: 720px) 96vw, (max-width: 1100px) 48vw, 30vw"
-                    />
-                  </div>
-                  <div className={styles.cardBody}>
-                    <span>{room.eyebrow}</span>
-                    <h3>{room.name}</h3>
-                    <p>{room.detail}</p>
-                    <div className={styles.chips}>
-                      {room.materials.slice(0, 3).map((m) => (
-                        <span key={m}>{m}</span>
-                      ))}
+      {FLOORS.map((floor, floorIdx) => {
+        const priorRooms = FLOORS.slice(0, floorIdx).reduce((n, f) => n + f.rooms.length, 0);
+        return (
+          <section key={floor.name} className={styles.floor}>
+            {/* Floor header set as a drawing title block — the same
+                register as the FloorPlans blueprint, not a generic heading */}
+            <div className={styles.floorHead}>
+              <div className={styles.floorTitleBlock}>
+                <span className={styles.floorMark}>Wolf Casa · Villa</span>
+                <h2>{floor.label}</h2>
+                <span className={styles.floorDrawing}>
+                  Level {floor.level} · Sheet {String(floorIdx + 1).padStart(2, "0")}/{String(FLOORS.length).padStart(2, "0")}
+                </span>
+              </div>
+              <span className={styles.floorNote}>{floor.note}</span>
+            </div>
+            <div className={styles.grid}>
+              {floor.rooms.map((room, i) => {
+                const img = ROOM_IMAGES[room.slug] ?? "/images/editorial/villa-hero.png";
+                const ratio = RATIOS[i % RATIOS.length];
+                return (
+                  <Link key={room.slug} href={`/rooms/${room.slug}`} className={styles.card}>
+                    <div className={styles.cardThumb} style={{ aspectRatio: ratio }}>
+                      <Image
+                        src={img}
+                        alt={room.name}
+                        fill
+                        loading="lazy"
+                        sizes="(max-width: 720px) 96vw, (max-width: 1100px) 48vw, 30vw"
+                      />
+                      {/* Registration ticks — the drawing-plate motif, echoed
+                          from every room rectangle on the floor plan */}
+                      <svg className={styles.ticks} viewBox="0 0 100 100" aria-hidden preserveAspectRatio="none">
+                        <path d="M4 14V4h10 M86 4h10v10 M96 86v10H86 M14 96H4V86" />
+                      </svg>
+                      <span className={styles.plate}>Plate {String(priorRooms + i + 1).padStart(2, "0")}</span>
                     </div>
-                  </div>
-                </Link>
-              );
-            })}
-          </div>
-        </section>
-      ))}
+                    <div className={styles.cardBody}>
+                      <span>{room.eyebrow}</span>
+                      <h3>{room.name}</h3>
+                      <p>{room.detail}</p>
+                      <div className={styles.chips}>
+                        {room.materials.slice(0, 3).map((m) => (
+                          <span key={m}><i aria-hidden />{m}</span>
+                        ))}
+                      </div>
+                    </div>
+                  </Link>
+                );
+              })}
+            </div>
+          </section>
+        );
+      })}
 
       <section className={styles.note}>
         <p>Every room draws on the same eight categories — seating, kitchen &amp; bath, lighting, doors, décor, office &amp; outdoor, greenery, bespoke interiors.</p>

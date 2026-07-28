@@ -1,0 +1,138 @@
+.section {
+  padding: 16vh var(--gutter);
+  background: var(--bg-2);
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+.head {
+  max-width: 640px;
+  margin: 0 auto 8vh;
+  text-align: center;
+}
+.num {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--walnut);
+  display: block;
+  margin-bottom: 20px;
+}
+.head h2 {
+  font-family: var(--serif);
+  font-weight: 200;
+  font-size: clamp(34px, 4.4vw, 64px);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  margin-bottom: 18px;
+}
+.head p {
+  color: var(--fg-dim);
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.body {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: clamp(24px, 4vw, 64px);
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.svg {
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.slab {
+  cursor: none;
+}
+.face {
+  stroke: var(--fg-dim);
+  stroke-width: 1;
+  transition: fill 300ms ease, stroke 300ms ease, opacity 300ms ease;
+}
+.faceTop { fill: rgba(232, 225, 211, 0.1); }
+.faceRight { fill: rgba(0, 0, 0, 0.28); }
+.faceLeft { fill: rgba(0, 0, 0, 0.16); }
+.slab:hover .face { stroke: var(--gold-light); }
+.faceActive.faceTop { fill: rgba(201, 168, 126, 0.22); }
+.faceActive.faceRight { fill: rgba(167, 134, 87, 0.28); }
+.faceActive.faceLeft { fill: rgba(167, 134, 87, 0.16); }
+.faceActive { stroke: var(--gold); stroke-width: 1.4; }
+
+.slabLabel {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  fill: var(--fg-dim);
+  pointer-events: none;
+}
+
+.panel {
+  border-left: 1px solid var(--line);
+  padding-left: clamp(20px, 3vw, 40px);
+  min-height: 220px;
+}
+.panelEyebrow {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold-light);
+  display: block;
+  margin-bottom: 12px;
+}
+.panel h3 {
+  font-family: var(--serif);
+  font-style: italic;
+  font-weight: 300;
+  font-size: clamp(26px, 2.8vw, 38px);
+  margin-bottom: 14px;
+}
+.panel > p {
+  color: var(--fg-dim);
+  font-size: 13.5px;
+  line-height: 1.7;
+  max-width: 40ch;
+  margin-bottom: 22px;
+}
+.panelHint {
+  color: var(--fg-faint);
+  font-size: 13px;
+  font-style: italic;
+}
+.roomList {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.roomList a {
+  display: block;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--line);
+  font-family: var(--sans);
+  font-size: 13px;
+  color: var(--fg);
+  transition: color 0.25s ease, padding-left 0.25s ease;
+}
+.roomList a:hover {
+  color: var(--gold-light);
+  padding-left: 6px;
+}
+
+@media (max-width: 900px) {
+  .body {
+    grid-template-columns: 1fr;
+  }
+  .panel {
+    border-left: none;
+    border-top: 1px solid var(--line);
+    padding-left: 0;
+    padding-top: 32px;
+  }
+}
