@@ -85,12 +85,6 @@
   justify-content: flex-end;
   padding-bottom: 12vh;
   gap: 20px;
-  /* The text sits over a fully-rendered, detailed room — without a scrim it
-     reads fine over open wall but disappears against artwork/furniture
-     behind it. Fades from clear (top, room stays visible) to a soft dark
-     wash (bottom, where the copy lives) — matches the now-evening-graded
-     3D scene. */
-  background: linear-gradient(to top, rgba(14, 14, 12, 0.92) 0%, rgba(14, 14, 12, 0.68) 34%, rgba(14, 14, 12, 0.08) 62%, transparent 80%);
 }
 
 .eyebrow {
@@ -99,6 +93,7 @@
   letter-spacing: 0.3em;
   text-transform: uppercase;
   color: var(--walnut);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7), 0 2px 14px rgba(0, 0, 0, 0.5);
   animation: fadeUp 1s var(--ease-gallery) both;
 }
 
@@ -110,6 +105,7 @@
   line-height: 1.05;
   color: var(--fg);
   text-align: center;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.75), 0 4px 24px rgba(0, 0, 0, 0.55);
   animation: fadeUp 1s var(--ease-gallery) 0.15s both;
 }
 
@@ -120,6 +116,7 @@
   font-size: 14px;
   line-height: 1.7;
   text-align: center;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.7), 0 2px 16px rgba(0, 0, 0, 0.5);
   animation: fadeUp 1s var(--ease-gallery) 0.28s both;
 }
 

@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useCursor } from "@/components/cursor/CursorProvider";
 import { useReveal } from "@/hooks/useReveal";
-import { COMPOSITIONS } from "@/lib/compositions";
+import { CompositionExhibit } from "./CompositionExhibit";
 import styles from "./TheWolfWay.module.css";
 
 const DNA = [
@@ -73,20 +73,7 @@ export function TheWolfWay() {
         </div>
       </section>
 
-      <section className={styles.worlds}>
-        <p className={styles.sectionLabel}>Eight Signature Compositions</p>
-        <h2>One doctrine, eight named rooms.</h2>
-        <div className={styles.worldList}>
-          {COMPOSITIONS.map((composition, index) => (
-            <article key={composition.slug} id={composition.slug} className={styles.worldRow}>
-              <span>{String(index + 1).padStart(2, "0")} / 08</span>
-              <h3>{composition.name}</h3>
-              <p>{composition.blurb}</p>
-              <blockquote>&ldquo;{composition.pullQuote}&rdquo;</blockquote>
-            </article>
-          ))}
-        </div>
-      </section>
+      <CompositionExhibit />
 
       <section className={styles.principles}>
         <div ref={prinRef} className={`reveal ${prinIn ? "in" : ""}`}>

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Cormorant, Jost } from "next/font/google";
+import { Fraunces, Sora } from "next/font/google";
 import "./globals.css";
 import { CursorProvider } from "@/components/cursor/CursorProvider";
 import { CustomCursor } from "@/components/cursor/CustomCursor";
@@ -9,20 +9,19 @@ import { Spotlight } from "@/components/chrome/Spotlight";
 import { Nav } from "@/components/nav/Nav";
 import { CONTACT } from "@/lib/contact";
 
-// Cormorant (display/voice — headlines, pull-quotes, italic accent) + Jost
-// (system/labels — labels, captions, specs, interface): the Brand Book's
-// two-role type system. ("Posterama," the book's third, display-only face
-// for the wordmark and composition names, is a licensed face we don't have
-// access to — dropped per the client's own call; Jost at display scale
-// carries those roles instead.)
-const archivo = Jost({
+// Fraunces (display/voice — headlines, pull-quotes, italic accent) + Sora
+// (system/labels — labels, captions, specs, interface). Replaces the
+// Cormorant/Jost pairing — Cormorant read too thin/delicate; Fraunces has
+// more structural weight while keeping a soft, non-clinical italic, and
+// Sora is a cleaner geometric sans than Jost at small sizes.
+const archivo = Sora({
   variable: "--font-archivo",
   subsets: ["latin"],
   weight: ["300", "400", "500", "600"],
   display: "swap",
 });
 
-const cormorant = Cormorant({
+const cormorant = Fraunces({
   variable: "--font-cormorant",
   subsets: ["latin"],
   style: ["normal", "italic"],

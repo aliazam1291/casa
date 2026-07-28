@@ -3,6 +3,8 @@
 // sellable moods a customer can ask for by name"). Replaces the earlier,
 // invented "Five Worlds" taxonomy, which had no basis in the client's brand
 // system. Name/blurb/pullQuote are verbatim from the book.
+export type TimeOfDay = "dawn" | "midday" | "golden" | "dusk" | "night";
+
 export type Composition = {
   slug: string;
   name: string;
@@ -11,6 +13,10 @@ export type Composition = {
   img: string;
   accent: number;
   emissive: number;
+  // Not in the book — added so each composition can carry the "when" of its
+  // light (rendered as a small sun-arc sketch) alongside its "what" (materials).
+  materials: string[];
+  timeOfDay: TimeOfDay;
 };
 
 export const COMPOSITIONS: Composition[] = [
@@ -22,6 +28,8 @@ export const COMPOSITIONS: Composition[] = [
     img: "/images/showroom/bedroom-suite-warm.webp",
     accent: 0xb8975a,
     emissive: 0x2a1c10,
+    materials: ["Walnut", "Boucle", "Blackened brass"],
+    timeOfDay: "night",
   },
   {
     slug: "terra-form",
@@ -31,6 +39,8 @@ export const COMPOSITIONS: Composition[] = [
     img: "/images/showroom/dining-marble-mirror.webp",
     accent: 0x8a7560,
     emissive: 0x2c2418,
+    materials: ["Honed stone", "Oiled oak", "Raw linen"],
+    timeOfDay: "midday",
   },
   {
     slug: "luxe-minimal",
@@ -40,6 +50,8 @@ export const COMPOSITIONS: Composition[] = [
     img: "/images/showroom/living-room-sectional.webp",
     accent: 0xa78657,
     emissive: 0x1a1815,
+    materials: ["Bouclé", "Brass", "Honed marble"],
+    timeOfDay: "dawn",
   },
   {
     slug: "urban-oasis",
@@ -49,6 +61,8 @@ export const COMPOSITIONS: Composition[] = [
     img: "/images/editorial/light-form-atrium.png",
     accent: 0x6e7a5c,
     emissive: 0x1e2418,
+    materials: ["Stone", "Greenery", "Raw concrete"],
+    timeOfDay: "midday",
   },
   {
     slug: "monochrome",
@@ -58,6 +72,8 @@ export const COMPOSITIONS: Composition[] = [
     img: "/images/showroom/dining-set-black-gold.webp",
     accent: 0x5a3d2e,
     emissive: 0x141311,
+    materials: ["Dark wood", "Blackened steel", "Glass"],
+    timeOfDay: "dusk",
   },
   {
     slug: "golden-hour",
@@ -67,6 +83,8 @@ export const COMPOSITIONS: Composition[] = [
     img: "/images/showroom/living-lounge-brass.webp",
     accent: 0xd4b87a,
     emissive: 0x3a2410,
+    materials: ["Brass", "Warm oak", "Terracotta"],
+    timeOfDay: "golden",
   },
   {
     slug: "artisan-layer",
@@ -76,6 +94,8 @@ export const COMPOSITIONS: Composition[] = [
     img: "/images/showroom/dining-room-mirrorwall.webp",
     accent: 0x8a5938,
     emissive: 0x2a1c12,
+    materials: ["Saddle leather", "Hand-loomed textile", "Mirror"],
+    timeOfDay: "golden",
   },
   {
     slug: "forest-silence",
@@ -87,5 +107,7 @@ export const COMPOSITIONS: Composition[] = [
     img: "/images/editorial/materials.png",
     accent: 0x253528,
     emissive: 0x151d16,
+    materials: ["Deep green velvet", "Walnut", "Wool"],
+    timeOfDay: "dusk",
   },
 ];

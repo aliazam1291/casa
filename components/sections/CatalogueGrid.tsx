@@ -32,7 +32,10 @@ export function CatalogueGrid() {
   return (
     <section className={styles.section} id="catalogue">
       <div ref={ref} className={`${styles.head} reveal ${inView ? "in" : ""}`}>
-        <span>§ 03 — The Catalogue</span>
+        <p className={styles.rail}>
+          <b>03</b> Product Universe
+          <i>From SKU to room</i>
+        </p>
         <h2>Every room draws on <em>eight categories.</em></h2>
       </div>
       <nav className={styles.grid} aria-label="Catalogue categories">
@@ -56,6 +59,19 @@ export function CatalogueGrid() {
             </Link>
           );
         })}
+        {/* The terminal cell of the reference grid — the whole taxonomy
+            resolving to one thing. Brass, per "punctuation only". */}
+        <Link
+          href="/rooms"
+          className={`${styles.card} ${styles.cardTerminal}`}
+          onMouseEnter={() => setCursor("hover", "Enter")}
+          onMouseLeave={resetCursor}
+        >
+          <div className={styles.cardBody}>
+            <span>09</span>
+            <h3>The Room</h3>
+          </div>
+        </Link>
       </nav>
       <div className={styles.foot}>
         <Link href="/catalogue" onMouseEnter={() => setCursor("hover", "Browse")} onMouseLeave={resetCursor}>
