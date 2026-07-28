@@ -40,7 +40,7 @@ export function CatalogueGrid() {
     <section className={styles.section} id="catalogue">
       <div ref={ref} className={`${styles.head} reveal ${inView ? "in" : ""}`}>
         <p className={styles.rail}>
-          <b>05</b> Product Universe
+          <b>02</b> Product Universe
           <i>From SKU to room</i>
         </p>
         <h2>Every room draws on <em>eight categories.</em></h2>

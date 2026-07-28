@@ -3,6 +3,10 @@ import Image from "next/image";
 import Link from "next/link";
 import { FLOORS } from "@/lib/rooms";
 import { ROOM_IMAGES } from "@/lib/library-images";
+import { DomeGallery } from "@/components/sections/DomeGallery";
+import { VillaSection } from "@/components/three/villa-section/VillaSection";
+import { FloorPlans } from "@/components/sections/FloorPlans";
+import { MaterialsBoard } from "@/components/sections/MaterialsBoard";
 import styles from "./page.module.css";
 
 export const metadata: Metadata = {
@@ -33,6 +37,11 @@ export default function RoomsPage() {
           <p>A room is not furnished. It is composed — seating, joinery, lighting, stone and greenery resolved as one decision. These are the rooms Wolf Casa has already made.</p>
         </div>
       </section>
+
+      <DomeGallery />
+      <VillaSection />
+      <FloorPlans />
+      <MaterialsBoard />
 
       {FLOORS.map((floor, floorIdx) => {
         const priorRooms = FLOORS.slice(0, floorIdx).reduce((n, f) => n + f.rooms.length, 0);

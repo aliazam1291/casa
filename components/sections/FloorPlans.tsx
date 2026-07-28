@@ -154,7 +154,7 @@ export function FloorPlans() {
   return (
     <section className={styles.section} id="floor-plans">
       <div ref={ref} className={`${styles.heading} reveal ${inView ? "in" : ""}`}>
-        <div><span>§ 04 — The Rooms</span><p>Plan the feeling,<br />not just the room.</p></div>
+        <div><span>§ 03 — The Rooms</span><p>Plan the feeling,<br />not just the room.</p></div>
         <h2>Thirteen rooms,<br /><em>one composition.</em></h2>
       </div>
       <div className={styles.explorer}>

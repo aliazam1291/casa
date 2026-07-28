@@ -14,7 +14,11 @@ const SCALE = 0.115;
 const CENTER_X = 50;
 const CENTER_Z = 48;
 const ENVELOPE = { x: 10, y: 10, w: 80, h: 76 };
-const FLOOR_GAP = 3.4; // "drawn apart" — exaggerated beyond a real storey height
+const WALL_HEIGHT = 1.35; // real volume, not a flat card
+const FLOOR_GAP = 3.4; // centre-to-centre; leaves ~2 units of clear air between slabs — "drawn apart"
+
+const GOLD = 0xa78657;
+const IVORY = 0xe8e1d3;
 
 function toWorld(svgX, svgY) {
   return [(svgX - CENTER_X) * SCALE, (svgY - CENTER_Z) * SCALE];
@@ -29,6 +33,12 @@ function rectCorners(rect) {
     [x1, z1],
     [x0, z1],
   ];
+}
+
+function rectSize(rect) {
+  const [x0, z0] = toWorld(rect.x, rect.y);
+  const [x1, z1] = toWorld(rect.x + rect.w, rect.y + rect.h);
+  return { w: x1 - x0, d: z1 - z0, cx: (x0 + x1) / 2, cz: (z0 + z1) / 2 };
 }
 
 function makeLineLoop(rect, y, color, opacity) {
@@ -51,24 +61,27 @@ const VillaScene = forwardRef(function VillaScene({ onRoomHover, onRoomClick }, 
     const scene = new THREE.Scene();
     scene.background = null;
 
-    const camera = new THREE.PerspectiveCamera(38, 1, 0.1, 100);
-    const totalHeight = FLOOR_GAP * (FLOORS.length - 1);
-    camera.position.set(11, totalHeight * 0.62 + 3.5, 12);
+    const camera = new THREE.PerspectiveCamera(36, 1, 0.1, 100);
+    const totalHeight = FLOOR_GAP * (FLOORS.length - 1) + WALL_HEIGHT;
+    // ~25-30° elevation — an architectural 3/4 axonometric, low enough to
+    // read the wall faces as walls, high enough to still see every floor's
+    // roof plan and room etching.
+    camera.position.set(13, totalHeight * 0.5 + 8.5, 15);
 
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setPixelRatio(Math.min(2, window.devicePixelRatio || 1));
     mount.appendChild(renderer.domElement);
 
-    const target = new THREE.Vector3(0, totalHeight / 2, 0);
+    const target = new THREE.Vector3(0, totalHeight / 2 - 0.6, 0);
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.target.copy(target);
     controls.enableDamping = true;
     controls.dampingFactor = 0.08;
     controls.enablePan = false;
-    controls.minDistance = 7;
-    controls.maxDistance = 22;
-    controls.minPolarAngle = Math.PI * 0.18;
-    controls.maxPolarAngle = Math.PI * 0.48;
+    controls.minDistance = 9;
+    controls.maxDistance = 26;
+    controls.minPolarAngle = Math.PI * 0.32;
+    controls.maxPolarAngle = Math.PI * 0.5;
     controls.autoRotate = true;
     controls.autoRotateSpeed = 0.5;
     camera.lookAt(target);
@@ -83,47 +96,77 @@ const VillaScene = forwardRef(function VillaScene({ onRoomHover, onRoomClick }, 
     };
     controls.addEventListener("start", wake);
 
-    const GOLD = 0xa78657;
-    const IVORY = 0xe8e1d3;
-
     const roomMeshes = []; // { mesh, line, room }
-    const cornerPoints = []; // per-floor envelope corners for vertical connectors
+    const cornerPoints = []; // per-floor envelope TOP corners, for vertical connectors
+
+    const envSize = rectSize(ENVELOPE);
+    const wallMat = new THREE.MeshStandardMaterial({
+      color: 0x18140f,
+      transparent: true,
+      opacity: 0.62,
+      roughness: 0.9,
+      metalness: 0.05,
+      side: THREE.DoubleSide,
+    });
+    const roofMat = new THREE.MeshStandardMaterial({ color: 0x141311, roughness: 0.85, side: THREE.DoubleSide });
 
     FLOORS.forEach((floor, floorIndex) => {
       const y = floorIndex * FLOOR_GAP;
       const group = new THREE.Group();
       group.position.y = y;
 
-      // Building envelope for this floor
-      const envelope = makeLineLoop(ENVELOPE, 0, GOLD, 0.55);
-      group.add(envelope);
-      cornerPoints.push(rectCorners(ENVELOPE).map(([x, z]) => new THREE.Vector3(x, y, z)));
+      // The floor's real volume — a low, solid-walled box, not a flat plane.
+      // Edges are drawn separately in gold for the crisp line-art read.
+      const boxGeo = new THREE.BoxGeometry(envSize.w, WALL_HEIGHT, envSize.d);
+      const box = new THREE.Mesh(boxGeo, wallMat);
+      box.position.set(envSize.cx, WALL_HEIGHT / 2, envSize.cz);
+      group.add(box);
 
-      // A faint filled slab so each floor still reads as a plane, not just wires
-      const [ex0, ez0] = toWorld(ENVELOPE.x, ENVELOPE.y);
-      const [ex1, ez1] = toWorld(ENVELOPE.x + ENVELOPE.w, ENVELOPE.y + ENVELOPE.h);
-      const slabGeo = new THREE.PlaneGeometry(ex1 - ex0, ez1 - ez0);
-      const slabMat = new THREE.MeshBasicMaterial({ color: 0x141311, transparent: true, opacity: 0.55, side: THREE.DoubleSide });
-      const slab = new THREE.Mesh(slabGeo, slabMat);
-      slab.rotation.x = -Math.PI / 2;
-      slab.position.set((ex0 + ex1) / 2, -0.01, (ez0 + ez1) / 2);
-      group.add(slab);
+      const edges = new THREE.LineSegments(
+        new THREE.EdgesGeometry(boxGeo),
+        new THREE.LineBasicMaterial({ color: GOLD, transparent: true, opacity: 0.65 })
+      );
+      edges.position.copy(box.position);
+      group.add(edges);
 
+      cornerPoints.push(rectCorners(ENVELOPE).map(([x, z]) => new THREE.Vector3(x, y + WALL_HEIGHT, z)));
+
+      // Interior partitions etched onto the roof/top face — the "floor plan"
+      // read, drawn on top of real massing instead of instead of it.
       floor.rooms.forEach((room) => {
-        const line = makeLineLoop(room.plan, 0.01, IVORY, 0.55);
+        const line = makeLineLoop(room.plan, WALL_HEIGHT + 0.01, IVORY, 0.6);
         group.add(line);
 
-        const [rx0, rz0] = toWorld(room.plan.x, room.plan.y);
-        const [rx1, rz1] = toWorld(room.plan.x + room.plan.w, room.plan.y + room.plan.h);
-        const hitGeo = new THREE.PlaneGeometry(rx1 - rx0, rz1 - rz0);
+        const size = rectSize(room.plan);
+        const hitGeo = new THREE.PlaneGeometry(size.w, size.d);
         const hitMat = new THREE.MeshBasicMaterial({ color: GOLD, transparent: true, opacity: 0, side: THREE.DoubleSide });
         const hit = new THREE.Mesh(hitGeo, hitMat);
         hit.rotation.x = -Math.PI / 2;
-        hit.position.set((rx0 + rx1) / 2, 0.02, (rz0 + rz1) / 2);
+        hit.position.set(size.cx, WALL_HEIGHT + 0.03, size.cz);
         group.add(hit);
 
         roomMeshes.push({ mesh: hit, line, room });
       });
+
+      // A shallow hipped roof on the top floor only — the one detail that
+      // reads as "house" rather than "server rack."
+      if (floorIndex === FLOORS.length - 1) {
+        const roofGeo = new THREE.ConeGeometry(1, 0.75, 4, 1);
+        // rotateY FIRST to align the 4-gon's flat faces with X/Z (a raw
+        // radialSegments=4 cone has its corners on the axes, not its faces),
+        // then scale — scaling before rotating would skew it into a rhombus.
+        roofGeo.rotateY(Math.PI / 4);
+        roofGeo.scale((envSize.w / Math.SQRT2) * 1.02, 1, (envSize.d / Math.SQRT2) * 1.02);
+        const roof = new THREE.Mesh(roofGeo, roofMat);
+        roof.position.set(envSize.cx, WALL_HEIGHT + 0.375, envSize.cz);
+        group.add(roof);
+        const roofEdges = new THREE.LineSegments(
+          new THREE.EdgesGeometry(roofGeo),
+          new THREE.LineBasicMaterial({ color: GOLD, transparent: true, opacity: 0.5 })
+        );
+        roofEdges.position.copy(roof.position);
+        group.add(roofEdges);
+      }
 
       scene.add(group);
     });
@@ -142,8 +185,11 @@ const VillaScene = forwardRef(function VillaScene({ onRoomHover, onRoomClick }, 
       }
     }
 
-    const ambient = new THREE.AmbientLight(0xffffff, 1);
+    const ambient = new THREE.AmbientLight(0xfff1dc, 0.7);
     scene.add(ambient);
+    const key = new THREE.DirectionalLight(0xffe8c8, 0.9);
+    key.position.set(8, 14, 6);
+    scene.add(key);
 
     const raycaster = new THREE.Raycaster();
     const pointer = new THREE.Vector2();
