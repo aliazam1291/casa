@@ -4,6 +4,7 @@ import { Manifesto } from "@/components/sections/Manifesto";
 import { FloorPlans } from "@/components/sections/FloorPlans";
 import { MaterialsBoard } from "@/components/sections/MaterialsBoard";
 import { CatalogueGrid } from "@/components/sections/CatalogueGrid";
+import { DomeGallery } from "@/components/sections/DomeGallery";
 import { Gallery } from "@/components/sections/Gallery";
 import { Stats } from "@/components/sections/Stats";
 import { Sojourn } from "@/components/sections/Sojourn";
@@ -29,6 +30,7 @@ export default function Home() {
       <FloorPlans />
       <MaterialsBoard />
       <CatalogueGrid />
+      <DomeGallery />
       <Gallery />
       <Stats />
       <Sojourn />

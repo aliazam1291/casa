@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useState } from "react";
 import { useCursor } from "@/components/cursor/CursorProvider";
 import { useReveal } from "@/hooks/useReveal";
+import { MATERIAL_IMAGES } from "@/lib/library-images";
 import styles from "./MaterialsBoard.module.css";
 
 const MATERIALS = [
@@ -19,7 +20,7 @@ const MATERIALS = [
       { key: "Signature grades", value: "Calacatta Gold, Nero Marquina" },
       { key: "Finish", value: "Honed matte or polished high-gloss" },
     ],
-    image: "https://images.unsplash.com/photo-1617197705954-a57b1b00c0b4?auto=format&fit=crop&q=80&w=1200",
+    image: MATERIAL_IMAGES.marble,
     accent: "#c9a87e",
   },
   {
@@ -34,7 +35,7 @@ const MATERIALS = [
       { key: "Signature species", value: "American Walnut, Kiln-dried Ash" },
       { key: "Ageing quality", value: "Darkens gradually, improves" },
     ],
-    image: "https://images.unsplash.com/photo-1541123437800-1bb1317badc2?auto=format&fit=crop&q=80&w=1200",
+    image: MATERIAL_IMAGES.wood,
     accent: "#8a5938",
   },
   {
@@ -49,7 +50,7 @@ const MATERIALS = [
       { key: "Signature grades", value: "Classic Travertine, Pietra Serena" },
       { key: "Ageing quality", value: "Weathers naturally to patina" },
     ],
-    image: "https://images.unsplash.com/photo-1600607686527-6fb886090705?auto=format&fit=crop&q=80&w=1200",
+    image: MATERIAL_IMAGES.stone,
     accent: "#8a8376",
   },
   {
@@ -64,7 +65,7 @@ const MATERIALS = [
       { key: "Velvet tones", value: "Forest cotton, Terracotta" },
       { key: "Linen weight", value: "Heavy Belgian linen, washed" },
     ],
-    image: "https://images.unsplash.com/photo-1558769132-cb1aea458c5e?auto=format&fit=crop&q=80&w=1200",
+    image: MATERIAL_IMAGES.textile,
     accent: "#c9bda6",
   },
 ] as const;
@@ -77,7 +78,7 @@ export function MaterialsBoard() {
   const material = MATERIALS.find((m) => m.id === active) ?? MATERIALS[0];
 
   return (
-    <section className={styles.section} id="materials-knowledge">
+    <section className={`${styles.section} plaster`} id="materials-knowledge">
       <div ref={ref} className={`${styles.head} reveal ${inView ? "in" : ""}`}>
         <span className={styles.num}>§ Material Knowledge</span>
         <h2 className={styles.heading}>

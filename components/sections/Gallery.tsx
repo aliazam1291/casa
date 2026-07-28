@@ -7,55 +7,51 @@ import { PIECES, type Piece } from "@/lib/pieces";
 import { getRoom } from "@/lib/rooms";
 import { useCursor } from "@/components/cursor/CursorProvider";
 import { useReveal } from "@/hooks/useReveal";
+import { useTilt } from "@/hooks/useTilt";
+import { getPieceImage } from "@/lib/library-images";
 import styles from "./Gallery.module.css";
 
-// Curated stock photo mappings that match the high-end monochrome, plaster, 
-// wood, marble, and warm lighting luxury aesthetics of Wolf Casa.
-const AESTHETIC_IMAGES: Record<string, string> = {
-  "the-low-sofa": "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&q=80&w=800",
-  "the-horizon-sofa": "https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?auto=format&fit=crop&q=80&w=800",
-  "the-arrival-bench": "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&q=80&w=800",
-  "the-dining-chairs": "https://images.unsplash.com/photo-1567538096630-e0c55bd6374c?auto=format&fit=crop&q=80&w=800",
-  "the-counter-stools": "https://images.unsplash.com/photo-1505080856163-267552912e1f?auto=format&fit=crop&q=80&w=800",
-  "the-reading-chair": "https://images.unsplash.com/photo-1598300042247-d088f8ab3a91?auto=format&fit=crop&q=80&w=800",
-  "the-still-chair": "https://images.unsplash.com/photo-1580481072645-022f9a6dbf27?auto=format&fit=crop&q=80&w=800",
-  "the-archive-reading-chair": "https://images.unsplash.com/photo-1592078615290-033ee584e267?auto=format&fit=crop&q=80&w=800",
-  "the-heirloom-table": "https://images.unsplash.com/photo-1615066390971-03e4e1c36ddf?auto=format&fit=crop&q=80&w=800",
-  "the-stone-table": "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&q=80&w=800",
-  "the-side-table": "https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&q=80&w=800",
-  "the-writing-desk": "https://images.unsplash.com/photo-1518455027359-f3f8164ba6bd?auto=format&fit=crop&q=80&w=800",
-  "the-tasting-table": "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&q=80&w=800",
-  "the-design-workbench": "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&q=80&w=800",
-  "the-drafting-table": "https://images.unsplash.com/photo-1507207611509-ec012433ff52?auto=format&fit=crop&q=80&w=800",
-  "the-ring-chandelier": "https://images.unsplash.com/photo-1543294001-f7cbfe92237e?auto=format&fit=crop&q=80&w=800",
-  "the-linear-pendant": "https://images.unsplash.com/photo-1565814329452-e1efa11c5b89?auto=format&fit=crop&q=80&w=800",
-  "the-reading-lamp": "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?auto=format&fit=crop&q=80&w=800",
-  "the-bankers-lamp": "https://images.unsplash.com/photo-1533090161767-e6ffed986c88?auto=format&fit=crop&q=80&w=800",
-  "the-monastic-bed": "https://images.unsplash.com/photo-1505691938895-1758d7feb511?auto=format&fit=crop&q=80&w=800",
-  "the-marble-nightstand": "https://images.unsplash.com/photo-1532372320978-9b4d6a3a854c?auto=format&fit=crop&q=80&w=800",
-  "the-still-bath": "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&q=80&w=800",
-  "the-floating-vanity": "https://images.unsplash.com/photo-1620626011161-997e5a919020?auto=format&fit=crop&q=80&w=800",
-  "the-rain-shower": "https://images.unsplash.com/photo-1604014237800-1c9102c219da?auto=format&fit=crop&q=80&w=800",
-  "the-wine-wall": "https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?auto=format&fit=crop&q=80&w=800",
-  "the-aging-barrels": "https://images.unsplash.com/photo-1474747917300-344400e9d6d3?auto=format&fit=crop&q=80&w=800",
-  "the-vintage-crates": "https://images.unsplash.com/photo-1595079676339-1534801ad6cf?auto=format&fit=crop&q=80&w=800",
-  "the-sample-racks": "https://images.unsplash.com/photo-1582555172866-f73bb12a2abf?auto=format&fit=crop&q=80&w=800",
-  "the-archive-cabinets": "https://images.unsplash.com/photo-1595515106969-1ce29566ff1c?auto=format&fit=crop&q=80&w=800",
-  "the-fire-table": "https://images.unsplash.com/photo-1600565193348-f74bd3c7ccdf?auto=format&fit=crop&q=80&w=800",
-  "the-olive-tree": "https://images.unsplash.com/photo-1445510861639-5651173bc5d5?auto=format&fit=crop&q=80&w=800"
-};
+function GalleryCard({
+  piece,
+  index,
+  onSelect,
+}: {
+  piece: Piece;
+  index: number;
+  onSelect: (p: Piece) => void;
+}) {
+  const { setCursor, resetCursor } = useCursor();
+  const { ref, onPointerMove, onPointerLeave } = useTilt<HTMLDivElement>(7);
+  const imgUrl = getPieceImage(piece.slug, index);
 
-const GENERIC_AESTHETICS = [
-  "https://images.unsplash.com/photo-1615876234886-fd9a39faa97f?auto=format&fit=crop&q=80&w=800",
-  "https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&q=80&w=800",
-  "https://images.unsplash.com/photo-1617806118233-18e1db207f62?auto=format&fit=crop&q=80&w=800",
-  "https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&q=80&w=800",
-  "https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&q=80&w=800"
-];
-
-function getPieceImage(slug: string, index: number): string {
-  if (AESTHETIC_IMAGES[slug]) return AESTHETIC_IMAGES[slug];
-  return GENERIC_AESTHETICS[index % GENERIC_AESTHETICS.length];
+  return (
+    <div
+      ref={ref}
+      className={styles.card}
+      onClick={() => onSelect(piece)}
+      onPointerMove={onPointerMove}
+      onPointerLeave={() => {
+        onPointerLeave();
+        resetCursor();
+      }}
+      onMouseEnter={() => setCursor("hover", "Inspect")}
+    >
+      <div className={styles.img} style={{ aspectRatio: RATIOS[index % RATIOS.length] }}>
+        <Image
+          src={imgUrl}
+          alt={piece.name}
+          fill
+          loading="lazy"
+          sizes="(max-width: 720px) 92vw, (max-width: 1200px) 45vw, 22vw"
+        />
+        <span className={styles.imgSheen} aria-hidden />
+      </div>
+      <span className={styles.cardNum}>
+        {String(index + 1).padStart(2, "0")} · {getRoom(piece.roomSlug)?.name}
+      </span>
+      <div className={styles.cardTitle}>{piece.name}</div>
+    </div>
+  );
 }
 
 const CATEGORIES = [
@@ -116,32 +112,9 @@ export function Gallery() {
 
       {/* Masonry Pinterest Board */}
       <div className={styles.masonry}>
-        {filteredPieces.map((piece, i) => {
-          const imgUrl = getPieceImage(piece.slug, i);
-          return (
-            <div
-              key={piece.slug}
-              className={styles.card}
-              onClick={() => setSelectedPiece(piece)}
-              onMouseEnter={() => setCursor("hover", "Inspect")}
-              onMouseLeave={resetCursor}
-            >
-              <div className={styles.img} style={{ aspectRatio: RATIOS[i % RATIOS.length] }}>
-                <Image
-                  src={imgUrl}
-                  alt={piece.name}
-                  fill
-                  loading="lazy"
-                  sizes="(max-width: 720px) 92vw, (max-width: 1200px) 45vw, 22vw"
-                />
-              </div>
-              <span className={styles.cardNum}>
-                {String(i + 1).padStart(2, "0")} · {getRoom(piece.roomSlug)?.name}
-              </span>
-              <div className={styles.cardTitle}>{piece.name}</div>
-            </div>
-          );
-        })}
+        {filteredPieces.map((piece, i) => (
+          <GalleryCard key={piece.slug} piece={piece} index={i} onSelect={setSelectedPiece} />
+        ))}
       </div>
 
       {/* Lightbox / Curation Detail Modal */}

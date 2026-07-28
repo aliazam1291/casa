@@ -1,12 +1,18 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { PIECES, getPiece, piecesInRoom } from "@/lib/pieces";
 import { getRoom } from "@/lib/rooms";
 import { getSubtype } from "@/lib/catalogue";
+import { getPieceImage } from "@/lib/library-images";
 import styles from "./page.module.css";
 
 type Props = { params: Promise<{ slug: string }> };
+
+function getPieceHero(slug: string): string {
+  return getPieceImage(slug, PIECES.findIndex((p) => p.slug === slug));
+}
 
 export function generateStaticParams() {
   return PIECES.map((p) => ({ slug: p.slug }));
@@ -29,6 +35,7 @@ export default async function PiecePage({ params }: Props) {
   const room = getRoom(piece.roomSlug);
   const found = getSubtype(piece.categorySlug, piece.subtypeSlug);
   const siblings = piecesInRoom(piece.roomSlug).filter((p) => p.slug !== piece.slug);
+  const heroImage = getPieceHero(piece.slug);
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -42,43 +49,75 @@ export default async function PiecePage({ params }: Props) {
   return (
     <main className={styles.page}>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-      <nav className={styles.breadcrumb}>
+
+      {/* Breadcrumb */}
+      <nav className={styles.breadcrumb} aria-label="Breadcrumb">
+        <Link href="/catalogue">Catalogue</Link>
         {found && (
           <>
-            <Link href="/catalogue">Catalogue</Link>
-            <span>/</span>
+            <span aria-hidden>/</span>
             <Link href={`/catalogue/${found.category.slug}`}>{found.category.name}</Link>
-            <span>/</span>
+            <span aria-hidden>/</span>
             <Link href={`/catalogue/${found.category.slug}/${found.subtype.slug}`}>{found.subtype.name}</Link>
           </>
         )}
+        <span aria-hidden>/</span>
+        <span aria-current="page">{piece.name}</span>
       </nav>
+
+      {/* Cinematic split hero */}
       <section className={styles.hero}>
-        <p className={styles.kicker}>Named Piece</p>
-        <h1>{piece.name}.</h1>
-        <p>{piece.description}</p>
-        <div className={styles.chips}>
-          {piece.materials.map((m) => (
-            <span key={m}>{m}</span>
-          ))}
+        <div className={styles.heroImage}>
+          <Image src={heroImage} alt={piece.name} fill priority sizes="(max-width: 900px) 100vw, 55vw" />
+        </div>
+        <div className={styles.heroInfo}>
+          <p className={styles.kicker}>Named Piece</p>
+          <h1>{piece.name}.</h1>
+          <p className={styles.heroDesc}>{piece.description}</p>
+          <div className={styles.matSection}>
+            <span className={styles.matLabel}>Materials &amp; Finishes</span>
+            <div className={styles.chips}>
+              {piece.materials.map((m) => (
+                <span key={m} className={styles.chip}>{m}</span>
+              ))}
+            </div>
+          </div>
+          {room && (
+            <div className={styles.roomRef}>
+              <span className={styles.matLabel}>Composed in</span>
+              <p className={styles.roomName}><em>{room.name}</em></p>
+              <Link href={`/rooms/${room.slug}`} className={styles.roomLink}>See the room →</Link>
+            </div>
+          )}
+          <Link href="/experiences/consultation" className={styles.cta}>
+            Specify this piece
+          </Link>
         </div>
       </section>
 
-      {room && (
-        <section className={styles.room}>
-          <p>Lives in <em>{room.name}</em>.</p>
-          <Link href={`/rooms/${room.slug}`}>See the room</Link>
-        </section>
-      )}
-
+      {/* Sibling pieces */}
       {siblings.length > 0 && (
         <section className={styles.section}>
-          <p className={styles.sectionLabel}>Also In This Room</p>
-          <h2>The rest of {room?.name}.</h2>
+          <div className={styles.sectionHead}>
+            <span className={styles.sectionLabel}>§ Also In This Room</span>
+            <h2>The rest of {room?.name}.</h2>
+          </div>
           <div className={styles.siblingGrid}>
             {siblings.map((s) => (
               <Link key={s.slug} href={`/pieces/${s.slug}`} className={styles.siblingCard}>
-                <h3>{s.name}</h3>
+                <div className={styles.siblingThumb}>
+                  <Image
+                    src={getPieceHero(s.slug)}
+                    alt={s.name}
+                    fill
+                    loading="lazy"
+                    sizes="(max-width: 720px) 48vw, 22vw"
+                  />
+                </div>
+                <div className={styles.siblingInfo}>
+                  <h3>{s.name}</h3>
+                  <p>{s.materials.slice(0, 2).join(" · ")}</p>
+                </div>
               </Link>
             ))}
           </div>

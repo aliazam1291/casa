@@ -5,19 +5,20 @@ import Link from "next/link";
 import { CATALOGUE } from "@/lib/catalogue";
 import { useCursor } from "@/components/cursor/CursorProvider";
 import { useReveal } from "@/hooks/useReveal";
+import { KITCHEN_BATH_IMAGES, LIGHTING_IMAGES, DECOR_IMAGES } from "@/lib/library-images";
 import styles from "./CatalogueGrid.module.css";
 
-// Curated Unsplash images per catalogue category — editorial quality,
-// matching the aesthetic of each Wolf Casa product family.
+// Curated photography per catalogue category — editorial quality, matching
+// the aesthetic of each Wolf Casa product family. Local files only.
 const CATEGORY_IMAGES: Record<string, string> = {
   seating: "/images/catalogue/seating-sofas.webp",
   "bespoke-interiors": "/images/catalogue/bespoke-interiors-beds.webp",
-  "kitchen-bath": "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?auto=format&fit=crop&q=80&w=800",
-  lighting: "https://images.unsplash.com/photo-1504208434309-cb69f4fe52b0?auto=format&fit=crop&q=80&w=800",
-  "decor-finishes": "https://images.unsplash.com/photo-1615873968403-89e068629265?auto=format&fit=crop&q=80&w=800",
-  "office-outdoor": "https://images.unsplash.com/photo-1524758631624-e2822e304c36?auto=format&fit=crop&q=80&w=800",
-  "greenery-entertainment": "https://images.unsplash.com/photo-1416879595882-3373a0480b5b?auto=format&fit=crop&q=80&w=800",
-  "lighting-smart-living": "https://images.unsplash.com/photo-1504208434309-cb69f4fe52b0?auto=format&fit=crop&q=80&w=800",
+  "kitchen-bath": KITCHEN_BATH_IMAGES[0],
+  lighting: LIGHTING_IMAGES[0],
+  "decor-finishes": DECOR_IMAGES[0],
+  "office-outdoor": DECOR_IMAGES[1],
+  "greenery-entertainment": DECOR_IMAGES[2],
+  "lighting-smart-living": LIGHTING_IMAGES[1],
 };
 const MOOD_IMAGES = [
   "/images/editorial/materials.png",
