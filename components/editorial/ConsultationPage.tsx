@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useCursor } from "@/components/cursor/CursorProvider";
 import { useReveal } from "@/hooks/useReveal";
+import { ConsultationDialog } from "@/components/consultation/ConsultationDialog";
 import styles from "./ConsultationPage.module.css";
 
 const STAGES = [
@@ -60,11 +61,23 @@ export function ConsultationPage() {
         </div>
       </section>
 
-      <section className={styles.cta}>
+      <section className={`${styles.cta} leather`}>
         <p>There are no generic solutions. Good decisions make a room feel quieter.</p>
-        <Link href="/visit" onMouseEnter={() => setCursor("hover", "Plan")} onMouseLeave={resetCursor}>
-          Plan your visit
-        </Link>
+        <div className={styles.ctaActions}>
+          <ConsultationDialog>
+            <button
+              type="button"
+              className={styles.ctaPrimary}
+              onMouseEnter={() => setCursor("hover", "Book")}
+              onMouseLeave={resetCursor}
+            >
+              Book the room audit
+            </button>
+          </ConsultationDialog>
+          <Link href="/visit" onMouseEnter={() => setCursor("hover", "Plan")} onMouseLeave={resetCursor}>
+            Plan your visit
+          </Link>
+        </div>
       </section>
     </main>
   );

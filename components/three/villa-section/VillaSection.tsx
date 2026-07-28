@@ -90,7 +90,7 @@ export function VillaSection() {
           <div className={styles.hint}>Choose a floor · hover a room · click to step inside</div>
         </div>
 
-        <aside className={styles.side}>
+        <aside className={`${styles.side} leather`}>
           <header className={styles.sideHead}>
             <span className={styles.sideEyebrow}>
               Level {floor.level} · Sheet {String(focusFloor + 1).padStart(2, "0")}/{String(FLOORS.length).padStart(2, "0")}

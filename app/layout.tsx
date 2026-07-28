@@ -6,6 +6,7 @@ import { CustomCursor } from "@/components/cursor/CustomCursor";
 import { StageProvider } from "@/components/stage/StageProvider";
 import { StageBackground } from "@/components/stage/StageBackground";
 import { Spotlight } from "@/components/chrome/Spotlight";
+import { Splash } from "@/components/splash/Splash";
 import { Nav } from "@/components/nav/Nav";
 import { Footer } from "@/components/footer/Footer";
 import { CONTACT } from "@/lib/contact";
@@ -97,7 +98,13 @@ export default function RootLayout({
       <body suppressHydrationWarning>
         <StageProvider>
           <CursorProvider>
+            <Splash />
             <StageBackground />
+            {/* Two stacked material layers over the whole site: a pebbled
+                hide, then film grain on top of it. Both are fixed, blended
+                and pointer-transparent, so every section — whatever its own
+                background — sits on leather rather than flat black. */}
+            <div className="hide" aria-hidden />
             <div className="grain" aria-hidden />
             <Spotlight />
             <CustomCursor />

@@ -87,13 +87,39 @@
   gap: 20px;
 }
 
+/* Ivory type was sitting straight on the render. Half the thirteen rooms are
+   daylight scenes in cream and pale stone, so text-shadow alone could not
+   carry it — the copy needs its own ground. This scrim gives the gate a dark
+   base independent of whichever room is behind it, so legibility never
+   depends on the room's lighting. */
+.gate::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(
+      to top,
+      rgba(14, 14, 12, 0.94) 0%,
+      rgba(14, 14, 12, 0.86) 22%,
+      rgba(14, 14, 12, 0.58) 45%,
+      rgba(14, 14, 12, 0.2) 68%,
+      transparent 85%
+    ),
+    radial-gradient(ellipse 76% 46% at 50% 80%, rgba(14, 14, 12, 0.62), transparent 72%);
+}
+.gate > * {
+  position: relative;
+  z-index: 1;
+}
+
 .eyebrow {
   font-family: var(--sans);
   font-size: 11px;
   letter-spacing: 0.3em;
   text-transform: uppercase;
-  color: var(--walnut);
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7), 0 2px 14px rgba(0, 0, 0, 0.5);
+  color: var(--gold-light);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.85), 0 2px 14px rgba(0, 0, 0, 0.6);
   animation: fadeUp 1s var(--ease-gallery) both;
 }
 
@@ -111,12 +137,13 @@
 
 .gateSub {
   max-width: min(560px, 84vw);
-  color: var(--fg-dim);
+  /* was --fg-dim (56% ivory) — invisible against a lit room */
+  color: rgba(232, 225, 211, 0.92);
   font-family: var(--sans);
   font-size: 14px;
   line-height: 1.7;
   text-align: center;
-  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.7), 0 2px 16px rgba(0, 0, 0, 0.5);
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.85), 0 2px 16px rgba(0, 0, 0, 0.6);
   animation: fadeUp 1s var(--ease-gallery) 0.28s both;
 }
 
@@ -124,8 +151,8 @@
   pointer-events: auto;
   margin-top: 8px;
   padding: 15px 42px;
-  border: 1px solid var(--stone-dark);
-  background: rgba(20, 19, 17, 0.55);
+  border: 1px solid rgba(232, 225, 211, 0.75);
+  background: rgba(14, 14, 12, 0.72);
   backdrop-filter: blur(6px);
   color: var(--fg);
   font-family: var(--sans);
@@ -477,7 +504,8 @@
   font-size: 10px;
   letter-spacing: 0.24em;
   text-transform: uppercase;
-  color: var(--stone-dark);
+  color: rgba(232, 225, 211, 0.72);
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.9);
 }
 
 .panelClose {

@@ -25,6 +25,9 @@
 .cta p { max-width: 620px; font-family: var(--serif); font-size: clamp(24px, 3vw, 38px); font-style: italic; font-weight: 400; line-height: 1.3; }
 .cta a { display: inline-flex; min-height: 46px; align-items: center; border: 1px solid var(--cream-light); padding: 0 22px; font-family: var(--sans); font-size: 10px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; transition: background .25s ease, color .25s ease; }
 .cta a:hover { background: var(--gold); border-color: var(--gold); color: var(--espresso); }
+.ctaActions { display: flex; flex-wrap: wrap; justify-content: center; gap: 14px; }
+.ctaPrimary { display: inline-flex; min-height: 46px; align-items: center; border: 1px solid var(--gold); background: var(--gold); padding: 0 26px; color: var(--espresso); font-family: var(--sans); font-size: 10px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; cursor: none; transition: background .25s ease, color .25s ease; }
+.ctaPrimary:hover { background: transparent; color: var(--gold); }
 
 @media (max-width: 720px) {
   .hero { min-height: 72svh; }
