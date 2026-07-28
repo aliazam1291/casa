@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Fraunces, Sora } from "next/font/google";
+import { Cormorant, Jost } from "next/font/google";
 import "./globals.css";
 import { CursorProvider } from "@/components/cursor/CursorProvider";
 import { CustomCursor } from "@/components/cursor/CustomCursor";
@@ -9,23 +9,44 @@ import { Spotlight } from "@/components/chrome/Spotlight";
 import { Nav } from "@/components/nav/Nav";
 import { CONTACT } from "@/lib/contact";
 
-// Fraunces (display/voice — headlines, pull-quotes, italic accent) + Sora
-// (system/labels — labels, captions, specs, interface). Replaces the
-// Cormorant/Jost pairing — Cormorant read too thin/delicate; Fraunces has
-// more structural weight while keeping a soft, non-clinical italic, and
-// Sora is a cleaner geometric sans than Jost at small sizes.
-const archivo = Sora({
+// The Brand Book's type system: Cormorant (display/voice — headlines,
+// pull-quotes, the italic accent) + Jost (system/labels — labels, captions,
+// specs, interface).
+//
+// The book's third role is POSTERAMA 2001 — signature word only (the
+// wordmark and the composition names set large), never body copy. Posterama
+// is a licensed Adobe typeface and can't be fetched here, so `--font-display`
+// currently falls back to Jost, which is the closest thing already in the
+// stack (both are geometric/Futura-derived, so the letterforms are related).
+//
+// TO DROP IN THE REAL POSTERAMA 2001: put the woff2 files in app/fonts/ and
+// replace the `displayFont` const below with:
+//   import localFont from "next/font/local";
+//   const displayFont = localFont({
+//     variable: "--font-display",
+//     src: [{ path: "./fonts/Posterama2001-Light.woff2", weight: "300" }],
+//   });
+// Nothing else needs to change — every consumer already reads var(--display).
+const archivo = Jost({
   variable: "--font-archivo",
   subsets: ["latin"],
   weight: ["300", "400", "500", "600"],
   display: "swap",
 });
 
-const cormorant = Fraunces({
+const cormorant = Cormorant({
   variable: "--font-cormorant",
   subsets: ["latin"],
   style: ["normal", "italic"],
   weight: ["300", "400", "500", "600"],
+  display: "swap",
+});
+
+// Placeholder for the Posterama 2001 slot — see note above.
+const displayFont = Jost({
+  variable: "--font-display",
+  subsets: ["latin"],
+  weight: ["200", "300", "400"],
   display: "swap",
 });
 
@@ -47,7 +68,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${archivo.variable} ${cormorant.variable}`} suppressHydrationWarning>
+    <html lang="en" className={`${archivo.variable} ${cormorant.variable} ${displayFont.variable}`} suppressHydrationWarning>
       <head>
         <script
           type="application/ld+json"

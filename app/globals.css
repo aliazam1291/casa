@@ -40,10 +40,14 @@
 
   --gutter: clamp(20px, 3vw, 48px);
 
-  /* Type — Cormorant (display/voice) + Jost (system/labels), per the Brand Book */
+  /* Type — Cormorant (display/voice) + Jost (system/labels), per the Brand Book.
+     --display is the book's Posterama 2001 slot: signature word only (wordmark,
+     composition names set large), never body copy. Currently falls back to Jost
+     — see app/layout.tsx for how to drop the licensed Posterama files in. */
   --serif: var(--font-cormorant), "Cormorant Garamond", Georgia, serif;
   --sans: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
   --mono: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
+  --display: var(--font-display), var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
 
   --ease-gallery: cubic-bezier(0.22, 1, 0.36, 1);
   --ease-smooth: cubic-bezier(0.16, 0.84, 0.36, 1);

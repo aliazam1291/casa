@@ -1,7 +1,8 @@
 .nav { position: fixed; top: 0; right: 0; left: 0; z-index: 9100; color: var(--fg); font-family: var(--mono); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; pointer-events: none; }
 .bar { display: flex; min-height: 88px; align-items: center; justify-content: space-between; padding: 20px var(--gutter); border-bottom: 1px solid rgba(232, 225, 211, .14); background: rgba(14, 14, 12, .82); backdrop-filter: blur(16px) saturate(1.1); box-shadow: 0 10px 30px rgba(0, 0, 0, .3); pointer-events: auto; transition: background .35s var(--ease-gallery), border-color .35s var(--ease-gallery), box-shadow .35s var(--ease-gallery); }
 .nav.solid .bar { border-bottom-color: var(--line); background: rgba(20, 19, 17, .92); box-shadow: 0 12px 40px rgba(0, 0, 0, .35); }
-.wordmark { color: inherit; font-family: var(--serif); font-size: 22px; font-weight: 400; letter-spacing: .01em; text-transform: none; }
+/* The wordmark is a signature word — the Posterama slot, not the serif. */
+.wordmark { color: inherit; font-family: var(--display); font-size: 19px; font-weight: 300; letter-spacing: .22em; text-transform: uppercase; }
 .links { display: flex; gap: clamp(20px, 2.4vw, 42px); }
 .links a { display: inline-flex; align-items: center; gap: 7px; opacity: .64; transition: opacity .3s ease, letter-spacing .3s ease, color .3s ease; }
 .links a:hover { opacity: 1; letter-spacing: .18em; }

@@ -91,18 +91,21 @@
   color: var(--fg-faint);
 }
 
+/* The composition name is a "signature word" — the Posterama slot. Wide,
+   light and uppercase, per the brand book's composition plates. */
 .splitHeading {
-  font-family: var(--serif);
-  font-size: clamp(38px, 4.6vw, 68px);
-  font-weight: 400;
-  line-height: 0.94;
-  letter-spacing: -0.01em;
+  font-family: var(--display);
+  font-size: clamp(34px, 4.2vw, 62px);
+  font-weight: 200;
+  line-height: 1;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 .bright {
   color: var(--fg);
 }
 .accentText {
-  font-weight: 300;
+  font-weight: 200;
 }
 
 .blurb {
