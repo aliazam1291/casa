@@ -18,6 +18,7 @@ type SceneHandle = {
   nextRoom: () => void;
   prevRoom: () => void;
   setFloor: (i: number) => void;
+  goToFloorRoom: (floorIndex: number, roomIndex: number) => void;
 };
 
 type GallerySceneProps = {
@@ -119,8 +120,7 @@ export function GalleryHero() {
       let tries = 0;
       const drive = () => {
         if (sceneRef.current) {
-          sceneRef.current.setFloor(deepLink.floorIdx);
-          sceneRef.current.goToRoom(deepLink.roomIdx);
+          sceneRef.current.goToFloorRoom(deepLink.floorIdx, deepLink.roomIdx);
         } else if (tries++ < 60) {
           timers.push(setTimeout(drive, 50));
         }

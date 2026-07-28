@@ -36,15 +36,22 @@ function GalleryCard({
       }}
       onMouseEnter={() => setCursor("hover", "Inspect")}
     >
-      <div className={styles.img} style={{ aspectRatio: RATIOS[index % RATIOS.length] }}>
-        <Image
-          src={imgUrl}
-          alt={piece.name}
-          fill
-          loading="lazy"
-          sizes="(max-width: 720px) 92vw, (max-width: 1200px) 45vw, 22vw"
-        />
-        <span className={styles.imgSheen} aria-hidden />
+      {/* Picture wire + hook — every piece reads as hung, not posted */}
+      <svg className={styles.wire} viewBox="0 0 40 26" aria-hidden>
+        <circle cx="20" cy="4" r="2.6" />
+        <path d="M6 26 L20 6 L34 26" fill="none" />
+      </svg>
+      <div className={styles.frame}>
+        <div className={styles.img} style={{ aspectRatio: RATIOS[index % RATIOS.length] }}>
+          <Image
+            src={imgUrl}
+            alt={piece.name}
+            fill
+            loading="lazy"
+            sizes="(max-width: 720px) 92vw, (max-width: 1200px) 45vw, 22vw"
+          />
+          <span className={styles.imgSheen} aria-hidden />
+        </div>
       </div>
       <span className={styles.cardNum}>
         {String(index + 1).padStart(2, "0")} · {getRoom(piece.roomSlug)?.name}
@@ -88,10 +95,17 @@ export function Gallery() {
   return (
     <section className={styles.section} id="home-curation">
       <div ref={ref} className={`${styles.head} reveal ${inView ? "in" : ""}`}>
-        <span className={styles.num}>§ 03 — Curation Gallery</span>
-        <h2 className={styles.heading}>
-          <span className="upright">{PIECES.length}</span> <em>composed pieces.</em>
-        </h2>
+        {/* The section title itself hangs on the wall, like the pieces below it */}
+        <div className={styles.plaqueWire} aria-hidden>
+          <svg viewBox="0 0 120 40"><circle cx="60" cy="6" r="3" /><path d="M14 40 L60 9 L106 40" fill="none" /></svg>
+        </div>
+        <div className={styles.plaque}>
+          <span className={styles.num}>§ 04 — Curation Gallery</span>
+          <h2 className={styles.heading}>
+            <span className="upright">{PIECES.length}</span> <em>composed pieces.</em>
+          </h2>
+          <span className={styles.plaqueFoot}>Hung, not listed — every piece framed as it lives in the room.</span>
+        </div>
       </div>
 
       {/* Interactive Category Filter Bar */}
@@ -109,6 +123,9 @@ export function Gallery() {
           </button>
         ))}
       </nav>
+
+      {/* The picture rail the whole wall hangs from */}
+      <div className={styles.rail} aria-hidden />
 
       {/* Masonry Pinterest Board */}
       <div className={styles.masonry}>

@@ -98,16 +98,29 @@ export function DomeGallery() {
     dragging.current = false;
   };
 
+  // Clicking a card (rather than dragging past it) turns the ring so that
+  // card becomes the front piece — direct navigation, not just ambient drag.
+  const goToIndex = (i: number) => {
+    const segment = 360 / COUNT;
+    const itemAngle = i * segment;
+    let current = rotation.current % 360;
+    let delta = (itemAngle + current) % 360;
+    if (delta > 180) delta -= 360;
+    if (delta < -180) delta += 360;
+    rotation.current -= delta;
+    velocity.current = 0;
+  };
+
   const active = items[activeIndex];
 
   return (
     <section className={`${styles.section} woodgrain`} id="dome-gallery">
       <div ref={ref} className={`${styles.head} reveal ${inView ? "in" : ""}`}>
-        <span className={styles.num}>§ 04 — The Dome</span>
+        <span className={styles.num}>§ 02 — The Dome</span>
         <h2 className={styles.heading}>
           Walk the room, <em>slowly.</em>
         </h2>
-        <p className={styles.sub}>Drag to turn. Every piece takes its moment in the light before it passes.</p>
+        <p className={styles.sub}>Drag to turn, or choose a piece directly. Every piece takes its moment in the light before it passes.</p>
       </div>
 
       <div
@@ -130,6 +143,7 @@ export function DomeGallery() {
               style={{
                 transform: `rotateY(${(360 / COUNT) * i}deg) translateZ(${RADIUS}px)`,
               }}
+              onClick={() => goToIndex(i)}
             >
               <div className={styles.cardImg}>
                 <Image
@@ -144,23 +158,43 @@ export function DomeGallery() {
           ))}
         </div>
         <div className={styles.floor} aria-hidden />
+        <span className={styles.dragHint} aria-hidden>← drag to look around →</span>
+
+        {/* Floating glass-chip caption, echoing the 3D walkthrough's HUD */}
+        {active && (
+          <div className={styles.caption}>
+            <span className={styles.captionNum}>
+              {String(activeIndex + 1).padStart(2, "0")} / {String(COUNT).padStart(2, "0")}
+            </span>
+            <h3>{active.name}</h3>
+            <span className={styles.captionRoom}>{getRoom(active.roomSlug)?.name}</span>
+            <Link
+              href={`/pieces/${active.slug}`}
+              className={styles.captionLink}
+              onMouseEnter={() => setCursor("hover", "Info")}
+              onMouseLeave={resetCursor}
+            >
+              View piece <span>→</span>
+            </Link>
+          </div>
+        )}
       </div>
 
-      {active && (
-        <div className={styles.caption}>
-          <span className={styles.captionNum}>{String(activeIndex + 1).padStart(2, "0")} / {String(COUNT).padStart(2, "0")}</span>
-          <h3>{active.name}</h3>
-          <span className={styles.captionRoom}>{getRoom(active.roomSlug)?.name}</span>
-          <Link
-            href={`/pieces/${active.slug}`}
-            className={styles.captionLink}
-            onMouseEnter={() => setCursor("hover", "Info")}
+      <div className={styles.dots} role="tablist" aria-label="Choose a piece">
+        {items.map((piece, i) => (
+          <button
+            key={piece.slug}
+            type="button"
+            role="tab"
+            aria-selected={i === activeIndex}
+            aria-label={piece.name}
+            className={`${styles.dot} ${i === activeIndex ? styles.dotActive : ""}`}
+            onClick={() => goToIndex(i)}
+            onMouseEnter={() => setCursor("hover", piece.name)}
             onMouseLeave={resetCursor}
-          >
-            View piece <span>→</span>
-          </Link>
-        </div>
-      )}
+          />
+        ))}
+      </div>
     </section>
   );
 }

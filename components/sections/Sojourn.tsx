@@ -54,7 +54,7 @@ export function Sojourn() {
   return (
     <section className={styles.section} id="sojourn">
       <div ref={ref} className={`${styles.header} reveal ${inView ? "in" : ""}`}>
-        <p className={styles.eyebrow}>§ 04 — How A Room Gets Made</p>
+        <p className={styles.eyebrow}>§ 05 — How A Room Gets Made</p>
         <h2>
           Source the home as a
           <span> complete composition.</span>

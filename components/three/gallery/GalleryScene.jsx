@@ -39,6 +39,26 @@ const GalleryScene = forwardRef(function GalleryScene({ onRoomChange, onFloorCha
       if (!s) return;
       s.beginFloor?.(Math.max(0, Math.min(FLOORS.length - 1, floorIndex)));
     },
+    // Cross-floor deep links (e.g. a room page's "Enter in 3D Walkthrough")
+    // must not call setFloor() then goToRoom() back to back — the floor
+    // rebuild is deferred to mid-transit, so an immediate goToRoom() would
+    // still read the OLD s.currentFloor and navigate within the wrong
+    // floor's (undisposed) rooms, cancelling the pending rebuild in the
+    // process. Queue the target room as s.pendingRoom instead, and let the
+    // transit's own rebuild step drive the follow-up room move once the new
+    // floor's rooms actually exist.
+    goToFloorRoom(floorIndex, roomIndex) {
+      const s = internals.current;
+      if (!s) return;
+      const targetFloor = Math.max(0, Math.min(FLOORS.length - 1, floorIndex));
+      const targetRoom = Math.max(0, Math.min(FLOORS[targetFloor].rooms.length - 1, roomIndex));
+      if (targetFloor === s.currentFloor) {
+        s.beginRoom?.(targetRoom);
+      } else {
+        s.pendingRoom = targetRoom;
+        s.beginFloor?.(targetFloor);
+      }
+    },
     get currentRoom() { return internals.current?.currentRoom ?? 0; },
     get currentFloor() { return internals.current?.currentFloor ?? 1; },
     get roomCount() { return FLOORS[internals.current?.currentFloor ?? 1].rooms.length; },
@@ -406,8 +426,16 @@ const GalleryScene = forwardRef(function GalleryScene({ onRoomChange, onFloorCha
           rebuildRooms(s);
           onFloorChange?.(s.currentFloor);
           onRoomChange?.(0);
+          if (s.pendingRoom != null) {
+            const target = s.pendingRoom;
+            s.pendingRoom = null;
+            if (target !== 0) s.beginRoom?.(target);
+          }
         }
-        if (tr.t >= 1) s.transit = null;
+        // beginRoom() above (if fired) already replaced s.transit with a
+        // fresh in-progress transit — only retire it here if it's still the
+        // same transit object this frame started with.
+        if (tr.t >= 1 && s.transit === tr) s.transit = null;
       }
 
       const idleX = Math.sin(s.time * 0.11) * 0.055;

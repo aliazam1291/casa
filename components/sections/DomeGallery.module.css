@@ -69,6 +69,7 @@
   margin-top: -160px;
   transform-style: preserve-3d;
   will-change: transform, opacity, filter;
+  cursor: none;
   --card-scale: 0.8;
 }
 .cardImg {
@@ -79,10 +80,26 @@
   box-shadow: 0 30px 60px -20px rgba(0, 0, 0, 0.6);
   border: 1px solid rgba(232, 225, 211, 0.1);
   transform: scale(var(--card-scale));
-  transition: transform 200ms ease;
+  transition: transform 200ms ease, border-color 200ms ease;
+}
+.card:hover .cardImg {
+  border-color: rgba(201, 168, 126, 0.55);
 }
 .cardImg img {
   object-fit: cover;
+}
+
+.dragHint {
+  position: absolute;
+  bottom: 6%;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--sans);
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--fg-faint);
+  pointer-events: none;
 }
 
 .floor {
@@ -95,12 +112,19 @@
   pointer-events: none;
 }
 
+/* Floating glass chip — "labels sit in glass, legible over any room" per the
+   Brand Book's graphic language — rather than a caption stacked below. */
 .caption {
-  margin-top: 6vh;
-  padding: 0 var(--gutter);
-  max-width: 720px;
-  margin-left: 16.66%;
+  position: absolute;
+  left: var(--gutter);
+  bottom: 14%;
+  max-width: 340px;
   text-align: left;
+  padding: 22px 26px;
+  background: rgba(20, 19, 17, 0.55);
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(232, 225, 211, 0.14);
+  pointer-events: auto;
 }
 .captionNum {
   font-family: var(--mono);
@@ -147,12 +171,46 @@
   color: var(--gold-light);
 }
 
+.dots {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 6vh;
+}
+.dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  border: none;
+  background: var(--fg-faint);
+  cursor: none;
+  padding: 0;
+  transition: background 0.3s ease, transform 0.3s ease;
+}
+.dot:hover {
+  background: var(--fg-dim);
+}
+.dotActive {
+  background: var(--gold);
+  transform: scale(1.4);
+}
+
 @media (max-width: 900px) {
-  .head, .caption {
+  .head {
     margin-left: 0;
   }
   .stage {
-    height: 70vw;
+    height: 78vw;
+  }
+  .caption {
+    left: 16px;
+    right: 16px;
+    max-width: none;
+    bottom: 6%;
+  }
+  .dragHint {
+    display: none;
   }
 }
 
