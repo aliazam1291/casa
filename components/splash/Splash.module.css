@@ -28,26 +28,27 @@
   height: auto;
   overflow: visible;
 }
-.head,
-.eye,
-.muzzle {
-  fill: none;
+.mark path {
   stroke: var(--gold);
-  stroke-linecap: round;
-  stroke-linejoin: round;
   vector-effect: non-scaling-stroke;
 }
-.head {
-  stroke-width: 2.4;
-  stroke-dasharray: 300;
-  stroke-dashoffset: 300;
-  animation: draw 1250ms cubic-bezier(0.65, 0, 0.35, 1) 120ms forwards;
+/* The two outline strokes (ear -> opposite cheek -> chin) draw in one after
+   the other, so the crossing at (50,31) appears as the second stroke sweeps
+   through it rather than both snapping in at once. */
+.mark path:nth-child(1),
+.mark path:nth-child(2) {
+  stroke-dasharray: 160;
+  stroke-dashoffset: 160;
+  animation: draw 750ms cubic-bezier(0.65, 0, 0.35, 1) forwards;
 }
-.eye,
-.muzzle {
-  stroke-width: 2;
+.mark path:nth-child(2) {
+  animation-delay: 520ms;
+}
+.mark path:nth-child(3),
+.mark path:nth-child(4),
+.mark path:nth-child(5) {
   opacity: 0;
-  animation: ink 500ms ease 1050ms forwards;
+  animation: ink 400ms ease 1180ms forwards;
 }
 
 @keyframes draw {

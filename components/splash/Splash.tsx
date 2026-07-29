@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { WolfMark } from "@/components/brand/WolfMark";
 import styles from "./Splash.module.css";
 
 /**
@@ -55,16 +56,7 @@ export function Splash() {
       aria-label="Wolf Casa"
     >
       <div className={styles.inner}>
-        <svg className={styles.mark} viewBox="0 0 100 100" aria-hidden>
-          {/* head: two ears, a brow dip, tapering to the snout */}
-          <path
-            className={styles.head}
-            d="M18 10 L36 34 L50 28 L64 34 L82 10 L76 46 L50 92 L24 46 Z"
-          />
-          <path className={styles.eye} d="M35 47 L44 51" />
-          <path className={styles.eye} d="M65 47 L56 51" />
-          <path className={styles.muzzle} d="M50 62 L50 79" />
-        </svg>
+        <WolfMark className={styles.mark} />
 
         <h1 className={styles.wordmark}>
           <span>W</span><span>O</span><span>L</span><span>F</span>

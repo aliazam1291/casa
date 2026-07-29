@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { HoverItem, Magnetic } from "@/components/cursor/HoverItem";
 import { useStage } from "@/components/stage/StageProvider";
+import { WolfMark } from "@/components/brand/WolfMark";
 import styles from "./Nav.module.css";
 
 function IconRooms() {
@@ -80,7 +81,10 @@ export function Nav() {
   return (
     <nav className={`${styles.nav} ${solid ? styles.solid : ""} ${menuOpen ? styles.menuOpen : ""}`}>
       <div className={styles.bar}>
-        <Link href="/" className={styles.wordmark} onClick={() => setMenuOpen(false)}>Wolf Casa</Link>
+        <Link href="/" className={styles.wordmark} onClick={() => setMenuOpen(false)}>
+          <WolfMark className={styles.wordmarkIcon} />
+          Wolf Casa
+        </Link>
         <div className={styles.links}>
           {LINKS.map((link) => {
             const active = isActive(link.href);
