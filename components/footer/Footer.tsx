@@ -10,9 +10,9 @@ const COLUMNS = [
   {
     title: "Shop",
     links: [
-      { label: "Rooms", href: "/rooms" },
+      { label: "House & Rooms", href: "/the-house-and-rooms" },
       { label: "Catalogue", href: "/catalogue" },
-      { label: "Named Pieces", href: "/rooms" },
+      { label: "All Products", href: "/products" },
       { label: "Journal", href: "/journal" },
     ],
   },
@@ -21,7 +21,7 @@ const COLUMNS = [
     links: [
       { label: "Way of Light & Form", href: "/way-of-light-form" },
       { label: "The Wolf Way", href: "/the-wolf-way" },
-      { label: "The House", href: "/the-house" },
+      { label: "The House", href: "/the-house-and-rooms" },
       { label: "Architect Hub", href: "/architects" },
     ],
   },

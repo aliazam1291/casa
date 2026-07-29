@@ -101,7 +101,7 @@ export function CatalogueGrid() {
         })}
         {/* The terminal cell of the reference grid — the whole taxonomy
             resolving to one thing. Brass, per "punctuation only". */}
-        <GridCard href="/rooms" num="09" title="The Room" terminal />
+        <GridCard href="/the-house-and-rooms" num="09" title="The Room" terminal />
       </nav>
       <div className={styles.foot}>
         <Link href="/catalogue" onMouseEnter={() => setCursor("hover", "Browse")} onMouseLeave={resetCursor}>

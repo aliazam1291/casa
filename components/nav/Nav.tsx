@@ -47,10 +47,13 @@ function IconVisit() {
   );
 }
 
+// "Rooms" and "The House" were separate entries pointing at two pages that
+// have since merged into /the-house-and-rooms; "Products" is the new home for
+// the full piece list and the dome.
 const LINKS = [
-  { href: "/rooms", label: "Rooms", cursor: "Enter", Icon: IconRooms },
+  { href: "/the-house-and-rooms", label: "House & Rooms", cursor: "Enter", Icon: IconHouse },
+  { href: "/products", label: "Products", cursor: "Enter", Icon: IconRooms },
   { href: "/catalogue", label: "Catalogue", cursor: "Enter", Icon: IconCatalogue },
-  { href: "/the-house", label: "The House", cursor: "Read", Icon: IconHouse },
   { href: "/journal", label: "Journal", cursor: "Read", Icon: IconJournal },
   { href: "/visit", label: "Visit", cursor: "Visit", Icon: IconVisit },
 ];

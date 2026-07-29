@@ -41,6 +41,11 @@ const nextConfig: NextConfig = {
       { source: "/the-wolf-way/artisan-layer", destination: "/the-wolf-way#artisan-layer", permanent: true },
       { source: "/the-wolf-way/forest-silence", destination: "/the-wolf-way#forest-silence", permanent: true },
       { source: "/trade", destination: "/architects", permanent: true },
+      // /the-house and /rooms merged into one page. Both sources match the
+      // exact path only, so the thirteen /rooms/[slug] detail routes are
+      // untouched and still resolve — it is only the two indexes that moved.
+      { source: "/the-house", destination: "/the-house-and-rooms", permanent: true },
+      { source: "/rooms", destination: "/the-house-and-rooms", permanent: true },
     ];
   },
 };

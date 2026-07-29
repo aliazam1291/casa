@@ -64,11 +64,7 @@ export function Splash() {
         <WolfMark className={styles.mark} />
 
         <h1 className={styles.wordmarkLine}>
-          <Wordmark
-            className={styles.wordmark}
-            letterClassName={styles.letter}
-            gapClassName={styles.gap}
-          />
+          <Wordmark className={styles.wordmark} letterClassName={styles.letter} />
         </h1>
 
         <span className={styles.established}>Established since 2024</span>

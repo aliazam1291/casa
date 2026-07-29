@@ -171,12 +171,12 @@ export function GalleryHero() {
       <div className={styles.overlay}>
         {!entered ? (
           <div className={styles.gate}>
-            {/* The copy sits on its own smoked-glass plate rather than straight
-                on the render. Which room is behind the gate changes with the
-                deep link, and half of them are daylight scenes in cream and
-                pale stone, so a scrim tuned to one of them fails on the rest —
-                the plate makes legibility independent of the room entirely. */}
-            <div className={styles.gatePlate}>
+            {/* Anchored into the bottom-left corner rather than boxed in the
+                middle: the room behind is the entire point of this hero, so
+                the copy is weighted into one corner and the scrim is a soft
+                directional wash. A panel with hard edges reads as a dialog
+                sitting on top of the scene instead of part of it. */}
+            <div className={styles.gateCopy}>
               <span className={styles.gateRule} aria-hidden />
               <span className={styles.eyebrow}>Wolf Casa · Indore, established 2024</span>
               <h1 className={styles.gateFloor}>A room is not furnished. It is composed.</h1>

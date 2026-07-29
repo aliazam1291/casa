@@ -207,7 +207,7 @@ export const SITE_PAGES: Record<string, SitePage> = {
     intro: "Casa Sojourn turns furniture sourcing into an informed, intimate journey, revealing the making behind the objects you choose.",
     cards: [
       { eyebrow: "Day 01", title: "Read the material", body: "Start with timber, stone and textile before looking at a finished object.", href: "/experiences/materials-library", signal: "Material origin", image: materials },
-      { eyebrow: "Day 02", title: "Meet the maker", body: "Visit the workshops and factories where scale, finish and care become visible.", href: "/the-house", signal: "Craft and capacity", image: sojourn },
+      { eyebrow: "Day 02", title: "Meet the maker", body: "Visit the workshops and factories where scale, finish and care become visible.", href: "/the-house-and-rooms", signal: "Craft and capacity", image: sojourn },
       { eyebrow: "Day 03", title: "Make the edit", body: "Return with a smaller, stronger set of objects for your home.", href: "/experiences/consultation", signal: "Final selection", image: atrium },
     ],
     principles: ["Sourcing is a form of seeing.", "The best objects carry provenance.", "A journey changes the way you choose."],
@@ -262,28 +262,6 @@ export const SITE_PAGES: Record<string, SitePage> = {
       { value: "Read", label: "before you buy" },
       { value: "Taste", label: "as daily practice" },
       { value: "Slow", label: "home editing" },
-    ],
-  },
-  "the-house": {
-    eyebrow: "The house",
-    title: "Modern Indian living, carefully composed",
-    description: "Meet the people, craft and legacy behind Wolf Casa.",
-    image: villa,
-    imageAlt: "A warm contemporary Indian residence with crafted materials",
-    intro: "Established 2024, Wolf Casa makes homes through a close relationship with craft, international sourcing and the people who live in the rooms — from Indore and, since expanding, Dewas.",
-    cards: [
-      { eyebrow: "Since 2024", title: "A working legacy", body: "Built through long relationships with makers, materials and homes across India.", href: "/visit", signal: "Experience", image: villa },
-      { eyebrow: "110 hands", title: "A house of specialists", body: "Designers, craftspeople and makers who understand the value of a considered finish.", href: "/architects", signal: "Craft network", image: sojourn },
-      { eyebrow: "40,000 sq ft", title: "Made with capacity", body: "A production ecosystem across Indore and Dewas that lets care survive at scale.", href: "/experiences/furniture-tourism", signal: "Scale and care", image: materials },
-    ],
-    principles: ["Legacy is built through care.", "Craft belongs in contemporary life.", "The people behind the object matter."],
-    cta: { label: "Visit Wolf Casa", href: "/visit" },
-    departments: houseDepartments,
-    palette: defaultPalette,
-    metrics: [
-      { value: "2024", label: "founded, in Indore" },
-      { value: "110", label: "specialist hands" },
-      { value: "40k", label: "sq ft across Indore & Dewas" },
     ],
   },
   architects: {

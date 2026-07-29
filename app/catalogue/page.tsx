@@ -62,7 +62,7 @@ export default function CataloguePage() {
 
       <section className={styles.note}>
         <p>Every category is drawn on inside a real room — see them composed, not shelved.</p>
-        <Link href="/rooms">Browse the rooms</Link>
+        <Link href="/the-house-and-rooms">Browse the rooms</Link>
       </section>
     </main>
   );

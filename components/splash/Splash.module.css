@@ -66,14 +66,15 @@
   margin-top: 6px;
 }
 /* --display is the Brand Book's signature-word slot; the wordmark is exactly
-   what it exists for. Letter-spacing is wide per the book, and text-indent
-   cancels the trailing space so the lockup stays optically centred. */
+   what it exists for. Letter-spacing is wide per the book, and the negative
+   right margin absorbs the space trailing the final letter so the lockup
+   stays optically centred. */
 .wordmark {
   font-family: var(--display);
   font-size: clamp(28px, 4.4vw, 52px);
   font-weight: 200;
   letter-spacing: 0.3em;
-  text-indent: 0.3em;
+  margin-right: -0.3em;
   color: var(--cream-light);
 }
 .letter {

@@ -53,7 +53,7 @@ export default async function CategoryPage({ params }: Props) {
 
       <section className={styles.note}>
         <p>See {category.name.toLowerCase()} composed inside a real room, not shelved on its own.</p>
-        <Link href="/rooms">Browse the rooms</Link>
+        <Link href="/the-house-and-rooms">Browse the rooms</Link>
       </section>
     </main>
   );
