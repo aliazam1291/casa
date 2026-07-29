@@ -7,9 +7,9 @@ import { useReveal } from "@/hooks/useReveal";
 import styles from "./MaterialsLibrary.module.css";
 
 const TILES = [
-  { tag: "Stone", title: "Read the veins", body: "Every slab carries a different movement, temperature and degree of reflection.", image: "/images/editorial/materials.png" },
-  { tag: "Timber", title: "Learn the grain", body: "The right wood gives a room depth long before it gives it colour.", image: "/images/editorial/light-form-atrium.png" },
-  { tag: "Textile", title: "Feel the finish", body: "The difference between a room that photographs well and a room that lives well.", image: "/images/editorial/sojourn.png" },
+  { tag: "Stone", title: "Read the veins", body: "Every slab carries a different movement, temperature and degree of reflection.", image: "/images/editorial/materials.webp" },
+  { tag: "Timber", title: "Learn the grain", body: "The right wood gives a room depth long before it gives it colour.", image: "/images/editorial/light-form-atrium.webp" },
+  { tag: "Textile", title: "Feel the finish", body: "The difference between a room that photographs well and a room that lives well.", image: "/images/editorial/sojourn.webp" },
 ];
 
 const DIRECTION = ["Full Room", "Detail as Art", "Light Fall", "Material Macro", "Quiet Corner", "Shadow on Wall"];
@@ -22,7 +22,7 @@ export function MaterialsLibrary() {
     <main className={styles.page}>
       <section className={styles.hero}>
         <Image
-          src="/images/editorial/materials.png"
+          src="/images/editorial/materials.webp"
           alt="Curated interior material samples and objects"
           fill
           priority

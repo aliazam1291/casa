@@ -32,7 +32,7 @@ export default async function RoomPage({ params }: Props) {
   const categories = Array.from(new Set(pieces.map((p) => `${p.categorySlug}/${p.subtypeSlug}`)))
     .map((key) => getSubtype(...(key.split("/") as [string, string])))
     .filter((c): c is NonNullable<typeof c> => Boolean(c));
-  const heroImage = ROOM_IMAGES[room.slug] ?? "/images/editorial/villa-hero.png";
+  const heroImage = ROOM_IMAGES[room.slug] ?? "/images/editorial/villa-hero.webp";
 
   return (
     <main className={styles.page}>

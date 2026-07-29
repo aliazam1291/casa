@@ -5,12 +5,14 @@ import { CatalogueGrid } from "@/components/sections/CatalogueGrid";
 import { Gallery } from "@/components/sections/Gallery";
 import { Stats } from "@/components/sections/Stats";
 import { Sojourn } from "@/components/sections/Sojourn";
+import { Testimonials } from "@/components/sections/Testimonials";
 import { Journal } from "@/components/sections/Journal";
 
 // The landing page stays to a single scroll's worth of beats: what it is
 // (hero) -> the doctrine (manifesto) -> what it's built from (catalogue) ->
 // individual proof (named pieces) -> credibility (stats) -> how it happens
-// (sojourn) -> depth (journal) -> act (footer).
+// (sojourn) -> who vouches for it (testimonials) -> depth (journal) ->
+// act (footer).
 //
 // The heavier interactive set-pieces — the Dome, the exploded Villa
 // section, the flat floor-plan blueprints and the materials board — moved
@@ -31,6 +33,7 @@ export default function Home() {
       <Gallery />
       <Stats />
       <Sojourn />
+      <Testimonials />
       <Journal />
     </WorldMoodProvider>
   );

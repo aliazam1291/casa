@@ -348,17 +348,30 @@ export function getSurfBundle(kind, color, repeatX = 1, repeatY = 1) {
   else if (kind === 'linen') paintLinen(dCtx, rgb);
   else paintPlaster(dCtx, rgb);
 
+  // Derived maps are generated at half the diffuse resolution. The loop below
+  // is pure JS and runs per pixel, so 512² costs 4x what 256² does — and it
+  // runs a dozen times before the gallery's first frame. Normal/roughness
+  // carry low-frequency surface response, not detail, so the halving is not
+  // visible once the maps are tiled and filtered.
+  const N = 256;
   const normCv = document.createElement('canvas');
-  normCv.width = 512; normCv.height = 512;
+  normCv.width = N; normCv.height = N;
   const nCtx = normCv.getContext('2d');
   const roughCv = document.createElement('canvas');
-  roughCv.width = 512; roughCv.height = 512;
+  roughCv.width = N; roughCv.height = N;
   const rCtx = roughCv.getContext('2d');
 
-  const dData = dCtx.getImageData(0, 0, 512, 512).data;
-  const nImgData = nCtx.createImageData(512, 512);
+  // Downsample the diffuse once (native, off the JS hot path) and derive from
+  // that rather than sampling the full-size buffer.
+  const srcCv = document.createElement('canvas');
+  srcCv.width = N; srcCv.height = N;
+  const sCtx = srcCv.getContext('2d');
+  sCtx.drawImage(diffCv, 0, 0, N, N);
+
+  const dData = sCtx.getImageData(0, 0, N, N).data;
+  const nImgData = nCtx.createImageData(N, N);
   const nData = nImgData.data;
-  const rImgData = rCtx.createImageData(512, 512);
+  const rImgData = rCtx.createImageData(N, N);
   const rData = rImgData.data;
 
   let normStr = 15.0, step = 1;
@@ -370,18 +383,24 @@ export function getSurfBundle(kind, color, repeatX = 1, repeatY = 1) {
   else if (kind === 'linen') { normStr = 22.0; step = 1; }
   else if (kind === 'plaster') { normStr = 14.0; step = 2; }
 
+  // `step` above is expressed in full-size (512) pixels; the buffer is now N
+  // wide. Halve it, clamp to one pixel, and rescale normStr by however much
+  // the real sampling distance had to grow, so the derived slope is unchanged.
+  const stepN = Math.max(1, Math.round(step / 2));
+  normStr *= (step / 2) / stepN;
+
   const getV = (px, py) => {
-    const cx = (px + 512) % 512;
-    const cy = (py + 512) % 512;
-    const i = (cy * 512 + cx) * 4;
+    const cx = (px + N) % N;
+    const cy = (py + N) % N;
+    const i = (cy * N + cx) * 4;
     return (dData[i] + dData[i + 1] + dData[i + 2]) / 765;
   };
 
-  for (let y = 0; y < 512; y++) {
-    for (let x = 0; x < 512; x++) {
-      const idx = (y * 512 + x) * 4;
-      const dx = (getV(x + step, y) - getV(x - step, y)) * normStr;
-      const dy = (getV(x, y + step) - getV(x, y - step)) * normStr;
+  for (let y = 0; y < N; y++) {
+    for (let x = 0; x < N; x++) {
+      const idx = (y * N + x) * 4;
+      const dx = (getV(x + stepN, y) - getV(x - stepN, y)) * normStr;
+      const dy = (getV(x, y + stepN) - getV(x, y - stepN)) * normStr;
       const len = Math.sqrt(dx * dx + dy * dy + 1.0);
       nData[idx] = Math.floor(((dx / len) * 0.5 + 0.5) * 255);
       nData[idx + 1] = Math.floor(((dy / len) * 0.5 + 0.5) * 255);

@@ -55,7 +55,7 @@ export function VisitPage() {
     <main className={styles.page}>
       <section className={styles.hero}>
         <Image
-          src="/images/editorial/light-form-atrium.png"
+          src="/images/editorial/light-form-atrium.webp"
           alt="Warmly lit residence with stone, wood and crafted interiors"
           fill
           priority

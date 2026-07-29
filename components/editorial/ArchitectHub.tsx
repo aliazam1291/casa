@@ -33,7 +33,7 @@ export function ArchitectHub() {
     <main className={styles.page}>
       <section className={styles.hero}>
         <Image
-          src="/images/editorial/materials.png"
+          src="/images/editorial/materials.webp"
           alt="Material samples and interior finishes curated for a project"
           fill
           priority

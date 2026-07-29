@@ -36,7 +36,7 @@ export function Manifesto() {
         </div>
         <div className={styles.collage}>
           <div className={styles.collageMain}>
-            <Image src="/images/editorial/light-form-atrium.png" alt="Sunlight crossing a composed interior of wood and stone" fill sizes="(max-width: 900px) 90vw, 32vw" />
+            <Image src="/images/editorial/light-form-atrium.webp" alt="Sunlight crossing a composed interior of wood and stone" fill sizes="(max-width: 900px) 90vw, 32vw" />
           </div>
           <div className={styles.collageSecondary}>
             <Image src="/images/showroom/dining-room-mirrorwall.webp" alt="A composed dining room with a mirrored feature wall" fill sizes="(max-width: 900px) 60vw, 20vw" />

@@ -62,7 +62,7 @@ export default function RoomsPage() {
             </div>
             <div className={styles.grid}>
               {floor.rooms.map((room, i) => {
-                const img = ROOM_IMAGES[room.slug] ?? "/images/editorial/villa-hero.png";
+                const img = ROOM_IMAGES[room.slug] ?? "/images/editorial/villa-hero.webp";
                 const ratio = RATIOS[i % RATIOS.length];
                 return (
                   <Link key={room.slug} href={`/rooms/${room.slug}`} className={styles.card}>

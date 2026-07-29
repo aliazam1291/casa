@@ -171,18 +171,26 @@ export function GalleryHero() {
       <div className={styles.overlay}>
         {!entered ? (
           <div className={styles.gate}>
-            <span className={styles.eyebrow}>Wolf Casa · Indore, established 2024</span>
-            <h1 className={styles.gateFloor}>A room is not furnished. It is composed.</h1>
-            <p className={styles.gateSub}>Step inside thirteen complete rooms — furniture, lighting, stone, joinery, greenery. One house, one composition.</p>
-            <button
-              type="button"
-              className={styles.stepBtn}
-              onClick={() => setEntered(true)}
-              onMouseEnter={() => hover("Enter")}
-              onMouseLeave={resetCursor}
-            >
-              Step Inside
-            </button>
+            {/* The copy sits on its own smoked-glass plate rather than straight
+                on the render. Which room is behind the gate changes with the
+                deep link, and half of them are daylight scenes in cream and
+                pale stone, so a scrim tuned to one of them fails on the rest —
+                the plate makes legibility independent of the room entirely. */}
+            <div className={styles.gatePlate}>
+              <span className={styles.gateRule} aria-hidden />
+              <span className={styles.eyebrow}>Wolf Casa · Indore, established 2024</span>
+              <h1 className={styles.gateFloor}>A room is not furnished. It is composed.</h1>
+              <p className={styles.gateSub}>Step inside thirteen complete rooms — furniture, lighting, stone, joinery, greenery. One house, one composition.</p>
+              <button
+                type="button"
+                className={styles.stepBtn}
+                onClick={() => setEntered(true)}
+                onMouseEnter={() => hover("Enter")}
+                onMouseLeave={resetCursor}
+              >
+                Step Inside
+              </button>
+            </div>
             <div className={styles.hint}>Swipe sideways · shift + scroll · or use the arrows</div>
           </div>
         ) : (

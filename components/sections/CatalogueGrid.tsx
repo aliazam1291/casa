@@ -22,10 +22,10 @@ const CATEGORY_IMAGES: Record<string, string> = {
   "lighting-smart-living": LIGHTING_IMAGES[1],
 };
 const MOOD_IMAGES = [
-  "/images/editorial/materials.png",
-  "/images/editorial/light-form-atrium.png",
-  "/images/editorial/villa-hero.png",
-  "/images/editorial/sojourn.png",
+  "/images/editorial/materials.webp",
+  "/images/editorial/light-form-atrium.webp",
+  "/images/editorial/villa-hero.webp",
+  "/images/editorial/sojourn.webp",
 ] as const;
 
 function GridCard({

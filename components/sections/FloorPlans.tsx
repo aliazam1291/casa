@@ -243,7 +243,7 @@ export function FloorPlans() {
           <p className={styles.floorNote}>{floor.note}</p>
           <div className={styles.roomNote}>
             <div className={styles.materialImage}>
-              <Image src="/images/editorial/materials.png" alt="Curated material palette" fill sizes="(max-width: 1000px) 50vw, 22vw" />
+              <Image src="/images/editorial/materials.webp" alt="Curated material palette" fill sizes="(max-width: 1000px) 50vw, 22vw" />
               <span>Material direction</span>
             </div>
             <small>{room.ritual}</small>

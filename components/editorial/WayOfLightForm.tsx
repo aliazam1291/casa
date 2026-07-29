@@ -12,14 +12,14 @@ const LENSES = [
     title: "The room's first instruction.",
     quote: "Light decides what the eye remembers.",
     body: "Window light, lamp glow and curtain-filtered shadow are composed first. Furniture is placed into the light — never the other way round.",
-    image: "/images/editorial/light-form-atrium.png",
+    image: "/images/editorial/light-form-atrium.webp",
   },
   {
     tag: "02 / Form",
     title: "The honest weight of things.",
     quote: "Premium is not more. Premium is resolved.",
     body: "Every composition is built on proportion — the dialogue between heights, masses and the negative space that lets them breathe.",
-    image: "/images/editorial/materials.png",
+    image: "/images/editorial/materials.webp",
   },
 ];
 
@@ -52,7 +52,7 @@ export function WayOfLightForm() {
     <main className={styles.page}>
       <section className={styles.hero}>
         <Image
-          src="/images/editorial/light-form-atrium.png"
+          src="/images/editorial/light-form-atrium.webp"
           alt="Sunlight cutting across a composed interior of wood and stone"
           fill
           priority

@@ -22,7 +22,7 @@ export function ConsultationPage() {
     <main className={styles.page}>
       <section className={styles.hero}>
         <Image
-          src="/images/editorial/light-form-atrium.png"
+          src="/images/editorial/light-form-atrium.webp"
           alt="A refined home interior with shadows, wood and marble"
           fill
           priority

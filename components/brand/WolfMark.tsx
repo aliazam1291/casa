@@ -1,30 +1,55 @@
 /**
- * The wolf mark, everywhere it appears. Two open paths — each running from
- * an ear tip, across the face to the OPPOSITE cheek, down to a shared chin
- * point — cross each other a third of the way down. That crossing is what
- * reads as the brow/eyes; it is a property of the two paths overlapping, not
- * a separate drawn shape, which is what makes the mark read as one gesture
- * rather than an assembled icon.
+ * The wolf mark, traced from the logo as it appears in the Brand Book (the
+ * cover of "The Wolf Way", vol. 01). Geometry was measured off that artwork
+ * rather than approximated: the source mark was isolated, thresholded and
+ * scanned row by row, and the vertices below are those run centres mapped
+ * into this 100x125 box.
  *
- * Geometry (100×100 box): ears at (32,15)/(68,15), cheeks flared wider than
- * the ears at (76,54)/(24,54), one chin vertex at (50,90). The two paths'
- * intersection is exactly (50, 31) — solved algebraically, not eyeballed —
- * which is where the eye ticks sit.
+ * The mark is a face built from six ideas, symmetrical about x=50:
+ *   - two hollow ear triangles, outer edge vertical, apex pointing inward
+ *   - a brow bar joining the two ear apexes
+ *   - two jaw lines running from the cheek corners down to the muzzle point
+ *   - a nose line dropping from the muzzle point to the chin
+ *   - two ruff barbs hooking out and back from the cheek corners
+ *   - two fangs rising from the chin base
+ *
+ * Ruff tips and fangs are FILLED triangles, not strokes: in the original they
+ * taper to a point, and SVG has no tapered stroke. That is also why this
+ * component sets fill/stroke per path instead of once on the <svg>.
+ *
+ * Every stroked path carries pathLength="1", so a consumer animating the
+ * draw-on can use stroke-dasharray:1/stroke-dashoffset:1 uniformly without
+ * knowing each path's true length (see Splash.module.css).
  *
  * Child order is fixed so a consumer's own CSS module can target parts with
  * plain nth-child selectors (no :global needed — element selectors aren't
- * scoped by CSS Modules): 1st/2nd = the two outline strokes, 3rd/4th = the
- * eyes, 5th = the nose bridge. Stroke defaults below so the mark renders
- * with no CSS at all; override stroke/stroke-width per part as needed.
+ * scoped by CSS Modules):
+ *   1-2 ears · 3 brow · 4-5 jaw · 6 nose · 7-8 ruff arms
+ *   9-10 ruff tips (filled) · 11-12 fangs (filled)
  */
 export function WolfMark({ className }: { className?: string }) {
   return (
-    <svg className={className} viewBox="0 0 100 100" fill="none" stroke="currentColor" aria-hidden>
-      <path d="M32 15 L76 54 L50 90" strokeWidth="2.4" strokeLinejoin="round" />
-      <path d="M68 15 L24 54 L50 90" strokeWidth="2.4" strokeLinejoin="round" />
-      <path d="M43 37 L47.5 41.5" strokeWidth="2" strokeLinecap="round" />
-      <path d="M57 37 L52.5 41.5" strokeWidth="2" strokeLinecap="round" />
-      <path d="M50 50 L50 76" strokeWidth="2" strokeLinecap="round" />
+    <svg
+      className={className}
+      viewBox="-3 -3 106 131"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="4.6"
+      strokeMiterlimit="6"
+      aria-hidden
+    >
+      <path d="M11 1 L33 35 L11 58 Z" pathLength="1" />
+      <path d="M89 1 L67 35 L89 58 Z" pathLength="1" />
+      <path d="M33 35 H67" pathLength="1" />
+      <path d="M11 58 L50 87" pathLength="1" />
+      <path d="M89 58 L50 87" pathLength="1" />
+      <path d="M50 87 V125" pathLength="1" />
+      <path d="M11 58 L2 81" pathLength="1" />
+      <path d="M89 58 L98 81" pathLength="1" />
+      <path d="M-0.1 80.2 L4.1 81.8 L18 95.5 Z" fill="currentColor" stroke="none" />
+      <path d="M100.1 80.2 L95.9 81.8 L82 95.5 Z" fill="currentColor" stroke="none" />
+      <path d="M27.5 104.5 L36.5 125 L47.7 125 Z" fill="currentColor" stroke="none" />
+      <path d="M72.5 104.5 L63.5 125 L52.3 125 Z" fill="currentColor" stroke="none" />
     </svg>
   );
 }

@@ -6,7 +6,7 @@
   place-items: center;
   background: var(--bg);
   background-image: radial-gradient(ellipse 60% 50% at 50% 46%, rgba(167, 134, 87, 0.1), transparent 70%);
-  transition: opacity 750ms cubic-bezier(0.22, 1, 0.36, 1), transform 750ms cubic-bezier(0.22, 1, 0.36, 1);
+  transition: opacity 450ms cubic-bezier(0.22, 1, 0.36, 1), transform 450ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 .leaving {
   opacity: 0;
@@ -24,31 +24,34 @@
 
 /* ── the mark, drawing itself ───────────────────────────────── */
 .mark {
-  width: clamp(58px, 7vw, 78px);
-  height: auto;
+  height: clamp(64px, 8vw, 88px);
+  width: auto;
   overflow: visible;
 }
 .mark path {
   stroke: var(--gold);
-  vector-effect: non-scaling-stroke;
 }
-/* The two outline strokes (ear -> opposite cheek -> chin) draw in one after
-   the other, so the crossing at (50,31) appears as the second stroke sweeps
-   through it rather than both snapping in at once. */
-.mark path:nth-child(1),
-.mark path:nth-child(2) {
-  stroke-dasharray: 160;
-  stroke-dashoffset: 160;
-  animation: draw 750ms cubic-bezier(0.65, 0, 0.35, 1) forwards;
+/* The mark assembles the way it reads: ears, then the brow that joins them,
+   then the jaw down to the muzzle, then the nose — and only once that outline
+   exists do the tapered ruff barbs and fangs ink in.
+   Every stroked path declares pathLength="1", so one dasharray covers all of
+   them regardless of their real lengths. */
+.mark path:not([fill]) {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: draw 380ms cubic-bezier(0.65, 0, 0.35, 1) forwards;
 }
-.mark path:nth-child(2) {
-  animation-delay: 520ms;
-}
-.mark path:nth-child(3),
+.mark path:nth-child(3) { animation-delay: 240ms; }
 .mark path:nth-child(4),
-.mark path:nth-child(5) {
+.mark path:nth-child(5) { animation-delay: 340ms; }
+.mark path:nth-child(6) { animation-delay: 470ms; }
+.mark path:nth-child(7),
+.mark path:nth-child(8) { animation-delay: 470ms; }
+
+.mark path[fill] {
+  fill: var(--gold);
   opacity: 0;
-  animation: ink 400ms ease 1180ms forwards;
+  animation: ink 240ms ease 700ms forwards;
 }
 
 @keyframes draw {
@@ -59,34 +62,33 @@
 }
 
 /* ── wordmark: letters settle in one after another ──────────── */
-.wordmark {
-  display: flex;
-  align-items: baseline;
-  font-family: var(--serif);
-  font-size: clamp(28px, 4.4vw, 52px);
-  font-weight: 300;
-  letter-spacing: 0.3em;
-  text-indent: 0.3em; /* balances the trailing letter-space */
-  color: var(--cream-light);
+.wordmarkLine {
   margin-top: 6px;
 }
-.wordmark span {
-  display: inline-block;
+/* --display is the Brand Book's signature-word slot; the wordmark is exactly
+   what it exists for. Letter-spacing is wide per the book, and text-indent
+   cancels the trailing space so the lockup stays optically centred. */
+.wordmark {
+  font-family: var(--display);
+  font-size: clamp(28px, 4.4vw, 52px);
+  font-weight: 200;
+  letter-spacing: 0.3em;
+  text-indent: 0.3em;
+  color: var(--cream-light);
+}
+.letter {
   opacity: 0;
   transform: translateY(14px);
-  animation: settle 700ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation: settle 440ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
-.gap {
-  width: 0.42em;
-}
-.wordmark span:nth-child(1) { animation-delay: 620ms; }
-.wordmark span:nth-child(2) { animation-delay: 680ms; }
-.wordmark span:nth-child(3) { animation-delay: 740ms; }
-.wordmark span:nth-child(4) { animation-delay: 800ms; }
-.wordmark span:nth-child(6) { animation-delay: 880ms; }
-.wordmark span:nth-child(7) { animation-delay: 940ms; }
-.wordmark span:nth-child(8) { animation-delay: 1000ms; }
-.wordmark span:nth-child(9) { animation-delay: 1060ms; }
+.wordmark > *:nth-child(1) { animation-delay: 380ms; }
+.wordmark > *:nth-child(2) { animation-delay: 420ms; }
+.wordmark > *:nth-child(3) { animation-delay: 460ms; }
+.wordmark > *:nth-child(4) { animation-delay: 500ms; }
+.wordmark > *:nth-child(6) { animation-delay: 550ms; }
+.wordmark > *:nth-child(7) { animation-delay: 590ms; }
+.wordmark > *:nth-child(8) { animation-delay: 630ms; }
+.wordmark > *:nth-child(9) { animation-delay: 670ms; }
 
 @keyframes settle {
   to { opacity: 1; transform: translateY(0); }
@@ -100,7 +102,7 @@
   text-transform: uppercase;
   color: var(--walnut);
   opacity: 0;
-  animation: ink 600ms ease 1200ms forwards;
+  animation: ink 380ms ease 740ms forwards;
 }
 
 /* ── hairline that fills, the only progress indication ──────── */
@@ -118,7 +120,7 @@
   transform-origin: left;
   transform: scaleX(0);
   background: var(--gold);
-  animation: fill 1600ms cubic-bezier(0.4, 0, 0.2, 1) 180ms forwards;
+  animation: fill 1000ms cubic-bezier(0.4, 0, 0.2, 1) 120ms forwards;
 }
 @keyframes fill {
   to { transform: scaleX(1); }
@@ -131,14 +133,12 @@
   text-transform: uppercase;
   color: var(--fg-faint);
   opacity: 0;
-  animation: ink 600ms ease 1350ms forwards;
+  animation: ink 380ms ease 850ms forwards;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .head,
-  .eye,
-  .muzzle,
-  .wordmark span,
+  .mark path,
+  .letter,
   .established,
   .note,
   .rule i {

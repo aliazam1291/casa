@@ -61,7 +61,7 @@ export function Stats() {
   const reducedMotion = usePrefersReducedMotion();
 
   return (
-    <div ref={ref} className={styles.stats}>
+    <div ref={ref} className={`${styles.stats} leather`}>
       {STATS.map((stat) => (
         <StatCell key={stat.label} stat={stat} active={inView} reducedMotion={reducedMotion} />
       ))}

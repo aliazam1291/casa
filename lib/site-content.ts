@@ -26,10 +26,10 @@ export type SitePage = {
   metrics: { value: string; label: string }[];
 };
 
-const villa = "/images/editorial/villa-hero.png" as const;
-const materials = "/images/editorial/materials.png" as const;
-const sojourn = "/images/editorial/sojourn.png" as const;
-const atrium = "/images/editorial/light-form-atrium.png" as const;
+const villa = "/images/editorial/villa-hero.webp" as const;
+const materials = "/images/editorial/materials.webp" as const;
+const sojourn = "/images/editorial/sojourn.webp" as const;
+const atrium = "/images/editorial/light-form-atrium.webp" as const;
 
 const mallDepartments = [
   { label: "Furniture", detail: "Named pieces, sofas, beds, dining, accents" },

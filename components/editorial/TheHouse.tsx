@@ -48,7 +48,7 @@ export function TheHouse() {
     <main className={styles.page}>
       <section className={styles.hero}>
         <Image
-          src="/images/editorial/villa-hero.png"
+          src="/images/editorial/villa-hero.webp"
           alt="A warm contemporary Indian residence with crafted materials"
           fill
           priority

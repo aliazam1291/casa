@@ -27,7 +27,7 @@ const STEPS = [
     meta: "03 / Wood + marble",
     title: "Touch the form before it enters the home.",
     body: "Wood, marble, stone, textile, metal and finishes are compared by grain, reflection, warmth and ageing.",
-    image: "/images/editorial/materials.png",
+    image: "/images/editorial/materials.webp",
   },
   {
     label: "Home Install",

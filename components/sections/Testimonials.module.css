@@ -1,0 +1,166 @@
+.testimonials {
+  padding: 16vh var(--gutter);
+  border-top: 1px solid var(--line);
+}
+.inner {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 40px;
+  flex-wrap: wrap;
+  margin-bottom: 72px;
+}
+.eyebrow {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--fg-dim);
+  margin-bottom: 20px;
+}
+.heading {
+  font-family: var(--serif);
+  font-weight: 200;
+  font-size: clamp(40px, 6vw, 92px);
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+}
+.heading em {
+  font-style: italic;
+  color: var(--walnut);
+}
+
+.nav {
+  display: flex;
+  gap: 10px;
+}
+.nav button {
+  width: 46px;
+  height: 46px;
+  display: grid;
+  place-items: center;
+  background: none;
+  color: inherit;
+  border: 1px solid var(--line);
+  cursor: none;
+  transition:
+    border-color 0.35s ease,
+    background 0.35s ease,
+    color 0.35s ease,
+    opacity 0.35s ease;
+}
+.nav button svg {
+  width: 18px;
+  height: 18px;
+}
+.nav button:hover:not(:disabled) {
+  background: var(--fg);
+  border-color: var(--fg);
+  color: var(--bg);
+}
+.nav button:disabled {
+  opacity: 0.28;
+}
+
+/* Native scroll-snap rather than a transform carousel: swipe and trackpad
+   work for free, and the arrows only have to nudge scrollLeft. */
+.track {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, calc(50% - 16px));
+  column-gap: 32px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  padding-bottom: 4px;
+}
+.track::-webkit-scrollbar {
+  display: none;
+}
+
+.card {
+  scroll-snap-align: start;
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  padding: clamp(28px, 3.4vw, 52px);
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.quoteMark {
+  font-family: var(--serif);
+  font-size: 96px;
+  line-height: 0.6;
+  height: 40px;
+  color: var(--walnut);
+  opacity: 0.55;
+}
+
+.quote {
+  font-family: var(--serif);
+  font-weight: 300;
+  font-size: clamp(17px, 1.5vw, 22px);
+  line-height: 1.62;
+  color: var(--fg);
+  flex: 1;
+}
+
+.by {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-top: 24px;
+  border-top: 1px solid var(--line);
+}
+.name {
+  font-family: var(--sans);
+  font-size: 13px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+.place,
+.scope {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--fg-dim);
+}
+.scope {
+  color: var(--walnut);
+}
+
+.bars {
+  display: flex;
+  gap: 6px;
+  margin-top: 40px;
+}
+.bars span {
+  width: 34px;
+  height: 1px;
+  background: var(--fg-faint);
+  transition:
+    background 0.4s ease,
+    transform 0.4s ease;
+}
+.bars .on {
+  background: var(--gold);
+  transform: scaleY(2);
+}
+
+@media (max-width: 900px) {
+  .track {
+    grid-auto-columns: minmax(0, 86%);
+    column-gap: 20px;
+  }
+  .head {
+    margin-bottom: 48px;
+  }
+}

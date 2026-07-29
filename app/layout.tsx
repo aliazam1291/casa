@@ -56,7 +56,7 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://wolfcasa.in"),
   keywords: ["composed interiors India", "modern Indian living", "interior design Indore", "furniture sourcing", "Wolf Casa", "The Interio Mall"],
   alternates: { canonical: "/" },
-  openGraph: { type: "website", locale: "en_IN", siteName: "Wolf Casa", images: [{ url: "/images/editorial/villa-hero.png", width: 1800, height: 1013, alt: "Wolf Casa contemporary Indian residence" }] },
+  openGraph: { type: "website", locale: "en_IN", siteName: "Wolf Casa", images: [{ url: "/images/editorial/villa-hero.webp", width: 1800, height: 1013, alt: "Wolf Casa contemporary Indian residence" }] },
   twitter: { card: "summary_large_image" },
   robots: { index: true, follow: true },
   title: "Wolf Casa — Way of Light & Form",

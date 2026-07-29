@@ -5,10 +5,10 @@ import Link from "next/link";
 import { useCursor } from "@/components/cursor/CursorProvider";
 import styles from "./SojournJourney.module.css";
 
-const villa = "/images/editorial/villa-hero.png";
-const materials = "/images/editorial/materials.png";
-const sojourn = "/images/editorial/sojourn.png";
-const atrium = "/images/editorial/light-form-atrium.png";
+const villa = "/images/editorial/villa-hero.webp";
+const materials = "/images/editorial/materials.webp";
+const sojourn = "/images/editorial/sojourn.webp";
+const atrium = "/images/editorial/light-form-atrium.webp";
 
 const LEGS = [
   { tag: "Day 01", title: "Read the material", body: "Start with timber, stone and textile before looking at a finished object.", image: materials },

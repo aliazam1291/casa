@@ -40,7 +40,7 @@ export function TheWolfWay() {
     <main className={styles.page}>
       <section className={styles.hero}>
         <Image
-          src="/images/editorial/villa-hero.png"
+          src="/images/editorial/villa-hero.webp"
           alt="A composed, layered contemporary living room"
           fill
           priority

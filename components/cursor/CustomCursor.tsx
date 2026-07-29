@@ -32,6 +32,24 @@ export function CustomCursor() {
     let ry = 0;
     let raf = 0;
 
+    // Both cursor parts are mix-blend-mode: difference, so every transform
+    // forces the compositor to re-blend the full viewport. Running the easing
+    // loop unconditionally therefore cost a whole-page composite at 60fps for
+    // as long as the tab was open, even with the pointer at rest — the loop
+    // now parks itself once the ring catches up and only restarts on movement.
+    const tick = () => {
+      rx += (mx - rx) * 0.18;
+      ry += (my - ry) * 0.18;
+      if (ringRef.current) {
+        ringRef.current.style.transform = `translate(${rx}px, ${ry}px) translate(-50%, -50%)`;
+      }
+      if (Math.abs(mx - rx) < 0.1 && Math.abs(my - ry) < 0.1) {
+        raf = 0;
+        return;
+      }
+      raf = requestAnimationFrame(tick);
+    };
+
     const onMove = (e: PointerEvent) => {
       mx = e.clientX;
       my = e.clientY;
@@ -41,19 +59,10 @@ export function CustomCursor() {
       if (labelRef.current) {
         labelRef.current.style.transform = `translate(${mx}px, ${my + 40}px) translate(-50%, -50%)`;
       }
+      if (!raf) raf = requestAnimationFrame(tick);
     };
 
-    const tick = () => {
-      rx += (mx - rx) * 0.18;
-      ry += (my - ry) * 0.18;
-      if (ringRef.current) {
-        ringRef.current.style.transform = `translate(${rx}px, ${ry}px) translate(-50%, -50%)`;
-      }
-      raf = requestAnimationFrame(tick);
-    };
-
-    window.addEventListener("pointermove", onMove);
-    raf = requestAnimationFrame(tick);
+    window.addEventListener("pointermove", onMove, { passive: true });
 
     return () => {
       window.removeEventListener("pointermove", onMove);

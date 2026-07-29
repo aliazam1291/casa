@@ -12,14 +12,18 @@ export function Spotlight() {
     const el = document.getElementById("spotlight");
     if (!el) return;
     let raf = 0;
+    let x = 0;
+    let y = 0;
     const onMove = (e: PointerEvent) => {
-      cancelAnimationFrame(raf);
+      x = e.clientX;
+      y = e.clientY;
+      if (raf) return;
       raf = requestAnimationFrame(() => {
-        el.style.setProperty("--mx", `${e.clientX}px`);
-        el.style.setProperty("--my", `${e.clientY}px`);
+        raf = 0;
+        el.style.transform = `translate3d(${x}px, ${y}px, 0)`;
       });
     };
-    window.addEventListener("pointermove", onMove);
+    window.addEventListener("pointermove", onMove, { passive: true });
     return () => {
       window.removeEventListener("pointermove", onMove);
       cancelAnimationFrame(raf);

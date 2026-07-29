@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { WolfMark } from "@/components/brand/WolfMark";
+import { Wordmark } from "@/components/brand/Wordmark";
 import styles from "./Splash.module.css";
 
 /**
@@ -18,8 +19,12 @@ import styles from "./Splash.module.css";
  * and an inline SVG can animate its own strokes.
  */
 
-const HOLD_MS = 1750;
-const FADE_MS = 750;
+// The splash locks body scroll for HOLD + FADE on every full page load, so
+// these are a direct tax on time-to-interactive rather than just decoration.
+// Timings here and the choreography in Splash.module.css are one clock — keep
+// them in step if either moves.
+const HOLD_MS = 1100;
+const FADE_MS = 450;
 
 export function Splash() {
   const [leaving, setLeaving] = useState(false);
@@ -58,10 +63,12 @@ export function Splash() {
       <div className={styles.inner}>
         <WolfMark className={styles.mark} />
 
-        <h1 className={styles.wordmark}>
-          <span>W</span><span>O</span><span>L</span><span>F</span>
-          <i className={styles.gap} />
-          <span>C</span><span>A</span><span>S</span><span>A</span>
+        <h1 className={styles.wordmarkLine}>
+          <Wordmark
+            className={styles.wordmark}
+            letterClassName={styles.letter}
+            gapClassName={styles.gap}
+          />
         </h1>
 
         <span className={styles.established}>Established since 2024</span>
