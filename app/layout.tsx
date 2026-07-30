@@ -1,11 +1,14 @@
 import type { Metadata } from "next";
-import { Cormorant, Jost } from "next/font/google";
+import { Archivo, Cormorant, Jost } from "next/font/google";
 import "./globals.css";
 import { CursorProvider } from "@/components/cursor/CursorProvider";
 import { CustomCursor } from "@/components/cursor/CustomCursor";
 import { StageProvider } from "@/components/stage/StageProvider";
 import { StageBackground } from "@/components/stage/StageBackground";
 import { Spotlight } from "@/components/chrome/Spotlight";
+import { SmoothScrollProvider } from "@/components/motion/SmoothScrollProvider";
+import { CompositionProvider } from "@/components/composition/CompositionProvider";
+import { CompositionDrawer } from "@/components/composition/CompositionDrawer";
 import { Splash } from "@/components/splash/Splash";
 import { Nav } from "@/components/nav/Nav";
 import { Footer } from "@/components/footer/Footer";
@@ -52,6 +55,21 @@ const displayFont = Jost({
   display: "swap",
 });
 
+// The kinetic display face. Omitting `weight` makes next/font serve the real
+// variable font rather than static instances, and `axes: ["wdth"]` pulls in the
+// width axis on top of the weight axis that is included by default.
+//
+// This is what makes cursor-proximity and scroll-velocity typography possible:
+// both interpolate `font-variation-settings` continuously, which needs live
+// axes. Static cuts would snap between files instead of morphing. Scoped to the
+// kinetic headlines only — see the --kinetic note in app/globals.css.
+const kinetic = Archivo({
+  variable: "--font-kinetic",
+  subsets: ["latin"],
+  axes: ["wdth"],
+  display: "swap",
+});
+
 export const metadata: Metadata = {
   metadataBase: new URL("https://wolfcasa.in"),
   keywords: ["composed interiors India", "modern Indian living", "interior design Indore", "furniture sourcing", "Wolf Casa", "The Interio Mall"],
@@ -70,7 +88,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${archivo.variable} ${cormorant.variable} ${displayFont.variable}`} suppressHydrationWarning>
+    <html lang="en" className={`${archivo.variable} ${cormorant.variable} ${displayFont.variable} ${kinetic.variable}`} suppressHydrationWarning>
       <head>
         <script
           type="application/ld+json"
@@ -96,8 +114,15 @@ export default function RootLayout({
         />
       </head>
       <body suppressHydrationWarning>
+        {/* Momentum scrolling + the scroll-velocity bus every kinetic type
+            effect reads from. Effect-only (renders no DOM), mounted first so it
+            owns the scroll before any section mounts a ScrollTrigger. */}
+        <SmoothScrollProvider />
         <StageProvider>
           <CursorProvider>
+            {/* The visitor's saved board. Wraps everything below it because
+                both the nav (the count) and the drawer read from it. */}
+            <CompositionProvider>
             <Splash />
             <StageBackground />
             {/* Two stacked material layers over the whole site: a pebbled
@@ -114,6 +139,9 @@ export default function RootLayout({
                 /rooms, /catalogue, /pieces, /journal and every editorial route
                 ended with no footer at all. */}
             <Footer />
+            {/* Renders nothing until at least one piece is saved. */}
+            <CompositionDrawer />
+            </CompositionProvider>
           </CursorProvider>
         </StageProvider>
       </body>

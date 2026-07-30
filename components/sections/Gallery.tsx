@@ -8,8 +8,11 @@ import { PIECES, type Piece } from "@/lib/pieces";
 import { getRoom } from "@/lib/rooms";
 import { useCursor } from "@/components/cursor/CursorProvider";
 import { useReveal } from "@/hooks/useReveal";
-import { useTilt } from "@/hooks/useTilt";
 import { getPieceImage } from "@/lib/library-images";
+import { ParallaxStage, ParallaxRow } from "@/components/motion/ParallaxRows";
+import { LampContainer } from "@/components/motion/LampContainer";
+import { SaveToComposition } from "@/components/composition/SaveToComposition";
+import { DirectionalHover } from "@/components/motion/DirectionalHover";
 import styles from "./Gallery.module.css";
 
 function GalleryCard({
@@ -22,43 +25,65 @@ function GalleryCard({
   onSelect: (p: Piece) => void;
 }) {
   const { setCursor, resetCursor } = useCursor();
-  const { ref, onPointerMove, onPointerLeave } = useTilt<HTMLDivElement>(7);
   const imgUrl = getPieceImage(piece.slug, index);
+  const room = getRoom(piece.roomSlug)?.name;
 
+  // Only DirectionalHover here, not the 3D tilt used on the Product Universe
+  // cards: this wall renders 40-odd cards at once, and stacking a per-card
+  // perspective plane and a sheen layer on every one of them costs far more
+  // than the four-cell grid does. The directional slide carries the section.
   return (
-    <div
-      ref={ref}
-      className={styles.card}
-      onClick={() => onSelect(piece)}
-      onPointerMove={onPointerMove}
-      onPointerLeave={() => {
-        onPointerLeave();
-        resetCursor();
-      }}
-      onMouseEnter={() => setCursor("hover", "Inspect")}
-    >
+    <div className={styles.card}>
       {/* Picture wire + hook — every piece reads as hung, not posted */}
       <svg className={styles.wire} viewBox="0 0 40 26" aria-hidden>
         <circle cx="20" cy="4" r="2.6" />
         <path d="M6 26 L20 6 L34 26" fill="none" />
       </svg>
-      <div className={styles.frame}>
-        <div className={styles.img} style={{ aspectRatio: RATIOS[index % RATIOS.length] }}>
+      {/* Saving is available straight from the wall — a visitor shouldn't have
+          to open each of 41 pieces to shortlist one. */}
+      <SaveToComposition
+        slug={piece.slug}
+        name={piece.subtitle}
+        variant="mark"
+        className={styles.cardMark}
+      />
+      <DirectionalHover
+        className={styles.frame}
+        onPointerEnter={() => setCursor("hover", "Inspect")}
+        onPointerLeave={resetCursor}
+        overlay={
+          <>
+            <span className={styles.overNum}>
+              {String(index + 1).padStart(2, "0")} · {room}
+            </span>
+            <span className={styles.overTitle} lang={piece.lang}>
+              {piece.name}
+            </span>
+            <span className={styles.overSub}>{piece.subtitle}</span>
+          </>
+        }
+      >
+        <button
+          type="button"
+          className={styles.hit}
+          onClick={() => onSelect(piece)}
+          style={{ aspectRatio: RATIOS[index % RATIOS.length] }}
+        >
+          {/* The accessible name for a button whose visible label only exists
+              in the aria-hidden hover overlay. */}
+          <span className={styles.srOnly}>
+            {piece.name} — {piece.subtitle}. View details.
+          </span>
           <Image
             src={imgUrl}
             alt={piece.subtitle}
             fill
             loading="lazy"
-            sizes="(max-width: 720px) 92vw, (max-width: 1200px) 45vw, 22vw"
+            sizes="(max-width: 720px) 74vw, (max-width: 1200px) 34vw, 22vw"
           />
           <span className={styles.imgSheen} aria-hidden />
-        </div>
-      </div>
-      <span className={styles.cardNum}>
-        {String(index + 1).padStart(2, "0")} · {getRoom(piece.roomSlug)?.name}
-      </span>
-      <div className={styles.cardTitle} lang={piece.lang}>{piece.name}</div>
-      <div className={styles.cardSub}>{piece.subtitle}</div>
+        </button>
+      </DirectionalHover>
     </div>
   );
 }
@@ -86,6 +111,12 @@ function matchesCategory(piece: Piece, category: string): boolean {
 
 const RATIOS = [1.25, 0.8, 1, 1.4, 0.9, 1.15] as const;
 
+/** Rows drift in alternating directions, so the wall shears rather than
+ *  sliding as one block. Three rows is the most that still leaves each card
+ *  large enough to read at desktop widths. */
+const ROW_COUNT = 3;
+const ROW_DRIFT = [220, -300, 260] as const;
+
 export function Gallery() {
   const [activeCategory, setActiveCategory] = useState<string>("all");
   const [selectedPiece, setSelectedPiece] = useState<Piece | null>(null);
@@ -94,8 +125,23 @@ export function Gallery() {
 
   const filteredPieces = PIECES.filter((p) => matchesCategory(p, activeCategory));
 
+  // Dealt round-robin rather than sliced into thirds, so a filter that leaves
+  // only a handful of pieces still spreads across the rows instead of leaving
+  // the lower two empty.
+  const rows: { piece: Piece; index: number }[][] = Array.from({ length: ROW_COUNT }, () => []);
+  filteredPieces.forEach((piece, index) => {
+    rows[index % ROW_COUNT].push({ piece, index });
+  });
+
   return (
     <section className={styles.section} id="home-curation">
+      {/* The lamp lives here rather than over the hero. It needs a wide, flat,
+          dark ground — boxed narrow or laid over the villa render its cones
+          clip into a hard-edged rectangle and it reads as a panel sitting on
+          the scene. This section is exactly that ground, and the metaphor
+          already fits: the plaque hangs from a wire, so a picture light above
+          it is what the section was reaching for. */}
+      <LampContainer className={styles.headLamp}>
       <div ref={ref} className={`${styles.head} reveal ${inView ? "in" : ""}`}>
         {/* The section title itself hangs on the wall, like the pieces below it */}
         <div className={styles.plaqueWire} aria-hidden>
@@ -109,6 +155,7 @@ export function Gallery() {
           <span className={styles.plaqueFoot}>Hung, not listed — every piece framed as it lives in the room.</span>
         </div>
       </div>
+      </LampContainer>
 
       {/* Interactive Category Filter Bar */}
       <nav className={styles.filters} aria-label="Filter gallery items">
@@ -129,17 +176,35 @@ export function Gallery() {
       {/* The picture rail the whole wall hangs from */}
       <div className={styles.rail} aria-hidden />
 
-      {/* Masonry Pinterest Board */}
-      <div className={styles.masonry}>
-        {filteredPieces.map((piece, i) => (
-          <GalleryCard key={piece.slug} piece={piece} index={i} onSelect={setSelectedPiece} />
+      {/* The wall itself: three tracks that drift against each other as the
+          section scrolls past, pitched back and rising to flat on entry. */}
+      <ParallaxStage className={styles.stage}>
+        {rows.map((row, rowIndex) => (
+          <ParallaxRow
+            key={rowIndex}
+            direction={rowIndex % 2 === 0 ? 1 : -1}
+            distance={Math.abs(ROW_DRIFT[rowIndex])}
+            className={styles.parallaxRow}
+          >
+            {row.map(({ piece, index }) => (
+              <GalleryCard key={piece.slug} piece={piece} index={index} onSelect={setSelectedPiece} />
+            ))}
+          </ParallaxRow>
         ))}
-      </div>
+      </ParallaxStage>
 
       {/* Lightbox / Curation Detail Modal — Radix Dialog underneath so ESC,
           focus trap, scroll lock, outside-click and ARIA all come for free.
           Visual design is untouched: same classNames, same CSS module. */}
-      <Dialog.Root open={selectedPiece !== null} onOpenChange={(open) => { if (!open) setSelectedPiece(null); }}>
+      <Dialog.Root
+        open={selectedPiece !== null}
+        // Pausing the momentum scroller while this is open is handled globally
+        // in SmoothScrollProvider, which watches Radix's body scroll-lock — so
+        // it applies to every dialog on the site, not just this one.
+        onOpenChange={(open) => {
+          if (!open) setSelectedPiece(null);
+        }}
+      >
         <Dialog.Portal>
           <Dialog.Overlay className={styles.modalOverlay}>
             <Dialog.Content className={styles.modalCard} onClick={(e) => e.stopPropagation()}>

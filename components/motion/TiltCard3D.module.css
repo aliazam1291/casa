@@ -1,0 +1,82 @@
+/* 3D Card Effect — see TiltCard3D.tsx. */
+
+.viewport {
+  position: relative;
+  /* The perspective lives on the parent, so the rotation inside is a real
+     projection rather than a flat skew. ~900px is shallow enough to read as
+     depth without the corner distortion a tighter value gives. */
+  perspective: 900px;
+  --tilt-x: 0deg;
+  --tilt-y: 0deg;
+  --tilt-s: 1;
+  --glow-x: 50%;
+  --glow-y: 50%;
+}
+
+.plane {
+  position: relative;
+  height: 100%;
+  transform: rotateX(var(--tilt-x)) rotateY(var(--tilt-y)) scale3d(var(--tilt-s), var(--tilt-s), 1);
+  /* Without this the TiltLayer translateZ values collapse to nothing and the
+     whole effect flattens back into a skew. */
+  transform-style: preserve-3d;
+  /* Slower on the way out than on the way in: the card should snap to the
+     pointer but settle back gently. */
+  transition: transform 0.5s var(--ease-gallery);
+  will-change: transform;
+}
+
+.viewport[data-hovered="true"] .plane {
+  transition: transform 0.18s var(--ease-smooth);
+}
+
+.layer {
+  transform: translate3d(0, 0, var(--depth, 0));
+  transform-style: preserve-3d;
+}
+
+/* Specular sheen tracking the pointer — the cue that the surface has a
+   material rather than being a flat rectangle. */
+.sheen {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(
+    420px circle at var(--glow-x) var(--glow-y),
+    rgba(232, 225, 211, 0.14) 0%,
+    rgba(167, 134, 87, 0.08) 35%,
+    transparent 62%
+  );
+  transition: opacity 0.35s var(--ease-smooth);
+  transform: translateZ(60px);
+}
+
+.viewport[data-hovered="true"] .sheen {
+  opacity: 1;
+}
+
+/* Coarse pointers never hover; the tilt would only ever fire from a drag. */
+@media (hover: none) {
+  .plane {
+    transform: none;
+    transition: none;
+  }
+
+  .sheen {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .plane {
+    transform: none;
+    transition: none;
+    will-change: auto;
+  }
+
+  .sheen {
+    display: none;
+  }
+}

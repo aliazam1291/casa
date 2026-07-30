@@ -139,17 +139,36 @@
   color: var(--gold-light);
 }
 
-/* The measure is set so this breaks as two lines — "A room is not furnished."
-   over "It is composed." — which is the line the whole brand rests on. */
+/* Breaks as two lines — "A room is not furnished." over "It is composed." —
+   which is the line the whole brand rests on. The break is now pinned by
+   markup (two blocks) rather than by a ch measure, so no max-width here. */
 .gateFloor {
-  max-width: 13ch;
   font-family: var(--serif);
   font-weight: 300;
-  font-size: clamp(38px, 5.4vw, 72px);
   line-height: 1.02;
   letter-spacing: -0.02em;
   color: var(--fg);
   text-shadow: 0 2px 18px rgba(14, 14, 12, 0.5);
+}
+
+/* The kinetic layer inside the h1. Weight and width are driven per glyph by
+   the cursor — see VariableProximity — so no font-weight is set here; it
+   would be overwritten every frame anyway.
+
+   Sized so the longer of the two lines ("A ROOM IS NOT FURNISHED.", 24
+   characters) fits the gate's measure on one line. Archivo set uppercase runs
+   roughly 0.55em per character, so 24ch lands near 760px at 58px — which is
+   why this is smaller than the serif value it replaces despite reading
+   larger on screen. */
+.gateKinetic {
+  font-size: clamp(28px, 4.2vw, 58px);
+  line-height: 1.02;
+  letter-spacing: -0.035em;
+  text-transform: uppercase;
+}
+
+.gateKinetic + .gateKinetic {
+  margin-top: 0.04em;
 }
 
 .gateSub {
@@ -347,7 +366,9 @@
   .gate { padding: 0 22px 15vh; }
   /* Narrow enough that a 13ch measure would break mid-phrase — let the
      heading use the full column here instead. */
-  .gateFloor { font-size: clamp(28px, 8.5vw, 44px); max-width: none; }
+  /* The size moved onto .gateKinetic when the headline became kinetic type;
+     overriding .gateFloor here would no longer reach it. */
+  .gateKinetic { font-size: clamp(26px, 7.6vw, 40px); }
   .gateSub { font-size: 13px; max-width: none; }
   .stepBtn { width: min(100%, 280px); padding: 15px 18px; }
   .hint { right: 22px; left: 22px; text-align: center; }

@@ -1,0 +1,98 @@
+/* Save-to-composition control — see SaveToComposition.tsx. */
+
+.inline {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  /* 44px is the minimum comfortable touch target; this control appears on
+     phones more than anywhere else. */
+  min-height: 44px;
+  padding: 0 18px;
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--fg-dim);
+  font-family: var(--sans);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  cursor: none;
+  transition:
+    border-color 0.3s ease,
+    color 0.3s ease,
+    background 0.3s ease;
+}
+
+.inline:hover:not(:disabled) {
+  border-color: var(--gold);
+  color: var(--fg);
+}
+
+.inline.on {
+  border-color: var(--gold);
+  color: var(--gold);
+}
+
+/* The compact form, for a card in a grid. */
+.mark {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 4;
+  display: grid;
+  place-content: center;
+  width: 34px;
+  height: 34px;
+  border: 1px solid var(--line);
+  /* Opaque enough to stay legible over any photograph underneath. */
+  background: rgba(14, 14, 12, 0.72);
+  backdrop-filter: blur(6px) saturate(0.6);
+  color: var(--fg-dim);
+  cursor: none;
+  /* Visible by default so the control is never unreachable on its own. A
+     consumer that wants it revealed on hover (the 41-card wall, where 41
+     always-on marks would be noise) passes a className and owns that rule —
+     which is also why there is no ancestor-hover selector here: this module
+     cannot see the consumer's hashed card class. */
+  opacity: 1;
+  transition:
+    opacity 0.28s var(--ease-smooth),
+    color 0.28s ease,
+    border-color 0.28s ease;
+}
+
+.mark.on {
+  opacity: 1;
+  border-color: var(--gold);
+  color: var(--gold);
+}
+
+.mark:focus-visible,
+.inline:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
+  opacity: 1;
+}
+
+.icon {
+  width: 13px;
+  height: 13px;
+  flex: 0 0 auto;
+}
+
+.inline:disabled,
+.mark:disabled {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.inline:disabled {
+  /* The inline form holds its space while loading, or the layout jumps. */
+  opacity: 0.3;
+}
+
+@media (hover: none) {
+  .mark {
+    opacity: 1;
+  }
+}

@@ -6,6 +6,8 @@ import { PIECES, getPiece, piecesInRoom } from "@/lib/pieces";
 import { getRoom } from "@/lib/rooms";
 import { getSubtype } from "@/lib/catalogue";
 import { getPieceImage } from "@/lib/library-images";
+import { WHATSAPP_AVAILABLE, pieceEnquiryUrl } from "@/lib/whatsapp";
+import { SaveToComposition } from "@/components/composition/SaveToComposition";
 import styles from "./page.module.css";
 
 type Props = { params: Promise<{ slug: string }> };
@@ -21,12 +23,33 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const piece = getPiece((await params).slug);
   if (!piece) return {};
+  // Every one of the 41 pieces used to inherit the site-wide OG image from
+  // app/layout.tsx, so all 41 shared links rendered as the same villa
+  // photograph on WhatsApp, Instagram and Pinterest — the share preview said
+  // nothing about what was actually being shared. Each piece now carries its
+  // own photograph.
+  const image = getPieceHero(piece.slug);
+  const title = `${piece.name} — ${piece.subtitle} — Wolf Casa`;
+
   return {
     // Both names in the title: the Italian/German is what the piece is called,
     // the English is what someone actually searches for.
-    title: `${piece.name} — ${piece.subtitle} — Wolf Casa`,
+    title,
     description: piece.description,
     alternates: { canonical: `/pieces/${piece.slug}` },
+    openGraph: {
+      type: "article",
+      title,
+      description: piece.description,
+      url: `/pieces/${piece.slug}`,
+      images: [{ url: image, width: 1200, height: 900, alt: piece.subtitle }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description: piece.description,
+      images: [image],
+    },
   };
 }
 
@@ -97,9 +120,25 @@ export default async function PiecePage({ params }: Props) {
               <Link href={`/rooms/${room.slug}`} className={styles.roomLink}>See the room →</Link>
             </div>
           )}
-          <Link href="/experiences/consultation" className={styles.cta}>
-            Specify this piece
-          </Link>
+          {/* Three routes out of a piece, in order of commitment: save it and
+              keep browsing, ask about it now on WhatsApp, or specify it
+              formally. Previously the only option was the last one. */}
+          <div className={styles.actions}>
+            <Link href="/experiences/consultation" className={styles.cta}>
+              Specify this piece
+            </Link>
+            <SaveToComposition slug={piece.slug} name={piece.subtitle} />
+            {WHATSAPP_AVAILABLE && (
+              <a
+                href={pieceEnquiryUrl(piece.name, piece.subtitle, room?.name)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={styles.whatsapp}
+              >
+                Ask on WhatsApp
+              </a>
+            )}
+          </div>
         </div>
       </section>
 

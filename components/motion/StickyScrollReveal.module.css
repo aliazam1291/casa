@@ -1,0 +1,205 @@
+/* Sticky Scroll Reveal — see StickyScrollReveal.tsx. */
+
+.wrap {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+  gap: clamp(32px, 6vw, 96px);
+  align-items: start;
+}
+
+.steps {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Each step gets a good part of a viewport so there is real scroll distance
+   between the cross-fades — any less and the images flicker past. Tuned down
+   from 74vh: the copy is centred within the step, so an over-tall step opens a
+   visible void between the section's hairline and the first line of text. */
+.step {
+  min-height: 62vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 18px;
+  padding: 4vh 0;
+}
+
+.label {
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--section-accent, var(--gold));
+  /* Inactive steps drop the accent; the active one gets it back. */
+  opacity: 0.4;
+  transition: opacity 0.5s var(--ease-smooth);
+}
+
+.step[data-active="true"] .label {
+  opacity: 1;
+}
+
+/* The reveal itself: inactive copy sits dim and slightly offset, active copy
+   comes up to full Ivory. This is the "text highlights as you scroll" beat. */
+.body {
+  font-family: var(--serif);
+  font-size: clamp(1.35rem, 2.6vw, 2.1rem);
+  font-weight: 300;
+  line-height: 1.32;
+  color: var(--fg-faint);
+  transform: translate3d(0, 10px, 0);
+  transition:
+    color 0.6s var(--ease-smooth),
+    transform 0.6s var(--ease-gallery);
+  will-change: transform, color;
+}
+
+.step[data-active="true"] .body {
+  color: var(--fg);
+  transform: translate3d(0, 0, 0);
+}
+
+.body em {
+  font-style: italic;
+  color: var(--section-accent, var(--gold-light));
+}
+
+/* ---- Media column ---- */
+
+.mediaColumn {
+  position: sticky;
+  /* Clears the fixed nav. Deliberately NOT `top: 50%` + translateY(-50%) to
+     centre it: a transform applies whether or not the element is currently
+     stuck, so before it sticks the panel is dragged half its own height up and
+     overlaps whatever sits above the section. */
+  top: clamp(84px, 12vh, 140px);
+  /* Without this the grid stretches the item to the full row height and there
+     is nothing left for `sticky` to travel within. */
+  align-self: start;
+  /* Bounds the panel's height: .media is width-driven through its aspect
+     ratio, so capping the width is what stops a wide column from producing a
+     panel taller than the viewport (at which point it stops sticking).
+     Right-aligned with `justify-self`, NOT `margin-left: auto` — an auto
+     inline margin makes a grid item shrink-to-fit, and since every child here
+     is absolutely positioned there is no intrinsic content to size against, so
+     the panel collapses to zero width and vanishes. */
+  width: 100%;
+  max-width: 520px;
+  justify-self: end;
+}
+
+.media {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  /* New layer, so the cross-fading children never repaint the section. */
+  isolation: isolate;
+}
+
+/* One layer per image. Depth comes from scale + blur + brightness moving
+   together: the outgoing image falls back and softens while the incoming one
+   comes forward and sharpens. All three are compositor-friendly. */
+.layer {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transform: scale(1.08) translate3d(0, 0, 0);
+  filter: blur(10px) brightness(0.55);
+  transition:
+    opacity 0.85s var(--ease-smooth),
+    transform 1.1s var(--ease-gallery),
+    filter 0.85s var(--ease-smooth);
+  will-change: opacity, transform, filter;
+}
+
+.layer[data-active="true"] {
+  opacity: 1;
+  transform: scale(1) translate3d(0, 0, 0);
+  filter: blur(0) brightness(1);
+}
+
+.layer img {
+  object-fit: cover;
+}
+
+.ticks {
+  position: absolute;
+  right: 16px;
+  bottom: 16px;
+  z-index: 3;
+  display: flex;
+  gap: 6px;
+}
+
+.ticks span {
+  width: 18px;
+  height: 2px;
+  background: var(--fg-faint);
+  transition:
+    background 0.45s var(--ease-smooth),
+    width 0.45s var(--ease-gallery);
+}
+
+.ticks span[data-active="true"] {
+  width: 30px;
+  background: var(--section-accent, var(--gold));
+}
+
+/* ---- Mobile ----
+   Sticky media above a normal text flow doesn't work on a narrow screen: the
+   panel eats the viewport and the copy scrolls behind it. Below 900px the two
+   columns collapse and each step carries its own inline image instead, so the
+   section degrades into a readable stack. */
+@media (max-width: 900px) {
+  .wrap {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 28px;
+  }
+
+  .step {
+    min-height: 0;
+    padding: 22px 0;
+  }
+
+  .mediaColumn {
+    position: relative;
+    top: 0;
+    max-width: none;
+    margin-left: 0;
+    order: -1;
+  }
+
+  .media {
+    aspect-ratio: 3 / 2;
+  }
+
+  /* Without the tall steps there is no scroll distance to drive the highlight,
+     so every step reads at full strength rather than dimming. */
+  .body {
+    color: var(--fg);
+    transform: none;
+  }
+
+  .label {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .layer,
+  .body,
+  .ticks span {
+    transition-duration: 0.01ms;
+    will-change: auto;
+  }
+
+  .layer {
+    filter: none;
+    transform: none;
+  }
+}

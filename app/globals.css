@@ -79,6 +79,25 @@
   --ease-gallery: cubic-bezier(0.22, 1, 0.36, 1);
   --ease-smooth: cubic-bezier(0.16, 0.84, 0.36, 1);
 
+  /* ---- Kinetic layer ----
+     --font-kinetic is Archivo loaded as a true VARIABLE font (wght 100-900 +
+     wdth 62-125), used ONLY for the display type that reacts to scroll
+     velocity and cursor proximity. It is not a fourth brand face: the book's
+     voice is still Cormorant + Jost, and every static headline keeps using
+     them. Archivo is here because kinetic weight/width interpolation needs
+     real variable axes, which the static Jost instances cannot provide —
+     animating between static weights snaps between cut files instead of
+     interpolating, which looks broken at large display sizes.
+
+     --scroll-velocity is written every frame by SmoothScrollProvider,
+     normalized to roughly -1..1 (negative = scrolling up). --scroll-velocity-abs
+     is its magnitude, for effects that don't care about direction. Both default
+     to 0 so any consumer renders correctly before JS boots and stays correct
+     under prefers-reduced-motion, where the provider never starts. */
+  --kinetic: var(--font-kinetic), var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
+  --scroll-velocity: 0;
+  --scroll-velocity-abs: 0;
+
   /* Curtain gradient target — kept for section transitions */
   --curtain-to: var(--bg);
 
@@ -101,7 +120,40 @@ body {
   font-family: var(--sans);
   font-weight: 300;
   letter-spacing: 0.005em;
+  /* Kept for the no-JS / reduced-motion path (anchor jumps still ease). When
+     Lenis is running it overrides this to `auto` below — native smooth scroll
+     and momentum scroll fight each other and produce a stutter. */
   scroll-behavior: smooth;
+}
+
+/* ---- Lenis ----
+   Inlined rather than importing `lenis/dist/lenis.css` so the cascade order is
+   ours and these rules can't land after a section module. `.lenis` is added to
+   <html> by SmoothScrollProvider only when momentum scrolling actually starts,
+   so under reduced motion none of this applies. */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+/* Opt a subtree out of momentum scrolling — used on any inner scroller (modal
+   bodies, overflow tables) so the wheel scrolls the element, not the page. */
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: clip;
+}
+
+/* A canvas that owns the wheel (the WebGL hero) must not also scroll the page
+   through the iframe/pointer path while Lenis is mid-tween. */
+.lenis.lenis-smooth iframe {
+  pointer-events: none;
 }
 
 body {

@@ -7,6 +7,7 @@ import { HoverItem, Magnetic } from "@/components/cursor/HoverItem";
 import { useStage } from "@/components/stage/StageProvider";
 import { WolfMark } from "@/components/brand/WolfMark";
 import { Wordmark } from "@/components/brand/Wordmark";
+import { SearchPalette } from "@/components/search/SearchPalette";
 import styles from "./Nav.module.css";
 
 // The crossbar-less A — Brand Book §09/§IC: "We stripped the crossbar so the
@@ -114,11 +115,14 @@ export function Nav() {
             );
           })}
         </div>
-        <HoverItem as="span" cursorLabel="Book">
-          <Link href="/experiences/consultation" className={styles.cta}>
-            <Magnetic>Consultation</Magnetic>
-          </Link>
-        </HoverItem>
+        <div className={styles.actions}>
+          <SearchPalette />
+          <HoverItem as="span" cursorLabel="Book">
+            <Link href="/experiences/consultation" className={styles.cta}>
+              <Magnetic>Consultation</Magnetic>
+            </Link>
+          </HoverItem>
+        </div>
         <button type="button" className={styles.menuToggle} aria-expanded={menuOpen} aria-controls="mobile-navigation" aria-label={menuOpen ? "Close navigation" : "Open navigation"} onClick={() => setMenuOpen((open) => !open)}>
           <span /><span />
         </button>

@@ -4,6 +4,7 @@ import * as Dialog from "@radix-ui/react-dialog";
 import Image from "next/image";
 import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import { CONTACT } from "@/lib/contact";
+import { PIECES } from "@/lib/pieces";
 import { useCursor } from "@/components/cursor/CursorProvider";
 import styles from "./ConsultationDialog.module.css";
 
@@ -50,6 +51,23 @@ const REQUEST_LABELS: Record<string, string> = {
 function prefillFromUrl(): string {
   if (typeof window === "undefined") return "";
   const params = new URLSearchParams(window.location.search);
+
+  // Hand-off from the visitor's saved composition — see
+  // components/composition/CompositionProvider.tsx. This is the whole point of
+  // the board: the enquiry arrives naming the pieces instead of blank, so the
+  // first reply from the showroom can be about actual pieces.
+  const composition = (params.get("composition") ?? "")
+    .split(",")
+    .map((slug) => PIECES.find((p) => p.slug === slug.trim()))
+    .filter((p): p is (typeof PIECES)[number] => Boolean(p));
+
+  if (composition.length > 0) {
+    const list = composition.map((p) => `• ${p.name} — ${p.subtitle}`).join("\n");
+    return `I've composed a room from ${composition.length} piece${
+      composition.length === 1 ? "" : "s"
+    }:\n\n${list}\n\n`;
+  }
+
   if (params.get("from") !== "trade") return "";
   const needs = (params.get("needs") ?? "")
     .split(",")

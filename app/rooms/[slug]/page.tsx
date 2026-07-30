@@ -17,10 +17,28 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const room = getRoom((await params).slug);
   if (!room) return {};
+  // Per-room share image, for the same reason as the pieces — see the note in
+  // app/pieces/[slug]/page.tsx.
+  const image = ROOM_IMAGES[room.slug] ?? "/images/editorial/villa-hero.webp";
+  const title = `${room.name} — Wolf Casa`;
+
   return {
-    title: `${room.name} — Wolf Casa`,
+    title,
     description: room.detail,
     alternates: { canonical: `/rooms/${room.slug}` },
+    openGraph: {
+      type: "article",
+      title,
+      description: room.detail,
+      url: `/rooms/${room.slug}`,
+      images: [{ url: image, width: 1200, height: 900, alt: room.name }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description: room.detail,
+      images: [image],
+    },
   };
 }
 

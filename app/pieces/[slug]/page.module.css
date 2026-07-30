@@ -82,6 +82,21 @@
 }
 .cta:hover { background: var(--walnut); color: #fff; }
 
+/* The three routes out of a piece. Wraps on a phone rather than squeezing
+   three controls onto one line. */
+.actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+/* align-self on .cta was positioning it as a flex child of the column above;
+   inside .actions that no longer applies, and the row handles it. */
+.actions .cta { align-self: auto; }
+.whatsapp {
+  display: inline-flex; min-height: 48px; align-items: center;
+  padding: 0 18px; border: 1px solid var(--green-light); color: var(--green-light);
+  font-family: var(--sans); font-size: 10px; font-weight: 700;
+  letter-spacing: .13em; text-transform: uppercase;
+  transition: background .25s ease, color .25s ease;
+}
+.whatsapp:hover { background: var(--green-light); color: var(--bg); }
+
 /* Siblings */
 .section { padding: 10vh var(--gutter); border-top: 1px solid var(--line); }
 .sectionHead { margin-bottom: 48px; }

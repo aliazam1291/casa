@@ -1,0 +1,116 @@
+/* Lamp Effect — see LampContainer.tsx. Palette is Brass (--gold) on Soft
+   Black (--bg), per Brand Book §08: Brass punctuates, never fills, so only the
+   filament reaches full strength and the pool it throws stays at low alpha.
+
+   WHY NO CONIC CONES: Aceternity's original builds the light from two mirrored
+   conic gradients. Those need a wide, perfectly flat ground to read as a cone;
+   on this site they clipped against the container into hard-edged rectangles
+   and, once blurred and masked, came out as brown smears behind the content
+   rather than light. A radial pool fades in every direction, so it cannot
+   produce an edge — and a filament plus the pool it throws is the part of the
+   effect that was actually carrying the idea. */
+
+.lamp {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  /* --lamp-align lets a caller anchor the content without reaching into this
+     module. */
+  align-items: var(--lamp-align, center);
+  justify-content: center;
+  isolation: isolate;
+}
+
+/* --lamp-y positions the light within the container. It defaults to the
+   vertical centre (Aceternity's original, where the lamp lights type sitting
+   below it); a caller that wants the light above its content sets it to 0 and
+   pads the top by the same amount. */
+.rig {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+/* The pool of light the filament throws. Sized in vw so it stays proportional
+   to the section it lights, and offset downward so it falls onto the content
+   rather than haloing symmetrically around the bar. */
+.glow {
+  position: absolute;
+  top: var(--lamp-y, 50%);
+  height: 30rem;
+  width: min(72rem, 92vw);
+  transform: translateY(-7rem);
+  background: radial-gradient(
+    ellipse 50% 50% at 50% 50%,
+    rgba(167, 134, 87, 0.16) 0%,
+    rgba(167, 134, 87, 0.07) 38%,
+    rgba(167, 134, 87, 0.02) 62%,
+    transparent 78%
+  );
+  opacity: 0;
+  will-change: opacity, transform;
+}
+
+/* The lit element itself — the one place Brass goes to full strength. */
+.filament {
+  position: absolute;
+  top: var(--lamp-y, 50%);
+  height: 1px;
+  width: 24rem;
+  max-width: 78vw;
+  background: linear-gradient(
+    to right,
+    transparent 0%,
+    var(--gold) 26%,
+    var(--gold-light) 50%,
+    var(--gold) 74%,
+    transparent 100%
+  );
+  box-shadow:
+    0 0 14px 1px rgba(167, 134, 87, 0.42),
+    0 0 46px 6px rgba(167, 134, 87, 0.14);
+  opacity: 0;
+  will-change: width, opacity;
+}
+
+.content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: var(--lamp-align, center);
+  width: 100%;
+}
+
+/* Reduced motion / no-JS: the lamp is simply already on. */
+.lamp[data-lit="true"] .filament,
+.lamp[data-lit="true"] .glow {
+  opacity: 1;
+}
+
+.lamp[data-lit="true"] .glow {
+  transform: translateY(-7rem) scale(1);
+}
+
+@media (max-width: 720px) {
+  .filament {
+    width: 15rem;
+  }
+
+  .glow {
+    height: 20rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .filament,
+  .glow {
+    will-change: auto;
+    opacity: 1;
+  }
+}

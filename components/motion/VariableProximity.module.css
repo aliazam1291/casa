@@ -1,0 +1,55 @@
+/* Variable Proximity — see VariableProximity.tsx for the mechanism. */
+
+.root {
+  font-family: var(--kinetic);
+  /* Resting axes, also the reduced-motion and pre-JS state. The inline
+     --vp-* custom properties come from the component's props so a caller can
+     retune the range without touching this file. */
+  font-variation-settings: "wght" var(--vp-wght, 200), "wdth" var(--vp-wdth, 92);
+  display: block;
+}
+
+/* The real text, kept for assistive tech and for select/copy. Visually hidden
+   without display:none, which would remove it from the accessibility tree. */
+.sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+.visual {
+  display: block;
+}
+
+/* Keeps wrapping on word boundaries even though the glyphs are individual
+   inline-blocks — without this the line breaks mid-word. */
+.word {
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.glyph {
+  display: inline-block;
+  /* Promote once, up front. Each glyph gets font-variation-settings written
+     every frame; without a containing layer the browser re-rasterises the
+     whole line. `will-change` on the axis property keeps the glyph atlas warm. */
+  will-change: font-variation-settings;
+}
+
+/* A real space needs to survive `white-space: nowrap` on .word, so it is its
+   own inline-block with an explicit width rather than a literal space. */
+.space {
+  display: inline-block;
+  width: 0.28em;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .glyph {
+    will-change: auto;
+  }
+}

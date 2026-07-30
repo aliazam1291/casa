@@ -12,6 +12,7 @@ import {
 import { Wordmark } from "@/components/brand/Wordmark";
 import { FLOORS } from "./galleryData";
 import { useCursor } from "@/components/cursor/CursorProvider";
+import { VariableProximity } from "@/components/motion/VariableProximity";
 import styles from "./GalleryHero.module.css";
 
 type SceneHandle = {
@@ -235,7 +236,35 @@ export function GalleryHero() {
             <div className={styles.gateCopy}>
               <span className={styles.gateRule} aria-hidden />
               <span className={styles.eyebrow}>Wolf Casa · Indore, established 2024</span>
-              <h1 className={styles.gateFloor}>A room is not furnished. It is composed.</h1>
+              {/* The brand's central sentence, and the site's single largest
+                  piece of type — so it is the one that answers to the cursor.
+                  Copy unchanged.
+
+                  Set as two blocks, one per sentence, rather than one string
+                  with a measure tuned to break it: the kinetic face changes
+                  width per glyph as the cursor moves, so any ch-based measure
+                  reflows mid-interaction and orphans "It is" onto its own
+                  line. Two blocks pin the break where the design wants it. */}
+              <h1 className={styles.gateFloor}>
+                <VariableProximity
+                  as="span"
+                  className={styles.gateKinetic}
+                  radius={280}
+                  weight={[160, 780]}
+                  width={[86, 122]}
+                >
+                  A room is not furnished.
+                </VariableProximity>
+                <VariableProximity
+                  as="span"
+                  className={styles.gateKinetic}
+                  radius={280}
+                  weight={[160, 780]}
+                  width={[86, 122]}
+                >
+                  It is composed.
+                </VariableProximity>
+              </h1>
               <p className={styles.gateSub}>Step inside thirteen complete rooms — furniture, lighting, stone, joinery, greenery. One house, one composition.</p>
               <button
                 type="button"

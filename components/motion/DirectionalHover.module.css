@@ -1,0 +1,85 @@
+/* Directional Hover — see DirectionalHover.tsx.
+   --dir-x/--dir-y are a unit vector written by the component pointing at the
+   edge the pointer crossed; everything below is pure CSS off those two. */
+
+.root {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  --dir-x: 0;
+  --dir-y: 1;
+  /* Slide distance, as a percentage of the card. 101% rather than 100% hides
+     the sub-pixel seam some browsers leave at exactly 100%. */
+  --dir-travel: 101%;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  align-items: flex-end;
+  padding: clamp(14px, 2vw, 22px);
+  background: linear-gradient(
+    to top,
+    rgba(14, 14, 12, 0.94) 0%,
+    rgba(14, 14, 12, 0.72) 45%,
+    rgba(14, 14, 12, 0.18) 100%
+  );
+  /* Parked just outside the edge the pointer came from. */
+  transform: translate3d(
+    calc(var(--dir-x) * var(--dir-travel)),
+    calc(var(--dir-y) * var(--dir-travel)),
+    0
+  );
+  transition: transform 0.42s var(--ease-gallery);
+  will-change: transform;
+  pointer-events: none;
+}
+
+.root[data-hovered="true"] .overlay {
+  transform: translate3d(0, 0, 0);
+}
+
+/* The content counter-slides at a fraction of the overlay's travel, so the
+   text trails the panel slightly instead of moving as one rigid block. */
+.overlayInner {
+  transform: translate3d(
+    calc(var(--dir-x) * 24%),
+    calc(var(--dir-y) * 24%),
+    0
+  );
+  transition: transform 0.52s var(--ease-gallery);
+  will-change: transform;
+}
+
+.root[data-hovered="true"] .overlayInner {
+  transform: translate3d(0, 0, 0);
+}
+
+/* Touch and coarse pointers get the overlay permanently visible — there is no
+   hover to reveal it, and the metadata shouldn't be unreachable. */
+@media (hover: none) {
+  .overlay,
+  .overlayInner {
+    transform: none;
+    transition: none;
+  }
+
+  .overlay {
+    background: linear-gradient(
+      to top,
+      rgba(14, 14, 12, 0.9) 0%,
+      rgba(14, 14, 12, 0.4) 55%,
+      transparent 100%
+    );
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .overlay,
+  .overlayInner {
+    transition-duration: 0.01ms;
+    will-change: auto;
+  }
+}

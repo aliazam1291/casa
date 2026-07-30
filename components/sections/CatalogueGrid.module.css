@@ -8,27 +8,79 @@
 .head h2 { max-width: 780px; margin-top: 40px; font-family: var(--serif); font-size: clamp(36px, 4.6vw, 74px); font-weight: 400; line-height: .96; }
 
 .grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); }
+
+/* The tilt viewport is the grid cell, and carries the cell's ground colour so
+   the 1px hairline grid still reads. A tilted, scaled card overlaps its
+   neighbours, so the hovered cell is raised above them — without this the
+   card that is moving toward the viewer is drawn underneath the ones next to
+   it and the depth illusion inverts. */
+.tilt {
+  position: relative;
+  background: var(--bg);
+  z-index: 0;
+  transition: background .25s ease;
+}
+.tilt[data-hovered="true"] { z-index: 3; background: var(--bg-2); }
+
 .card {
+  position: relative;
   display: flex;
   flex-direction: column;
-  background: var(--bg);
-  --tilt-x: 0deg;
-  --tilt-y: 0deg;
-  transform: perspective(1000px) rotateX(var(--tilt-x)) rotateY(var(--tilt-y));
-  transition: transform .4s cubic-bezier(0.22, 1, 0.36, 1), background .25s ease;
+  height: 100%;
+  /* The tilt/perspective transform now lives on TiltCard3D's own plane — a
+     second transform here would compose with it and double the rotation. */
 }
-.card:hover { background: var(--bg-2); }
 .card:hover .cardImage img { transform: scale(1.04); }
 .cardImage { position: relative; aspect-ratio: 4 / 3; overflow: hidden; background: var(--bg-2); }
 .cardImage img { object-fit: cover; filter: saturate(.9) contrast(1.02); transition: transform .5s var(--ease-gallery, ease); }
-.cardBody { display: flex; align-items: baseline; gap: 14px; padding: clamp(18px, 2vw, 24px); }
-.card span { color: var(--fg-faint); font-family: var(--mono); font-size: 10px; font-weight: 600; letter-spacing: .14em; }
+.cardBody { position: relative; z-index: 2; display: flex; align-items: baseline; gap: 14px; padding: clamp(18px, 2vw, 24px); }
+.cardBody span { color: var(--fg-faint); font-family: var(--mono); font-size: 10px; font-weight: 600; letter-spacing: .14em; }
 /* Tracked uppercase labels, per the reference grid — not serif titles. */
 .card h3 { font-family: var(--sans); font-size: 12px; font-weight: 500; letter-spacing: .2em; text-transform: uppercase; line-height: 1.3; }
 
+/* ---- Hover metadata ----
+   Sits over the image, slides up on hover. Depth (translateZ) is applied by
+   TiltLayer on this element, so the slide itself is done on .meta inside it —
+   two transforms on one element would fight. */
+.metaLayer {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.meta {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: clamp(16px, 1.8vw, 22px);
+  background: linear-gradient(to top, rgba(14, 14, 12, 0.97) 0%, rgba(14, 14, 12, 0.9) 60%, rgba(14, 14, 12, 0.7) 100%);
+  opacity: 0;
+  transform: translate3d(0, 12%, 0);
+  transition: opacity .34s var(--ease-smooth), transform .44s var(--ease-gallery);
+  will-change: opacity, transform;
+}
+
+.tilt[data-hovered="true"] .meta { opacity: 1; transform: translate3d(0, 0, 0); }
+
+/* High-contrast mono spec rows, per the brief. */
+.metaRow { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding-bottom: 6px; border-bottom: 1px solid var(--line); }
+.metaKey { font-family: var(--mono); font-size: 9px; font-weight: 600; letter-spacing: .2em; text-transform: uppercase; color: var(--fg-faint); }
+.metaVal { font-family: var(--mono); font-size: 11px; font-weight: 600; letter-spacing: .1em; color: var(--gold); }
+
+/* The twenty parts, finally reachable from this section. */
+.metaParts { list-style: none; margin: 6px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 4px 6px; }
+.metaParts li { font-family: var(--mono); font-size: 9.5px; font-weight: 500; letter-spacing: .12em; text-transform: uppercase; color: var(--fg-dim); border: 1px solid var(--line); padding: 3px 6px; }
+
+.metaNote { margin-top: auto; font-family: var(--serif); font-size: clamp(12px, 1.05vw, 14px); font-style: italic; line-height: 1.35; color: var(--fg-dim); }
+
 /* The one brass cell — the taxonomy resolving to a single outcome. */
+.tiltTerminal { background: var(--bg); }
 .cardTerminal { justify-content: flex-end; min-height: 120px; }
-.cardTerminal h3, .cardTerminal span { color: var(--gold); }
+.cardTerminal h3, .cardTerminal .cardBody span { color: var(--gold); }
 
 .foot { display: flex; justify-content: flex-end; margin-top: 40px; }
 .foot a { display: inline-flex; min-height: 44px; align-items: center; gap: 10px; border: 1px solid var(--fg); padding: 0 18px; font-family: var(--sans); font-size: 10px; font-weight: 700; letter-spacing: .13em; text-transform: uppercase; transition: background .25s ease, color .25s ease; }
@@ -42,4 +94,12 @@
 @media (max-width: 720px) {
   .section { padding: 88px var(--gutter); }
   .grid { grid-template-columns: 1fr; }
+}
+
+/* Coarse pointers get no hover, so the metadata would be unreachable. Rather
+   than force it permanently over the image (which would bury the photography
+   on the smallest screens), it stays hidden and /shop remains the route to the
+   same information. The parts list is not exclusive to this hover state. */
+@media (hover: none) {
+  .metaLayer { display: none; }
 }

@@ -14,6 +14,17 @@
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='300'><filter id='w'><feTurbulence type='fractalNoise' baseFrequency='0.012 0.14' numOctaves='3' seed='11'/><feColorMatrix type='matrix' values='0 0 0 0 0.42 0 0 0 0 0.29 0 0 0 0 0.18 0 0 0 1 0'/></filter><rect width='100%25' height='100%25' filter='url(%23w)'/></svg>");
 }
 
+/* Full-bleed so the lamp's cones have room to fade out before the container
+   clips them — see the sizing contract in LampContainer.module.css. --lamp-y: 0
+   puts the filament at the top edge, and the padding below it is the headroom
+   the plaque hangs into, so the light falls onto the plaque rather than
+   through it. */
+.headLamp {
+  --lamp-y: 0px;
+  margin-inline: calc(var(--gutter) * -1);
+  padding-top: clamp(64px, 10vh, 128px);
+}
+
 .head {
   margin-bottom: 56px;
   display: flex;
@@ -142,26 +153,46 @@
   color: var(--fg);
 }
 
-/* Pinterest-style masonry columns */
-.masonry {
-  columns: 4;
-  column-gap: clamp(16px, 1.8vw, 28px);
+/* The parallax wall. Was a 4-column CSS masonry; the columns are now three
+   horizontal tracks that drift against each other as the section scrolls.
+   The negative inline margin lets the tracks run past the section's gutter so
+   the drift reads as a wall extending beyond the frame, rather than as three
+   rows sliding inside a box. The stage clips the overhang. */
+.stage {
+  margin-inline: calc(var(--gutter) * -1);
+}
+
+.parallaxRow + .parallaxRow {
+  margin-top: clamp(16px, 1.8vw, 28px);
 }
 
 .card {
-  display: block;
-  margin-bottom: clamp(16px, 1.8vw, 28px);
-  break-inside: avoid;
+  /* Fixed width: the track is a flex row of max-content width, so a card with
+     no basis would collapse to its image's intrinsic size. */
+  flex: 0 0 auto;
+  width: clamp(190px, 21vw, 310px);
   cursor: none;
-  --tilt-x: 0deg;
-  --tilt-y: 0deg;
-  --tilt-s: 1;
-  --glow-x: 50%;
-  --glow-y: 50%;
-  transform: perspective(900px) rotateX(var(--tilt-x)) rotateY(var(--tilt-y)) scale(var(--tilt-s));
-  transform-origin: top center; /* sways from the hook, not its own centre */
-  transition: transform 450ms cubic-bezier(0.22, 1, 0.36, 1);
-  will-change: transform;
+  /* Containing block for the save mark. */
+  position: relative;
+}
+
+/* 41 always-visible save marks would be noise on the wall, so the mark is
+   revealed on hover. Once a piece is saved it stays visible (.on wins), and
+   keyboard focus always reveals it — otherwise it would be unreachable by
+   tab. Coarse pointers have no hover, so it stays visible there. */
+.cardMark {
+  opacity: 0;
+}
+
+.card:hover .cardMark,
+.cardMark:focus-visible {
+  opacity: 1;
+}
+
+@media (hover: none) {
+  .cardMark {
+    opacity: 1;
+  }
 }
 
 /* Picture wire + hook, drawn above every hung piece */
@@ -193,26 +224,49 @@
   background: var(--bg-2);
   border: 1px solid var(--line);
   box-shadow: 0 24px 46px -22px rgba(0, 0, 0, 0.6);
-  margin-bottom: 14px;
+  /* The 14px that used to separate the frame from its caption goes with the
+     caption — it now lives inside the hover overlay. */
   transition: border-color 300ms ease;
 }
 .card:hover .frame {
   border-color: rgba(201, 168, 126, 0.4);
 }
-.img {
+/* The image is now a real <button>: the card opens a dialog, so it has to be
+   keyboard-reachable and announce itself. It was a <div> with an onClick. */
+.hit {
   position: relative;
+  display: block;
   width: 100%;
   overflow: hidden;
   background: var(--bg-2);
+  border: none;
+  padding: 0;
+  cursor: none;
 }
-.img img {
+.hit img {
   object-fit: cover;
   transition: transform 800ms ease, filter 800ms ease;
   filter: saturate(0.85) contrast(1.02);
 }
-.card:hover .img img {
+.card:hover .hit img {
   transform: scale(1.035);
   filter: saturate(1) contrast(1);
+}
+/* Keyboard users get the focus ring the pointer path doesn't need. */
+.hit:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 3px;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
 }
 .imgSheen {
   position: absolute;
@@ -226,26 +280,33 @@
 .card:hover .imgSheen {
   opacity: 1;
 }
-.cardNum {
+/* ---- Directional hover overlay ----
+   The caption used to sit permanently under each card. On a drifting wall
+   that made every row a paragraph of text in motion, so it now slides in from
+   the edge the pointer crossed. Same three lines, same order, same type. */
+.overNum {
+  display: block;
   font-family: var(--mono);
   font-size: 10px;
   letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--fg-dim);
-  display: block;
   margin-bottom: 6px;
 }
-.cardTitle {
+.overTitle {
+  display: block;
   font-family: var(--serif);
   font-weight: 300;
   font-style: italic;
-  font-size: 21px;
+  font-size: clamp(18px, 1.5vw, 21px);
   letter-spacing: -0.01em;
+  line-height: 1.15;
   color: var(--fg);
 }
 /* English gloss under the Italian/German name — see lib/pieces.ts. */
-.cardSub {
-  margin-top: 3px;
+.overSub {
+  display: block;
+  margin-top: 4px;
   font-family: var(--sans);
   font-size: 9.5px;
   font-weight: 600;

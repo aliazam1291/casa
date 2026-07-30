@@ -1,0 +1,55 @@
+/* Hero Parallax — see ParallaxRows.tsx. */
+
+.stage {
+  /* Rows are wider than the viewport by design; this is what stops them from
+     extending the document and creating a page-wide horizontal scrollbar. */
+  overflow: hidden;
+  perspective: 1200px;
+  perspective-origin: 50% 0%;
+}
+
+.stageInner {
+  transform-style: preserve-3d;
+  /* Set by GSAP on scroll; these are the resting/no-JS values so the gallery
+     is readable and flat if the script never runs. */
+  will-change: transform, opacity;
+}
+
+.row {
+  /* Each row is its own clipping context as well, so a long track can't leak
+     past the stage during the scrub. */
+  overflow: hidden;
+  width: 100%;
+}
+
+.track {
+  display: flex;
+  gap: clamp(12px, 1.6vw, 26px);
+  /* Wider than the viewport so there is material to drift; the stage clips
+     the overhang. Centred so both drift directions have room. */
+  width: max-content;
+  padding-inline: clamp(12px, 4vw, 60px);
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stageInner,
+  .track {
+    transform: none !important;
+    opacity: 1 !important;
+    will-change: auto;
+  }
+
+  /* Without the drift there is no reason to hold an oversized track — let the
+     row wrap into a normal responsive grid instead of clipping content. */
+  .track {
+    flex-wrap: wrap;
+    width: 100%;
+    justify-content: center;
+  }
+
+  .row,
+  .stage {
+    overflow: visible;
+  }
+}
