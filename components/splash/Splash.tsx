@@ -1,22 +1,27 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { WolfMark } from "@/components/brand/WolfMark";
-import { Wordmark } from "@/components/brand/Wordmark";
+import { FullLogo } from "@/components/brand/FullLogo";
 import styles from "./Splash.module.css";
 
 /**
- * The front door. A geometric wolf mark draws itself, the wordmark settles
- * under it, and the whole thing lifts away — covering the moment the gallery
- * hero spends warming up its WebGL context, which previously showed as a bare
- * "Composing the house" bar over an empty stage.
+ * The front door. The lockup inks in — mark first, then WOLF and CASA letter by
+ * letter — and the whole thing lifts away, covering the moment the gallery hero
+ * spends warming up its WebGL context.
  *
- * Mounted in the root layout, which persists across client-side navigation,
- * so this runs once per real page load rather than on every route change —
- * no sessionStorage flag needed, and no hydration mismatch from reading one.
+ * Mounted in the root layout, which persists across client-side navigation, so
+ * this runs once per real page load rather than on every route change — no
+ * sessionStorage flag needed, and no hydration mismatch from reading one.
  *
- * The mark is drawn rather than served: there is no logo asset in /public,
- * and an inline SVG can animate its own strokes.
+ * NOW THE REAL ARTWORK. The old comment here read "the mark is drawn rather
+ * than served: there is no logo asset in /public" — there is, in public/logo,
+ * and this now renders it (see components/brand/FullLogo.tsx). One consequence
+ * is deliberate and worth stating: the mark used to *draw itself* stroke by
+ * stroke, which only worked because it was twelve open paths pretending to be
+ * a logo. The real mark is a single closed compound path, and stroking its
+ * outline to animate it would trace the silhouette as a wireframe — a
+ * different, wrong mark for half a second. So the mark inks in and the eight
+ * letters stagger instead: same choreography, real artwork.
  */
 
 // The splash locks body scroll for HOLD + FADE on every full page load, so
@@ -61,10 +66,12 @@ export function Splash() {
       aria-label="Wolf Casa"
     >
       <div className={styles.inner}>
-        <WolfMark className={styles.mark} />
-
         <h1 className={styles.wordmarkLine}>
-          <Wordmark className={styles.wordmark} letterClassName={styles.letter} />
+          <FullLogo
+            className={styles.logo}
+            markClassName={styles.mark}
+            letterClassName={styles.letter}
+          />
         </h1>
 
         <span className={styles.established}>Established since 2024</span>

@@ -22,77 +22,61 @@
   padding: 0 24px;
 }
 
-/* ── the mark, drawing itself ───────────────────────────────── */
-.mark {
-  height: clamp(64px, 8vw, 88px);
-  width: auto;
-  overflow: visible;
-}
-.mark path {
-  stroke: var(--gold);
-}
-/* The mark assembles the way it reads: ears, then the brow that joins them,
-   then the jaw down to the muzzle, then the nose — and only once that outline
-   exists do the tapered ruff barbs and fangs ink in.
-   Every stroked path declares pathLength="1", so one dasharray covers all of
-   them regardless of their real lengths. */
-.mark path:not([fill]) {
-  stroke-dasharray: 1;
-  stroke-dashoffset: 1;
-  animation: draw 380ms cubic-bezier(0.65, 0, 0.35, 1) forwards;
-}
-.mark path:nth-child(3) { animation-delay: 240ms; }
-.mark path:nth-child(4),
-.mark path:nth-child(5) { animation-delay: 340ms; }
-.mark path:nth-child(6) { animation-delay: 470ms; }
-.mark path:nth-child(7),
-.mark path:nth-child(8) { animation-delay: 470ms; }
+/* ── the lockup, inking in ──────────────────────────────────
+   One SVG now (public/logo/Full Logo.svg — mark over WOLF over CASA), so the
+   mark and the wordmark share one coordinate system and cannot drift apart at
+   different viewport widths the way two separately-sized elements did.
 
-.mark path[fill] {
-  fill: var(--gold);
-  opacity: 0;
-  animation: ink 240ms ease 700ms forwards;
-}
-
-@keyframes draw {
-  to { stroke-dashoffset: 0; }
-}
-@keyframes ink {
-  to { opacity: 1; }
-}
-
-/* ── wordmark: letters settle in one after another ──────────── */
+   Height, not width: the lockup is taller than it is wide (218 × 206 with the
+   two-line wordmark), so sizing on height is what keeps it inside a short
+   viewport. */
 .wordmarkLine {
   margin-top: 6px;
 }
-/* --display is the Brand Book's signature-word slot; the wordmark is exactly
-   what it exists for. Letter-spacing is wide per the book, and the negative
-   right margin absorbs the space trailing the final letter so the lockup
-   stays optically centred. */
-.wordmark {
-  font-family: var(--display);
-  font-size: clamp(28px, 4.4vw, 52px);
-  font-weight: 200;
-  letter-spacing: 0.3em;
-  margin-right: -0.3em;
+.logo {
+  display: block;
+  height: clamp(132px, 19vw, 208px);
+  width: auto;
   color: var(--cream-light);
 }
+
+/* The mark carries the Brass; the wordmark stays Ivory. §08: "Brass punctuates.
+   Ivory speaks." */
+.mark {
+  fill: var(--gold);
+  opacity: 0;
+  transform: translateY(-8px) scale(0.94);
+  transform-origin: 50% 30%;
+  transform-box: fill-box;
+  animation: markIn 620ms cubic-bezier(0.22, 1, 0.36, 1) 80ms forwards;
+}
+
+/* Letters are in reading order in FullLogo.tsx (the source file had them in
+   Illustrator's draw order), so W-O-L-F-C-A-S-A is nth-of-type 2 through 9 —
+   the mark is the first path. */
 .letter {
   opacity: 0;
-  transform: translateY(14px);
+  transform: translateY(10px);
+  transform-box: fill-box;
   animation: settle 440ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
-.wordmark > *:nth-child(1) { animation-delay: 380ms; }
-.wordmark > *:nth-child(2) { animation-delay: 420ms; }
-.wordmark > *:nth-child(3) { animation-delay: 460ms; }
-.wordmark > *:nth-child(4) { animation-delay: 500ms; }
-.wordmark > *:nth-child(6) { animation-delay: 550ms; }
-.wordmark > *:nth-child(7) { animation-delay: 590ms; }
-.wordmark > *:nth-child(8) { animation-delay: 630ms; }
-.wordmark > *:nth-child(9) { animation-delay: 670ms; }
+.logo path:nth-of-type(2) { animation-delay: 380ms; }
+.logo path:nth-of-type(3) { animation-delay: 420ms; }
+.logo path:nth-of-type(4) { animation-delay: 460ms; }
+.logo path:nth-of-type(5) { animation-delay: 500ms; }
+.logo path:nth-of-type(6) { animation-delay: 550ms; }
+.logo path:nth-of-type(7) { animation-delay: 590ms; }
+.logo path:nth-of-type(8) { animation-delay: 630ms; }
+.logo path:nth-of-type(9) { animation-delay: 670ms; }
 
+@keyframes markIn {
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
 @keyframes settle {
   to { opacity: 1; transform: translateY(0); }
+}
+@keyframes ink {
+  to { opacity: 1; }
 }
 
 .established {
@@ -138,7 +122,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .mark path,
+  .mark,
   .letter,
   .established,
   .note,
@@ -146,7 +130,6 @@
     animation: none;
     opacity: 1;
     transform: none;
-    stroke-dashoffset: 0;
   }
   .rule i { transform: scaleX(1); }
   .splash { transition: opacity 200ms linear; }

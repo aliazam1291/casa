@@ -5,7 +5,11 @@
 .wordmark { display: flex; align-items: center; gap: 10px; color: inherit; font-family: var(--display); font-size: 19px; font-weight: 300; letter-spacing: .22em; text-transform: uppercase; }
 /* Taller than wide now that the mark carries a muzzle — height leads, and the
    thicker stroke keeps the ruff barbs and fangs from vanishing at 22px. */
-.wordmarkIcon { width: 19px; height: 24px; stroke: currentColor; stroke-width: 5.4; }
+/* The real mark (public/logo/Icon.svg) is a single FILLED compound path, not
+   the twelve open strokes the hand-traced one was — so the stroke rules that
+   used to live here would now draw a 5.4-unit outline around the silhouette
+   and read as a blob. Width matches the artwork's 65.07 × 78.83 ratio. */
+.wordmarkIcon { width: 20px; height: 24px; fill: currentColor; }
 .links { display: flex; gap: clamp(20px, 2.4vw, 42px); }
 .links a { display: inline-flex; align-items: center; gap: 7px; opacity: .64; transition: opacity .3s ease, letter-spacing .3s ease, color .3s ease; }
 .links a:hover { opacity: 1; letter-spacing: .18em; }
