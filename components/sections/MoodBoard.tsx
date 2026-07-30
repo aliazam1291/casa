@@ -28,6 +28,13 @@ export type MoodTile = {
   y: number;
   w: number;
   rotate: number;
+  /**
+   * Print format, e.g. "4/5" or "1/1". Defaults to 4/5. A real board is pinned
+   * with prints at whatever size they came off the printer; eleven tiles at one
+   * identical ratio reads as a grid someone rotated, which is the thing this
+   * component exists to not be.
+   */
+  ratio?: string;
 };
 
 export function MoodBoard({
@@ -69,6 +76,7 @@ export function MoodBoard({
                   width: `${t.w}%`,
                   // Straightens and rises when picked up.
                   "--tile-rotate": lifted ? "0deg" : `${t.rotate}deg`,
+                  "--tile-ratio": t.ratio ?? "4 / 5",
                 } as React.CSSProperties
               }
               onClick={() => setFront(lifted ? null : i)}

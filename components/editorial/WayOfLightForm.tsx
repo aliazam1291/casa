@@ -4,6 +4,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { useCursor } from "@/components/cursor/CursorProvider";
 import { useReveal } from "@/hooks/useReveal";
+// The eight were declared inline here AND in ArchitectHub.tsx — see the note
+// in lib/tokens.ts. One array now, and it carries the book's role for each
+// colour, which is the half that was being dropped.
+import { BRAND_COLOURS } from "@/lib/tokens";
+import { CompositionBuilder } from "./CompositionBuilder";
 import styles from "./WayOfLightForm.module.css";
 
 const LENSES = [
@@ -23,30 +28,9 @@ const LENSES = [
   },
 ];
 
-// Exact eight from the Brand Book's Colour System (§08) — page grounds
-// through to the voice colour, in the book's own order.
-const COLOURS = [
-  { name: "Soft Black", hex: "#0E0E0C" },
-  { name: "Charcoal", hex: "#141311" },
-  { name: "Walnut", hex: "#5A3D2E" },
-  { name: "Green", hex: "#253528" },
-  { name: "Brass", hex: "#A78657" },
-  { name: "Saddle", hex: "#8A5938" },
-  { name: "Sand", hex: "#C9BDA6" },
-  { name: "Ivory", hex: "#E8E1D3" },
-];
-
-const BUILDER = [
-  { tag: "Step 01", title: "The anchor", body: "Choose the dominant form — usually the sofa or bed." },
-  { tag: "Step 02", title: "The light", body: "Set the mood with lamp, ambient and natural light." },
-  { tag: "Step 03", title: "The layers", body: "Add rug, table, textile and material in dialogue." },
-  { tag: "Result", title: "The composition", body: "One named, sellable room the customer can feel.", result: true },
-];
-
 export function WayOfLightForm() {
   const { setCursor, resetCursor } = useCursor();
   const { ref: paletteRef, inView: paletteIn } = useReveal<HTMLDivElement>();
-  const { ref: builderRef, inView: builderIn } = useReveal<HTMLDivElement>();
 
   return (
     <main className={styles.page}>
@@ -96,32 +80,38 @@ export function WayOfLightForm() {
           <p className={styles.sectionLabel}>Colour System</p>
           <h2>Leather, walnut, tea, shadow.</h2>
         </div>
+        {/* The role is the useful half — "Brass: punctuation only, a rule, a
+            line, one word" is the instruction; the hex is just the value. It
+            arrives on hover/focus rather than sitting on eight cards at once. */}
         <div className={styles.swatchRow}>
-          {COLOURS.map((c) => (
-            <div key={c.hex}>
+          {BRAND_COLOURS.map((c) => (
+            <div
+              key={c.hex}
+              tabIndex={0}
+              onMouseEnter={() => setCursor("hover", c.name)}
+              onMouseLeave={resetCursor}
+            >
               <i style={{ background: c.hex }} aria-hidden />
               <span>{c.name}</span>
               <small>{c.hex}</small>
+              {/* The inner span is required, not decorative: the 0fr → 1fr
+                  grid reveal in the stylesheet needs a child box to collapse,
+                  and a bare text node cannot be one. */}
+              <p className={styles.swatchRole}>
+                <span>{c.role}</span>
+              </p>
             </div>
           ))}
         </div>
+        <p className={styles.paletteRule}>
+          Black holds the space. Ivory speaks. Brass punctuates — never a fill. Walnut &amp; green carry the
+          material world.
+        </p>
       </section>
 
-      <section className={styles.builder}>
-        <div ref={builderRef} className={`reveal ${builderIn ? "in" : ""}`}>
-          <p className={styles.sectionLabel}>Composition Builder · From SKU to Room</p>
-          <h2>How a product becomes a decision.</h2>
-        </div>
-        <div className={styles.steps}>
-          {BUILDER.map((step) => (
-            <article key={step.tag} className={step.result ? styles.result : ""}>
-              <span>{step.tag}</span>
-              <h3>{step.title}</h3>
-              <p>{step.body}</p>
-            </article>
-          ))}
-        </div>
-      </section>
+      {/* Was four static cards describing a process. It now runs one — see
+          components/editorial/CompositionBuilder.tsx. */}
+      <CompositionBuilder />
 
       <section className={styles.quoteBanner}>
         <p>&ldquo;The lamp gives the sofa memory. The rug gives it territory.&rdquo;</p>

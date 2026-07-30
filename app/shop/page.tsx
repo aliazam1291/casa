@@ -3,6 +3,7 @@ import Link from "next/link";
 import { PRODUCT_UNIVERSE, UNIVERSE_ITEMS } from "@/lib/product-universe";
 import { STOCK_PIECES } from "@/lib/products";
 import { getRoom } from "@/lib/rooms";
+import { MATERIAL_IMAGES } from "@/lib/library-images";
 import Image from "next/image";
 import { DomeGallery } from "@/components/sections/DomeGallery";
 import { GalleryWall } from "@/components/sections/GalleryWall";
@@ -13,16 +14,37 @@ import styles from "./page.module.css";
 
 // Hand-placed, overlapping, tilted — the opposite of the card grids elsewhere.
 //
-// PHOTOGRAPHY GAP: only these four photographs are unclaimed by another page
-// (see the one-photograph-one-owner rule in lib/library-images.ts), so the board
-// is smaller than it wants to be. It should grow to 8-10 tiles of real material
-// and detail shots — swatches, joinery, a corner of stone — which is what a
-// studio board actually pins up.
+// GREW FROM FOUR TO ELEVEN. The old note here said the board was stuck at four
+// tiles because only four photographs were "unclaimed" by another page. That
+// was the one-photograph-one-owner rule read too literally — see the revised
+// note in lib/library-images.ts. What it produced was a studio board with four
+// things pinned to it, which is not a board.
+//
+// The eleven are the showroom, catalogue and editorial sets plus the one
+// material close-up (textile) that belongs to no piece pool — i.e. every
+// photograph the site owns that the rotunda and the wall further up THIS page
+// do not already hang. Cross-page reuse is fine (see library-images.ts); the
+// same picture twice on one page is not, and that constraint is what picked
+// this set rather than the obvious composition shots.
+//
+// POSITIONS ARE CHECKED, NOT GUESSED. On a 16/9 board a tile's height as a
+// percentage of board height is w × (ratioH / ratioW) × 16/9 — so the 19%-wide
+// 3/4 print below is 45% tall, and its y must stay under ~50 to sit on the
+// board. Every y + height here lands under 95.
 const MOOD_TILES: MoodTile[] = [
-  { src: "/images/catalogue/seating-sofas.webp", alt: "A tailored sofa in a composed living room", label: "Seating", x: 2, y: 6, w: 26, rotate: -3.5 },
-  { src: "/images/showroom/dining-marble-mirror.webp", alt: "Marble dining surface against a mirrored wall", label: "Stone", x: 25, y: 30, w: 23, rotate: 2.4 },
-  { src: "/images/catalogue/bespoke-interiors-beds.webp", alt: "An upholstered platform bed", label: "Joinery", x: 47, y: 2, w: 25, rotate: -1.8 },
-  { src: "/images/showroom/living-lounge-brass.webp", alt: "A lounge composition with brass detailing", label: "Brass", x: 68, y: 27, w: 27, rotate: 3.2 },
+  // Upper run
+  { src: MATERIAL_IMAGES.textile, alt: "Woven textile at close range", label: "Cloth", x: 1, y: 5, w: 19, rotate: -3.5, ratio: "4 / 5" },
+  { src: "/images/showroom/dining-marble-mirror.webp", alt: "Marble dining surface against a mirrored wall", label: "Marble", x: 19, y: 2, w: 16, rotate: 2.4, ratio: "1 / 1" },
+  { src: "/images/editorial/materials.webp", alt: "Curated material samples laid out together", label: "Swatches", x: 34, y: 7, w: 20, rotate: -1.6, ratio: "3 / 4" },
+  { src: "/images/showroom/living-lounge-brass.webp", alt: "A lounge composition with brass detailing", label: "Brass", x: 53, y: 3, w: 17, rotate: 3.2, ratio: "4 / 5" },
+  { src: "/images/catalogue/seating-sofas.webp", alt: "A tailored sofa in a composed living room", label: "Seating", x: 69, y: 7, w: 18, rotate: -2.6, ratio: "1 / 1" },
+  { src: "/images/catalogue/bespoke-interiors-beds.webp", alt: "An upholstered platform bed", label: "Joinery", x: 84, y: 2, w: 14, rotate: 2.9, ratio: "4 / 5" },
+  // Lower run
+  { src: "/images/showroom/dining-room-mirrorwall.webp", alt: "A composed dining room with a mirrored feature wall", label: "Reflection", x: 5, y: 47, w: 17, rotate: 3.6, ratio: "1 / 1" },
+  { src: "/images/showroom/living-room-sectional.webp", alt: "A deep sectional anchoring a living room", label: "Volume", x: 22, y: 53, w: 16, rotate: -2.2, ratio: "4 / 5" },
+  { src: "/images/showroom/dining-set-black-gold.webp", alt: "A dining set in black and gold under low light", label: "Dusk", x: 38, y: 49, w: 19, rotate: 2.1, ratio: "3 / 4" },
+  { src: "/images/editorial/sojourn.webp", alt: "A sourcing journey through makers and material", label: "Sourcing", x: 57, y: 44, w: 17, rotate: -3.1, ratio: "4 / 5" },
+  { src: "/images/showroom/bedroom-suite-warm.webp", alt: "A warm bedroom suite with layered textiles", label: "Warmth", x: 75, y: 48, w: 20, rotate: 1.9, ratio: "1 / 1" },
 ];
 
 export const metadata: Metadata = {
@@ -197,7 +219,7 @@ export default function ShopPage() {
         tiles={MOOD_TILES}
         label="The board"
         heading={<>Not a catalogue. <em>A board.</em></>}
-        body="How a room gets decided — pinned up, moved around, argued over. Pick one up to bring it to the front."
+        body="How a room gets decided — swatches, joinery, a corner of stone, pinned up and argued over. Pick one up to bring it to the front."
       />
 
       <section className={styles.note}>

@@ -201,6 +201,48 @@
   grid-template-columns: repeat(4, 1fr);
   gap: 16px;
 }
+
+/* Cross-link to /shop#materials — the breadth half of the library. This board
+   is four materials in depth; the index there is all 44 in a swatch grid. */
+.libraryLink {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  margin-top: 40px;
+  padding: 22px 24px;
+  border: 1px solid var(--line);
+  transition: border-color 0.35s ease, background 0.35s ease;
+}
+.libraryLink:hover {
+  border-color: var(--gold);
+  background: var(--bg-2);
+}
+.libraryLink span {
+  font-family: var(--serif);
+  font-size: clamp(20px, 2.2vw, 28px);
+  font-style: italic;
+  font-weight: 300;
+  color: var(--fg);
+}
+.libraryLink em {
+  flex: 1 1 auto;
+  font-family: var(--sans);
+  font-size: 10px;
+  font-style: normal;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--fg-faint);
+}
+.libraryLink i {
+  font-style: normal;
+  color: var(--gold);
+  transition: transform 0.35s var(--ease-gallery);
+}
+.libraryLink:hover i {
+  transform: translateX(6px);
+}
 .thumb {
   cursor: none;
   position: relative;

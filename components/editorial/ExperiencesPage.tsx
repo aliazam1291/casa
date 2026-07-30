@@ -5,62 +5,37 @@ import Link from "next/link";
 import { useState } from "react";
 import { useCursor } from "@/components/cursor/CursorProvider";
 import { useReveal } from "@/hooks/useReveal";
+import { COMPOSITIONS } from "@/lib/compositions";
 import { SEATING_IMAGES, DECOR_IMAGES, MATERIAL_IMAGES } from "@/lib/library-images";
 import styles from "./ExperiencesPage.module.css";
 
-const COMPOSITIONS = [
-  {
-    num: "01", title: "The Evening Den",
-    body: "Low light, deep upholstery and a single brass lamp.",
-    image: SEATING_IMAGES[0],
-    tag: "Seating · Lighting",
-  },
-  {
-    num: "02", title: "The Shadow Lounge",
-    body: "Charcoal sofa, sculptural lamp and wood panelling.",
-    image: SEATING_IMAGES[1],
-    tag: "Lounge · Minimal",
-  },
-  {
-    num: "03", title: "The Courtyard Pause",
-    body: "Cane, foliage and textured fabric in slow morning light.",
-    image: DECOR_IMAGES[0],
-    tag: "Greenery · Outdoor",
-  },
-  {
-    num: "04", title: "The Guest Hour",
-    body: "A formal lounge composed to receive, not merely to seat.",
-    image: SEATING_IMAGES[2],
-    tag: "Reception · Formal",
-  },
-  {
-    num: "05", title: "The Reading Corner",
-    body: "Armchair, side table, floor lamp and a warm shadow.",
-    image: SEATING_IMAGES[3],
-    tag: "Study · Retreat",
-  },
-  {
-    num: "06", title: "The Family Frame",
-    body: "Shared seating, TV unit and rugs — a room built to hold a life.",
-    image: SEATING_IMAGES[4],
-    tag: "Family · Living",
-  },
-  {
-    num: "07", title: "The Material Room",
-    body: "Stone, wood, fabric and brass in layered surfaces.",
-    image: MATERIAL_IMAGES.marble,
-    tag: "Marble · Layered",
-  },
-] as const;
+// ── ONE SET OF NAMED ROOMS, NOT TWO ──────────────────────────────────────────
+// This page used to define its own seven "compositions" — The Evening Den, The
+// Shadow Lounge, The Courtyard Pause, The Guest Hour, The Reading Corner, The
+// Family Frame, The Material Room — under the heading "Named schemes".
+//
+// None of them exists. The Brand Book names eight compositions and files them
+// under owned IP: "Eight named compositions (Nocturne, Terra Form, Luxe
+// Minimal…) are IP too — sellable moods a customer can ask for by name" (§10).
+// A customer cannot ask for "The Guest Hour" by name, because nobody at Wolf
+// Casa has ever sold one. Running an invented seven next to the real eight is
+// the exact failure the IA doc flags: two competing systems for one layer.
+//
+// So the masonry now renders lib/compositions.ts — the same eight as
+// /the-wolf-way and /shop, with their own photography and accent tones, each
+// linking back to its full entry. It also stops this page borrowing the piece
+// photographs, which is what collided with /shop's wall.
 
 const JOURNEY = [
-  { num: "01", label: "Welcome Frame", detail: "The showroom begins at the threshold." },
-  { num: "02", label: "Material Wall", detail: "Every surface and finish, side by side." },
-  { num: "03", label: "Living Zone", detail: "Composed seating for every context." },
-  { num: "04", label: "Guest Lounge", detail: "A room built to receive." },
-  { num: "05", label: "Lighting Room", detail: "Chandeliers, pendants and architectural fixtures." },
-  { num: "06", label: "Consultation", detail: "A private space for decisions." },
-  { num: "07", label: "Closing Lounge", detail: "Rest before you choose." },
+  // Book-verbatim, §SR "The Showroom · Composed territories". The seven that
+  // were here (Welcome Frame, Living Zone, Guest Lounge, Closing Lounge…) were
+  // invented too, and the book's own six are better copy than the invention.
+  { num: "01", label: "The Welcome", detail: "Arrival composed — the brand felt in the first three metres." },
+  { num: "02", label: "The Material Wall", detail: "Stone, wood, metal and cloth, touchable and named." },
+  { num: "03", label: "The Composed Rooms", detail: "The eight moods, staged as complete decisions." },
+  { num: "04", label: "The Light Studio", detail: "Ambient, accent and task — light as direction." },
+  { num: "05", label: "The Consultation", detail: "The Wolf Way, applied to the customer's own plan." },
+  { num: "06", label: "The Close", detail: "Where the room becomes an order, quietly." },
 ] as const;
 
 const ACTIONS = [
@@ -84,8 +59,11 @@ const ACTIONS = [
   },
 ] as const;
 
-// Varying aspect ratios for masonry rhythm
-const RATIOS = ["4/3", "3/4", "1/1", "4/5", "4/3", "3/4", "1/1"] as const;
+// Varying aspect ratios for masonry rhythm. Indexed modulo, so this no longer
+// has to be exactly as long as the list it decorates.
+const RATIOS = ["4/3", "3/4", "1/1", "4/5", "4/3", "3/4", "1/1", "4/5"] as const;
+
+const hex = (n: number) => `#${n.toString(16).padStart(6, "0")}`;
 
 export function ExperiencesPage() {
   const { setCursor, resetCursor } = useCursor();
@@ -114,7 +92,7 @@ export function ExperiencesPage() {
       <section className={styles.journey}>
         <div ref={journeyRef} className={`reveal ${journeyIn ? "in" : ""} ${styles.journeyHead}`}>
           <span className={styles.sectionLabel}>At the showroom</span>
-          <h2>Seven territories, in one visit.</h2>
+          <h2>Six territories, in one visit.</h2>
         </div>
         <div className={styles.rail}>
           {JOURNEY.map((item) => (
@@ -130,27 +108,36 @@ export function ExperiencesPage() {
       {/* Pinterest masonry gallery of compositions */}
       <section className={styles.gallery}>
         <div ref={galleryRef} className={`reveal ${galleryIn ? "in" : ""} ${styles.galleryHead}`}>
-          <span className={styles.sectionLabel}>Named schemes</span>
+          <span className={styles.sectionLabel}>The eight signature compositions</span>
           <h2>Ready to enter.</h2>
+          <p className={styles.galleryNote}>
+            Staged on the floor as complete decisions. Ask for one by name.
+          </p>
         </div>
         <div className={styles.masonry}>
           {COMPOSITIONS.map((item, i) => (
-            <article
-              key={item.num}
+            <Link
+              key={item.slug}
+              href={`/the-wolf-way#${item.slug}`}
               className={styles.card}
-              onMouseEnter={() => { setCursor("hover", "View"); setHovered(item.num); }}
+              style={{ "--card-accent": hex(item.accent) } as React.CSSProperties}
+              onMouseEnter={() => { setCursor("hover", item.name); setHovered(item.slug); }}
               onMouseLeave={() => { resetCursor(); setHovered(null); }}
+              onFocus={() => setHovered(item.slug)}
+              onBlur={() => setHovered(null)}
             >
-              <div className={styles.cardImage} style={{ aspectRatio: RATIOS[i] }}>
-                <Image src={item.image} alt={item.title} fill loading="lazy" sizes="(max-width: 720px) 96vw, 30vw" />
-                <div className={`${styles.cardOverlay} ${hovered === item.num ? styles.cardOverlayVisible : ""}`} />
+              <div className={styles.cardImage} style={{ aspectRatio: RATIOS[i % RATIOS.length] }}>
+                <Image src={item.img} alt={item.name} fill loading="lazy" sizes="(max-width: 720px) 96vw, 30vw" />
+                <div className={`${styles.cardOverlay} ${hovered === item.slug ? styles.cardOverlayVisible : ""}`} />
               </div>
               <div className={styles.cardBody}>
-                <span className={styles.cardTag}>{item.tag}</span>
-                <h3>{item.title}</h3>
-                <p>{item.body}</p>
+                <span className={styles.cardTag}>
+                  {String(i + 1).padStart(2, "0")} · {item.materials.join(" · ")}
+                </span>
+                <h3>{item.name}</h3>
+                <p>{item.blurb}</p>
               </div>
-            </article>
+            </Link>
           ))}
         </div>
       </section>

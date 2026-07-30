@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useSyncExternalStore } from "react";
 import { COMPOSITIONS, type Composition, type TimeOfDay } from "@/lib/compositions";
 import { useCursor } from "@/components/cursor/CursorProvider";
 import styles from "./CompositionExhibit.module.css";
@@ -100,6 +100,19 @@ function ExhibitSlide({ composition, index }: { composition: Composition; index:
  * plaque, a split-tone name, and a small sketch strip (floor plan, time of
  * day, materials) instead of more photography we don't have.
  */
+// ── THE URL IS THE STATE ─────────────────────────────────────────────────────
+// This was `useState(0)` plus an effect that called setActive(indexFromHash())
+// on mount — which is a cascading render (React flags it) and, worse, two
+// sources of truth for one thing: the hash and the state could disagree, and
+// which won depended on render order.
+//
+// There is only one piece of state here and it already lives in the URL, so
+// useSyncExternalStore reads it directly. The server snapshot is 0 because
+// there is no hash during SSR; React reconciles on hydration.
+//
+// The subscription covers `hashchange` AND our own writes: replaceState is
+// deliberately silent (see `show`), so nothing would re-render without emit().
+
 /** #golden-hour etc. — the composition named in the URL, or the first. */
 function indexFromHash(): number {
   if (typeof window === "undefined") return 0;
@@ -108,29 +121,36 @@ function indexFromHash(): number {
   return i < 0 ? 0 : i;
 }
 
-export function CompositionExhibit() {
-  const [active, setActive] = useState(0);
-  const { setCursor, resetCursor } = useCursor();
-  const composition = COMPOSITIONS[active];
+const listeners = new Set<() => void>();
 
+function subscribeToHash(onChange: () => void) {
+  listeners.add(onChange);
+  window.addEventListener("hashchange", onChange);
+  return () => {
+    listeners.delete(onChange);
+    window.removeEventListener("hashchange", onChange);
+  };
+}
+
+export function CompositionExhibit() {
+  const { setCursor, resetCursor } = useCursor();
   // The section used to carry id={composition.slug}, so only the ACTIVE
   // composition had an anchor — /the-wolf-way#golden-hour resolved to nothing
   // unless Golden Hour happened to be the one on screen. All eight slugs now
   // exist as permanent anchors, and the exhibit follows whichever is named.
-  useEffect(() => {
-    setActive(indexFromHash());
-    const onHash = () => setActive(indexFromHash());
-    window.addEventListener("hashchange", onHash);
-    return () => window.removeEventListener("hashchange", onHash);
-  }, []);
+  const active = useSyncExternalStore(
+    subscribeToHash,
+    indexFromHash,
+    () => 0
+  );
+  const composition = COMPOSITIONS[active];
 
   const show = (i: number) => {
-    setActive(i);
     // replaceState, not a hash assignment: this keeps the URL shareable without
-    // pushing a history entry per click or re-triggering anchor scrolling.
-    if (typeof window !== "undefined") {
-      window.history.replaceState(null, "", `#${COMPOSITIONS[i].slug}`);
-    }
+    // pushing a history entry per click or re-triggering anchor scrolling. It
+    // also fires no hashchange, which is why we notify subscribers ourselves.
+    window.history.replaceState(null, "", `#${COMPOSITIONS[i].slug}`);
+    for (const onChange of listeners) onChange();
   };
   const next = () => show((active + 1) % COMPOSITIONS.length);
 

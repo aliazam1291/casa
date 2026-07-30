@@ -94,7 +94,7 @@ export default async function RoomPage({ params }: Props) {
             <h2>What this room is built from.</h2>
           </div>
           <nav className={styles.catList}>
-            {categories.map(({ category, subtype }) => (
+            {categories.map(({ subtype }) => (
               <Link key={subtype.slug} href="/shop" className={styles.catChip}>
                 {subtype.name}
               </Link>

@@ -73,6 +73,17 @@ export function MaterialIndex() {
           one that never appears on a bill of materials. Pick any of them to see what in the house is made
           of it.
         </p>
+        {/* The depth half. This index is every material, shallow; the board on
+            /the-house-and-rooms is four materials in specimen detail — how a
+            slab is chosen, how it ages, what it is for. */}
+        <Link
+          href="/the-house-and-rooms#materials-knowledge"
+          className={styles.depthLink}
+          onMouseEnter={() => setCursor("hover", "Read")}
+          onMouseLeave={resetCursor}
+        >
+          How a material is chosen <span aria-hidden>→</span>
+        </Link>
       </div>
 
       <Tabs.Root

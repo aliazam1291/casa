@@ -104,7 +104,7 @@
 .tileImage {
   position: relative;
   display: block;
-  aspect-ratio: 4 / 5;
+  aspect-ratio: var(--tile-ratio, 4 / 5);
   overflow: hidden;
   /* Paper margin, like a mounted print. */
   border: 7px solid #ece5d7;

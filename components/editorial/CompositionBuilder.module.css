@@ -1,0 +1,332 @@
+/* The resolved composition's own accent drives the section — see
+   lib/compositions.ts. Eight moods that all looked brass were not eight. */
+.section {
+  padding: 15vh var(--gutter);
+  border-top: 1px solid var(--line);
+}
+
+.sectionLabel {
+  font-family: var(--sans);
+  font-size: 10px;
+  font-weight: 650;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--result-accent);
+  transition: color 0.6s var(--ease-smooth);
+}
+.section h2 {
+  max-width: 760px;
+  margin: 20px 0 60px;
+  font-family: var(--serif);
+  font-size: clamp(38px, 5vw, 76px);
+  font-style: italic;
+  font-weight: 400;
+  line-height: 0.96;
+}
+
+.body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 0.95fr);
+  gap: clamp(28px, 4vw, 64px);
+  align-items: start;
+}
+
+/* ── The three steps ──────────────────────────────────────── */
+.steps {
+  display: flex;
+  flex-direction: column;
+  gap: 34px;
+}
+.step {
+  border: 0;
+  padding: 0;
+  margin: 0;
+}
+.step legend {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  width: 100%;
+  padding: 0 0 16px;
+  margin-bottom: 16px;
+  border-bottom: 1px solid var(--line);
+  font-family: var(--serif);
+  font-size: clamp(20px, 2.2vw, 28px);
+  font-style: italic;
+  font-weight: 400;
+  color: var(--fg);
+}
+.step legend span {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-style: normal;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  color: var(--result-accent);
+  transition: color 0.6s var(--ease-smooth);
+}
+
+/* Step 01 — a stacked list, because each option carries a line of copy. */
+.choices {
+  display: grid;
+  gap: 1px;
+  background: var(--line);
+  border: 1px solid var(--line);
+}
+.choice {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  background: var(--bg);
+  border: 0;
+  border-left: 2px solid transparent;
+  padding: 13px 16px;
+  text-align: left;
+  cursor: none;
+  transition: background 0.3s ease, border-left-color 0.3s ease, padding-left 0.3s ease;
+}
+.choice:hover {
+  background: var(--bg-2);
+}
+.choiceOn {
+  background: var(--bg-2);
+  border-left-color: var(--result-accent);
+  padding-left: 20px;
+}
+.choice:focus-visible {
+  outline: 1.5px solid var(--result-accent);
+  outline-offset: -3px;
+}
+.choice strong {
+  font-family: var(--sans);
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--fg-dim);
+}
+.choiceOn strong {
+  color: var(--fg);
+}
+.choice em {
+  font-family: var(--sans);
+  font-size: 11px;
+  font-style: normal;
+  line-height: 1.5;
+  color: var(--fg-faint);
+}
+
+/* Steps 02 and 03 — short labels, so they run as pills. */
+.choicesRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
+  background: none;
+  border: 1px solid var(--line);
+  padding: 0 16px;
+  font-family: var(--sans);
+  font-size: 10px;
+  font-weight: 650;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--fg-dim);
+  cursor: none;
+  transition: border-color 0.3s ease, color 0.3s ease, background 0.3s ease;
+}
+.pill i {
+  width: 10px;
+  height: 10px;
+  background: var(--pill-tone, var(--fg-faint));
+  opacity: 0.6;
+  transition: opacity 0.3s ease;
+}
+.pill:hover {
+  color: var(--fg);
+  border-color: var(--fg-faint);
+}
+.pillOn {
+  color: var(--bg);
+  background: var(--pill-tone, var(--fg));
+  border-color: var(--pill-tone, var(--fg));
+}
+.pillOn i {
+  opacity: 1;
+  background: var(--bg);
+}
+.pill:focus-visible {
+  outline: 1.5px solid var(--result-accent);
+  outline-offset: 2px;
+}
+
+/* ── The result ───────────────────────────────────────────── */
+.result {
+  position: sticky;
+  top: 100px;
+  border: 1px solid var(--line);
+  background: var(--bg-2);
+}
+.resultImage {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border-bottom: 1px solid var(--line);
+}
+.resultImage img {
+  object-fit: cover;
+}
+.resultBadge {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  padding: 6px 11px;
+  background: rgba(14, 14, 12, 0.62);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(232, 225, 211, 0.16);
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--fg-dim);
+}
+.resultBody {
+  padding: clamp(20px, 2.4vw, 30px);
+}
+.resultBody h3 {
+  font-family: var(--serif);
+  font-size: clamp(30px, 3.6vw, 48px);
+  font-style: italic;
+  font-weight: 300;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--result-accent);
+  transition: color 0.6s var(--ease-smooth);
+}
+.resultBlurb {
+  margin: 14px 0 22px;
+  color: var(--fg-dim);
+  font-size: 14px;
+  line-height: 1.75;
+}
+
+.resultAnchor {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 0;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+.resultAnchorImage {
+  position: relative;
+  flex: 0 0 auto;
+  width: 62px;
+  height: 78px;
+  overflow: hidden;
+  background: var(--bg);
+}
+.resultAnchorImage img {
+  object-fit: cover;
+}
+.resultAnchorLabel {
+  display: block;
+  font-family: var(--sans);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--fg-faint);
+  margin-bottom: 4px;
+}
+.resultAnchorName {
+  display: block;
+  font-family: var(--serif);
+  font-size: 20px;
+  font-style: italic;
+  font-weight: 300;
+  line-height: 1.1;
+  color: var(--fg);
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.3s ease;
+}
+.resultAnchorName:hover {
+  border-bottom-color: var(--result-accent);
+}
+.resultAnchorSub {
+  display: block;
+  margin-top: 3px;
+  font-family: var(--sans);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--fg-faint);
+}
+
+.resultQuote {
+  margin: 20px 0 24px;
+  font-family: var(--serif);
+  font-size: 17px;
+  font-style: italic;
+  font-weight: 300;
+  line-height: 1.5;
+  color: var(--fg-dim);
+}
+.resultActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.resultActions a {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  border: 1px solid var(--line);
+  padding: 0 18px;
+  font-family: var(--sans);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--fg-dim);
+  transition: border-color 0.25s ease, background 0.25s ease, color 0.25s ease;
+}
+.resultActions a:hover {
+  border-color: var(--fg);
+  color: var(--fg);
+}
+.resultPrimary {
+  background: var(--fg);
+  border-color: var(--fg) !important;
+  color: var(--bg) !important;
+}
+.resultPrimary:hover {
+  background: var(--result-accent);
+  border-color: var(--result-accent) !important;
+  color: var(--bg) !important;
+}
+
+@media (max-width: 1000px) {
+  .body {
+    grid-template-columns: 1fr;
+  }
+  .result {
+    position: static;
+  }
+}
+@media (max-width: 720px) {
+  .section {
+    padding: 88px var(--gutter);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sectionLabel,
+  .step legend span,
+  .resultBody h3 {
+    transition: none;
+  }
+}

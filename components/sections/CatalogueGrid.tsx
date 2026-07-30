@@ -6,7 +6,6 @@ import { PRODUCT_UNIVERSE } from "@/lib/product-universe";
 import { useCursor } from "@/components/cursor/CursorProvider";
 import { useReveal } from "@/hooks/useReveal";
 import { useTilt } from "@/hooks/useTilt";
-import { KITCHEN_BATH_IMAGES, LIGHTING_IMAGES, DECOR_IMAGES } from "@/lib/library-images";
 import styles from "./CatalogueGrid.module.css";
 
 // Curated photography per catalogue category — editorial quality, matching

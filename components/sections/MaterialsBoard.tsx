@@ -1,12 +1,18 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useState } from "react";
 import * as Tabs from "@radix-ui/react-tabs";
 import { useCursor } from "@/components/cursor/CursorProvider";
 import { useReveal } from "@/hooks/useReveal";
 import { MATERIAL_IMAGES } from "@/lib/library-images";
+import { MATERIALS as ALL_MATERIALS } from "@/lib/materials";
 import styles from "./MaterialsBoard.module.css";
+
+/** Read off the derived library so the cross-link can never quote a stale
+    number — see lib/materials.ts. */
+const MATERIALS_COUNT = ALL_MATERIALS.length;
 
 const MATERIALS = [
   {
@@ -167,6 +173,27 @@ export function MaterialsBoard() {
           </div>
         ))}
       </div>
+
+      {/* DEPTH HERE, BREADTH THERE. This board is four materials with a
+          specimen paragraph each — how a slab is chosen, how it ages, what it
+          is for. /shop's MaterialIndex is the other half: all {MATERIALS_COUNT}
+          materials the house actually specifies, derived from the pieces, with
+          a swatch and the pieces made of each.
+          Neither replaces the other, and until now neither knew the other
+          existed — so a visitor who wanted the full palette had no way to find
+          it from the page that says "knowing the materials". */}
+      <Link
+        href="/shop#materials"
+        className={styles.libraryLink}
+        onMouseEnter={() => setCursor("hover", "Open")}
+        onMouseLeave={resetCursor}
+      >
+        <span>The full library</span>
+        <em>
+          All {MATERIALS_COUNT} materials in the house, across seven families
+        </em>
+        <i aria-hidden>→</i>
+      </Link>
     </section>
   );
 }

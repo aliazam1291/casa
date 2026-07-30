@@ -26,11 +26,50 @@ const ALLOWED = ["image/jpeg", "image/png", "image/webp", "image/heic", "image/h
 
 const SCOPES = ["A single room", "A whole floor", "The whole house", "A commercial space"];
 
+/**
+ * The Specifier Desk on /architects sends people here with their selection in
+ * the URL (`?from=trade&needs=samples,specs`). Dropping it would make that
+ * page's "travels with your enquiry" a lie, so it is unpacked into the message
+ * field, where the person can edit or delete it before sending.
+ *
+ * Read on OPEN rather than on mount, deliberately: this component renders
+ * inside statically-prerendered pages, and useSearchParams() there needs a
+ * Suspense boundary. By the time the dialog opens we are unambiguously on the
+ * client, so window.location is both available and correct — no effect, no
+ * boundary, no hydration mismatch.
+ */
+const REQUEST_LABELS: Record<string, string> = {
+  samples: "material samples",
+  specs: "dimensions and specs",
+  universe: "the full product universe",
+  leadtimes: "lead times and scheduling",
+  site: "a site visit",
+  install: "install support",
+};
+
+function prefillFromUrl(): string {
+  if (typeof window === "undefined") return "";
+  const params = new URLSearchParams(window.location.search);
+  if (params.get("from") !== "trade") return "";
+  const needs = (params.get("needs") ?? "")
+    .split(",")
+    .map((id) => REQUEST_LABELS[id])
+    .filter(Boolean);
+  const opening = "Trade enquiry.";
+  if (needs.length === 0) return `${opening} `;
+  const list =
+    needs.length === 1
+      ? needs[0]
+      : `${needs.slice(0, -1).join(", ")} and ${needs[needs.length - 1]}`;
+  return `${opening} For this project I need ${list}. `;
+}
+
 type Attachment = { id: string; file: File; url: string };
 type Status = "idle" | "sending" | "sent" | "error";
 
 export function ConsultationDialog({ children }: { children: ReactNode }) {
   const [open, setOpen] = useState(false);
+  const [prefill, setPrefill] = useState("");
   const [attachments, setAttachments] = useState<Attachment[]>([]);
   const [scope, setScope] = useState(SCOPES[0]);
   const [status, setStatus] = useState<Status>("idle");
@@ -128,6 +167,8 @@ export function ConsultationDialog({ children }: { children: ReactNode }) {
       open={open}
       onOpenChange={(next) => {
         setOpen(next);
+        // Read the trade hand-off at open time — see prefillFromUrl above.
+        if (next) setPrefill(prefillFromUrl());
         if (!next) {
           resetCursor();
           reset();
@@ -199,7 +240,16 @@ export function ConsultationDialog({ children }: { children: ReactNode }) {
 
               <label className={styles.field}>
                 <span>What is not working?</span>
-                <textarea name="message" rows={3} placeholder="The living room takes light beautifully until four, and then it dies." />
+                {/* key on the prefill so a hand-off from /architects actually
+                    replaces the field's initial value — defaultValue alone is
+                    read once per mount and would be ignored. */}
+                <textarea
+                  key={prefill}
+                  name="message"
+                  rows={3}
+                  defaultValue={prefill}
+                  placeholder="The living room takes light beautifully until four, and then it dies."
+                />
               </label>
 
               {/* ── the evidence ───────────────────────────────── */}

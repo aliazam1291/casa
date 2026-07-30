@@ -80,12 +80,12 @@ const journalDepartments = [
   { label: "Field Notes", detail: "Short dispatches from the workshop floor." },
 ];
 
-const houseDepartments = [
-  { label: "Since 2024", detail: "A working legacy built one home at a time." },
-  { label: "110 hands", detail: "Designers, craftspeople and makers in-house." },
-  { label: "40,000 sq ft", detail: "A production ecosystem built for care at scale." },
-  { label: "Indore & Dewas", detail: "Both facilities, and every home built from here." },
-];
+// `houseDepartments` was declared here and never referenced. /the-house was
+// merged into /the-house-and-rooms (see next.config.ts), and that page states
+// these four numbers through <HouseStats>, which reads them from lib/rooms.ts
+// and lib/pieces.ts rather than from a hand-written list. Removed rather than
+// re-wired: a second, stale copy of the legacy numbers is how two pages end up
+// disagreeing about how many people work here.
 
 const architectDepartments = [
   { label: "Access", detail: "Finishes, dimensions and material support on request." },
