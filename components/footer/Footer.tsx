@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import { HoverItem, Magnetic } from "@/components/cursor/HoverItem";
+import { WolfMark } from "@/components/brand/WolfMark";
+import { Wordmark } from "@/components/brand/Wordmark";
 import { useReveal } from "@/hooks/useReveal";
 import { CONTACT, contactMapUrl } from "@/lib/contact";
 import styles from "./Footer.module.css";
@@ -49,7 +51,13 @@ export function Footer() {
         </div>
         <div className={styles.grid}>
           <div className={styles.brand}>
-            <div className={styles.wordmark}>Wolf Casa</div>
+            {/* Was the literal text "Wolf Casa" set in var(--serif) — i.e. the
+                brand name rendered in Cormorant, which is the body voice and
+                not the signature slot at all. Now the real outlined artwork. */}
+            <div className={styles.wordmark}>
+              <WolfMark className={styles.wordmarkIcon} />
+              <Wordmark className={styles.wordmarkText} />
+            </div>
             <p>Modern Indian living, carefully composed. Indore &amp; Dewas — since {CONTACT.founded}.</p>
             <p className={styles.address}>
               {CONTACT.showroom.line1}, {CONTACT.showroom.line2}

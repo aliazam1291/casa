@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { HoverItem, Magnetic } from "@/components/cursor/HoverItem";
 import { useStage } from "@/components/stage/StageProvider";
 import { WolfMark } from "@/components/brand/WolfMark";
+import { Wordmark } from "@/components/brand/Wordmark";
 import styles from "./Nav.module.css";
 
 // The crossbar-less A — Brand Book §09/§IC: "We stripped the crossbar so the
@@ -92,9 +93,13 @@ export function Nav() {
   return (
     <nav className={`${styles.nav} ${solid ? styles.solid : ""} ${menuOpen ? styles.menuOpen : ""}`}>
       <div className={styles.bar}>
-        <Link href="/" className={styles.wordmark} onClick={() => setMenuOpen(false)}>
+        {/* Mark + the real outlined wordmark. This used to be the mark followed
+            by the literal text "Wolf Casa" set in var(--display) — which falls
+            back to Jost, so the most-seen instance of the brand name on the
+            site rendered in the wrong face with a crossbarred A. */}
+        <Link href="/" className={styles.wordmark} aria-label="Wolf Casa — home" onClick={() => setMenuOpen(false)}>
           <WolfMark className={styles.wordmarkIcon} />
-          Wolf Casa
+          <Wordmark className={styles.wordmarkText} />
         </Link>
         <div className={styles.links}>
           {LINKS.map((link) => {

@@ -39,10 +39,24 @@
   letter-spacing: 0.04em;
   opacity: 0.7;
 }
+/* Real artwork, so no type properties — see the note in Footer.tsx. */
 .wordmark {
-  font-family: var(--serif);
-  font-weight: 300;
-  font-size: 20px;
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  color: var(--cream-light);
+}
+.wordmarkIcon {
+  width: 24px;
+  height: 29px;
+  flex: 0 0 auto;
+  fill: currentColor;
+}
+/* Cap height, not type size — the wordmark viewBox is exactly the caps. */
+.wordmarkText {
+  height: 15px;
+  width: auto;
+  fill: currentColor;
 }
 .brand p {
   font-family: var(--serif);

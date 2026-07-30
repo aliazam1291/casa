@@ -9,6 +9,7 @@ import {
   type ForwardRefExoticComponent,
   type RefAttributes,
 } from "react";
+import { Wordmark } from "@/components/brand/Wordmark";
 import { FLOORS } from "./galleryData";
 import { useCursor } from "@/components/cursor/CursorProvider";
 import styles from "./GalleryHero.module.css";
@@ -57,6 +58,7 @@ const FLOOR_LIST = FLOORS as Floor[];
 // note at the top of lib/pieces.ts. Optional because tagPiece() can still be
 // called with a literal object that has no piece record behind it.
 type PieceInfo = { name: string; subtitle?: string; materials: string[]; description: string };
+
 
 function Chevron({ dir }: { dir: "left" | "right" }) {
   return (
@@ -215,7 +217,9 @@ export function GalleryHero() {
       {/* Held until the scene's first rendered frame, so the visitor never
           sees an empty cream box while the rooms and textures are built. */}
       <div className={`${styles.loader} ${ready ? styles.loaderDone : ""}`} aria-hidden={ready}>
-        <span className={styles.loaderMark}>Wolf Casa</span>
+        {/* Was the name set in var(--serif) — Cormorant, the body voice, not
+            the signature slot. The real outlined artwork instead. */}
+        <Wordmark className={styles.loaderMark} />
         <div className={styles.loaderBar}><i /></div>
         <span className={styles.loaderNote}>Composing the house</span>
       </div>

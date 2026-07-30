@@ -1,8 +1,14 @@
 .nav { position: fixed; top: 0; right: 0; left: 0; z-index: 9100; color: var(--fg); font-family: var(--mono); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; pointer-events: none; }
 .bar { display: flex; min-height: 88px; align-items: center; justify-content: space-between; padding: 20px var(--gutter); border-bottom: 1px solid rgba(232, 225, 211, .14); background: rgba(14, 14, 12, .82); backdrop-filter: blur(16px) saturate(1.1); box-shadow: 0 10px 30px rgba(0, 0, 0, .3); pointer-events: auto; transition: background .35s var(--ease-gallery), border-color .35s var(--ease-gallery), box-shadow .35s var(--ease-gallery); }
 .nav.solid .bar { border-bottom-color: var(--line); background: rgba(20, 19, 17, .92); box-shadow: 0 12px 40px rgba(0, 0, 0, .35); }
-/* The wordmark is a signature word — the Posterama slot, not the serif. */
-.wordmark { display: flex; align-items: center; gap: 10px; color: inherit; font-family: var(--display); font-size: 19px; font-weight: 300; letter-spacing: .22em; text-transform: uppercase; }
+/* The wordmark is real outlined artwork now, not type — so no font-family,
+   size, weight or tracking here. Those properties were doing the work when the
+   name was live text; leaving them would be dead style on an <svg>. */
+.wordmark { display: flex; align-items: center; gap: 11px; color: inherit; }
+/* Cap height, not type size: the wordmark viewBox is exactly the caps, no
+   ascender or descender space. 13px of caps reads at about the 19px the text
+   version was set at. */
+.wordmarkText { height: 13px; width: auto; fill: currentColor; }
 /* Taller than wide now that the mark carries a muzzle — height leads, and the
    thicker stroke keeps the ruff barbs and fangs from vanishing at 22px. */
 /* The real mark (public/logo/Icon.svg) is a single FILLED compound path, not
