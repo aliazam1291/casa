@@ -47,9 +47,9 @@ export default async function EditorialRoute({ params }: Props) {
 }
 
 // Only exact SITE_PAGES keys resolve here now. /journal/[slug], /rooms/[slug],
-// /pieces/[slug] and /catalogue/** are real routes (see app/journal/[slug],
-// app/rooms/[slug], app/pieces/[slug], app/catalogue/**) that Next.js matches
-// before this catch-all. /the-wolf-way/{world} and /the-wolf-way/object/*
+// /pieces/[slug] and /rooms/[slug] are real routes (see app/journal/[slug],
+// app/rooms/[slug], app/pieces/[slug]) that Next.js matches before this
+// catch-all. /the-wolf-way/{world} and /the-wolf-way/object/*
 // previously fell back to this page's parent content under a duplicate,
 // self-referencing canonical — next.config.ts now redirects those instead.
 function resolvePage(key: string) {

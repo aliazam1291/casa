@@ -29,6 +29,7 @@
     "@types/three": "^0.185.1",
     "eslint": "^9",
     "eslint-config-next": "16.2.11",
+    "pdfjs-dist": "^6.2.108",
     "sharp": "^0.35.3",
     "typescript": "^5"
   }

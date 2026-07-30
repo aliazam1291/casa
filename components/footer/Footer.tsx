@@ -11,8 +11,7 @@ const COLUMNS = [
     title: "Shop",
     links: [
       { label: "House & Rooms", href: "/the-house-and-rooms" },
-      { label: "Catalogue", href: "/catalogue" },
-      { label: "All Products", href: "/products" },
+      { label: "Shop", href: "/shop" },
       { label: "Journal", href: "/journal" },
     ],
   },

@@ -9,10 +9,36 @@
 // Wolf Casa taxonomy (lib/catalogue.ts) — Wolf Casa doesn't expose SKU-level
 // category codes for bespoke pieces, so this is Wolf Casa's own language
 // applied to Wolf Casa's own pieces, not an invented system.
+// ── NAMING ───────────────────────────────────────────────────────────────────
+// Every piece carries an Italian or a German name. The split is a rule, not a
+// coin-toss, and it follows the Brand Book's own material split (§ML) and Wolf
+// DNA (§10):
+//
+//   Italian — the warm, social, hospitable rooms. Foyer, dining, living, the
+//             bedroom, the terrace, the cellar. "Material tells truth."
+//   German  — the rooms that are about precision and work. The kitchen, the
+//             bath, the study, the workshop, the archive. "Precision. Nothing
+//             accidental."
+//
+// `subtitle` keeps the English that used to be the name. It is not decoration:
+// it is what makes "Schwebewaschtisch" legible to a customer in Indore, it is
+// what a search for "floating vanity" still matches, and it is the alt/aria
+// text wherever the Italian would be read out phonetically by a screen reader.
+// Every surface that shows `name` must show `subtitle` with it.
+//
+// SLUGS ARE UNCHANGED ON PURPOSE. They are the piece IDs the 3D scene tags
+// geometry with (`tagPieceById('master-suite/the-monastic-bed')`), the keys in
+// lib/library-images.ts's PIECE_CATEGORY map, and the live /pieces/* URLs.
+// Renaming the display layer costs nothing; renaming the slugs would break all
+// three at once for no gain a visitor can see.
 export type Piece = {
   id: string; // room-scoped, unique — "<roomSlug>/<slug>"
   slug: string; // globally unique — the URL
+  /** The Italian or German name. See the naming note above. */
   name: string;
+  /** The English name, always shown alongside `name` — never instead of it. */
+  subtitle: string;
+  lang: "it" | "de";
   materials: string[];
   description: string;
   roomSlug: string;
@@ -31,7 +57,9 @@ export const PIECES: Piece[] = [
   // Grand Foyer — hallFurniture.js
   piece({
     slug: "the-arrival-bench",
-    name: "The Arrival Bench",
+    name: "Panca d'Arrivo",
+    subtitle: "The Arrival Bench",
+    lang: "it",
     materials: ["Forest cotton velvet", "Champagne brass"],
     description: "A channel-tufted bench in forest velvet on tapered brass legs — the first place the house asks you to pause.",
     roomSlug: "grand-foyer",
@@ -40,7 +68,9 @@ export const PIECES: Piece[] = [
   }),
   piece({
     slug: "the-marble-plinths",
-    name: "The Marble Plinths",
+    name: "Plinto",
+    subtitle: "The Marble Plinths",
+    lang: "it",
     materials: ["Calacatta marble", "Champagne brass", "Glazed ceramic"],
     description: "A pair of square marble plinths flanking the entry, each carrying a single object rather than a display.",
     roomSlug: "grand-foyer",
@@ -49,7 +79,9 @@ export const PIECES: Piece[] = [
   }),
   piece({
     slug: "the-branch-vase",
-    name: "The Branch Vase",
+    name: "Ramo",
+    subtitle: "The Branch Vase",
+    lang: "it",
     materials: ["Glazed ceramic", "Dried walnut branch"],
     description: "A single glazed vessel holding bare walnut branches — the one note of the outdoors let inside the foyer.",
     roomSlug: "grand-foyer",
@@ -61,7 +93,9 @@ export const PIECES: Piece[] = [
   // Courtyard Dining — diningFurniture.js
   piece({
     slug: "the-heirloom-table",
-    name: "The Heirloom Table",
+    name: "Tavolo Eredità",
+    subtitle: "The Heirloom Table",
+    lang: "it",
     materials: ["Calacatta marble", "Solid walnut"],
     description: "A softened-rectangle slab in honed Calacatta, seating eight. Cut, bevelled and polished by hand over eleven days.",
     roomSlug: "courtyard-dining",
@@ -71,7 +105,9 @@ export const PIECES: Piece[] = [
   }),
   piece({
     slug: "the-dining-chairs",
-    name: "The Dining Chairs",
+    name: "Sedia Corte",
+    subtitle: "The Dining Chairs",
+    lang: "it",
     materials: ["Bouclé", "Solid walnut", "Champagne brass"],
     description: "Six curved-back chairs in undyed bouclé on turned walnut legs with brass sabots, set three to a side.",
     roomSlug: "courtyard-dining",
@@ -80,7 +116,9 @@ export const PIECES: Piece[] = [
   }),
   piece({
     slug: "the-ring-chandelier",
-    name: "The Ring Chandelier",
+    name: "Anello",
+    subtitle: "The Ring Chandelier",
+    lang: "it",
     materials: ["Champagne brass", "Blown glass"],
     description: "A single brass ring set with six glass orbs, hung low enough to warm the table without blocking the view across it.",
     roomSlug: "courtyard-dining",
@@ -92,7 +130,9 @@ export const PIECES: Piece[] = [
   // Spa Bath En-Suite — bathFurniture.js
   piece({
     slug: "the-still-bath",
-    name: "The Still Bath",
+    name: "Stillbad",
+    subtitle: "The Still Bath",
+    lang: "de",
     materials: ["Calacatta marble", "Polished brass"],
     description: "An oval bath carved from one block of Calacatta, walls honed to twenty millimetres so the stone warms with the water.",
     roomSlug: "spa-bath-en-suite",
@@ -102,7 +142,9 @@ export const PIECES: Piece[] = [
   }),
   piece({
     slug: "the-floating-vanity",
-    name: "The Floating Vanity",
+    name: "Schwebewaschtisch",
+    subtitle: "The Floating Vanity",
+    lang: "de",
     materials: ["Fluted walnut", "Calacatta marble", "Polished brass"],
     description: "A wall-hung walnut vanity with a marble top and a backlit arch mirror, floating clear of the floor so the stone reads uninterrupted.",
     roomSlug: "spa-bath-en-suite",
@@ -111,7 +153,9 @@ export const PIECES: Piece[] = [
   }),
   piece({
     slug: "the-rain-shower",
-    name: "The Rain Shower",
+    name: "Regenbad",
+    subtitle: "The Rain Shower",
+    lang: "de",
     materials: ["Low-iron glass", "Polished brass"],
     description: "A frameless glass enclosure with a single overhead rain head — no curtain, no threshold, just a change in the floor.",
     roomSlug: "spa-bath-en-suite",
@@ -122,7 +166,9 @@ export const PIECES: Piece[] = [
   // Gourmet Kitchen — kitchenFurniture.js
   piece({
     slug: "the-working-kitchen",
-    name: "The Working Kitchen",
+    name: "Werkküche",
+    subtitle: "The Working Kitchen",
+    lang: "de",
     materials: ["Book-matched marble", "Walnut cabinetry", "Integrated steel"],
     description: "A complete working run: concealed refrigeration, induction cooking, an integrated oven and a deep stone preparation counter.",
     roomSlug: "gourmet-kitchen",
@@ -132,7 +178,9 @@ export const PIECES: Piece[] = [
   }),
   piece({
     slug: "the-hearth-island",
-    name: "The Hearth Island",
+    name: "Herdinsel",
+    subtitle: "The Hearth Island",
+    lang: "de",
     materials: ["Nero Marquina marble", "Champagne brass"],
     description: "A single 3.6-metre block of Nero Marquina with a mitred waterfall edge, the veining book-matched across every face.",
     roomSlug: "gourmet-kitchen",
@@ -142,7 +190,9 @@ export const PIECES: Piece[] = [
   }),
   piece({
     slug: "the-counter-stools",
-    name: "The Counter Stools",
+    name: "Tresenhocker",
+    subtitle: "The Counter Stools",
+    lang: "de",
     materials: ["Cognac saddle leather", "Champagne brass"],
     description: "Three backless stools in the same hide as the sofa, so the kitchen and the living room share one leather.",
     roomSlug: "gourmet-kitchen",
@@ -151,7 +201,9 @@ export const PIECES: Piece[] = [
   }),
   piece({
     slug: "the-linear-pendant",
-    name: "The Linear Pendant",
+    name: "Linienleuchte",
+    subtitle: "The Linear Pendant",
+    lang: "de",
     materials: ["Champagne brass", "Blown glass"],
     description: "A single brass bar carrying three drop bulbs at even spacing over the island — no shade, so the filament is the fixture.",
     roomSlug: "gourmet-kitchen",
@@ -162,7 +214,9 @@ export const PIECES: Piece[] = [
   // Executive Study — studyFurniture.js
   piece({
     slug: "the-writing-desk",
-    name: "The Writing Desk",
+    name: "Schreibpult",
+    subtitle: "The Writing Desk",
+    lang: "de",
     materials: ["Caramel walnut", "Cognac saddle leather", "Champagne brass"],
     description: "A walnut desk with a hand-skived saddle-leather inlay and a brass edge trim, the grain running unbroken across the full span.",
     roomSlug: "executive-study",
@@ -172,7 +226,9 @@ export const PIECES: Piece[] = [
   }),
   piece({
     slug: "the-reading-chair",
-    name: "The Reading Chair",
+    name: "Lesesessel",
+    subtitle: "The Reading Chair",
+    lang: "de",
     materials: ["Cognac saddle leather", "Solid walnut"],
     description: "A high-backed armchair and ottoman in the study's own reading nook, angled toward the window rather than the desk.",
     roomSlug: "executive-study",
@@ -181,7 +237,9 @@ export const PIECES: Piece[] = [
   }),
   piece({
     slug: "the-study-side-table",
-    name: "The Side Table",
+    name: "Beistell",
+    subtitle: "The Side Table",
+    lang: "de",
     materials: ["Nero Marquina marble"],
     description: "A single turned drum in Nero Marquina, kept low and close to the reading chair for a cup or a closed book.",
     roomSlug: "executive-study",
@@ -190,7 +248,9 @@ export const PIECES: Piece[] = [
   }),
   piece({
     slug: "the-reading-lamp",
-    name: "The Reading Lamp",
+    name: "Leselicht",
+    subtitle: "The Reading Lamp",
+    lang: "de",
     materials: ["Blackened brass"],
     description: "A slim arcing floor lamp, its shade angled low over the reading chair so the light falls on the page and nowhere else.",
     roomSlug: "executive-study",
@@ -201,7 +261,9 @@ export const PIECES: Piece[] = [
   // Atrium Living — livingFurniture.js
   piece({
     slug: "the-low-sofa",
-    name: "The Low Sofa",
+    name: "Divano Basso",
+    subtitle: "The Low Sofa",
+    lang: "it",
     materials: ["Cognac saddle leather", "Kiln-dried ash frame", "Champagne brass"],
     description: "A tailored three-seat sectional in full-grain cognac leather that darkens with use. Track arms, feather-wrapped cushions, tapered brass feet.",
     roomSlug: "atrium-living",
@@ -211,7 +273,9 @@ export const PIECES: Piece[] = [
   }),
   piece({
     slug: "the-stone-table",
-    name: "The Stone Table",
+    name: "Tavolo Pietra",
+    subtitle: "The Stone Table",
+    lang: "it",
     materials: ["Calacatta marble", "Nero Marquina", "Champagne brass"],
     description: "A fluted drum turned from a single block of Calacatta, capped with a honed Nero Marquina top and a hand-set brass lip.",
     roomSlug: "atrium-living",
@@ -220,7 +284,9 @@ export const PIECES: Piece[] = [
   }),
   piece({
     slug: "the-side-table",
-    name: "The Side Table",
+    name: "Accanto",
+    subtitle: "The Side Table",
+    lang: "it",
     materials: ["Calacatta marble", "Nero Marquina", "Champagne brass"],
     description: "A short marble drum with a dark cap and a hand-spun brass bowl for keys, rings, whatever the day leaves behind.",
     roomSlug: "atrium-living",
@@ -229,7 +295,9 @@ export const PIECES: Piece[] = [
   }),
   piece({
     slug: "the-coffee-table-still-life",
-    name: "The Coffee Table Still Life",
+    name: "Natura Morta",
+    subtitle: "The Coffee Table Still Life",
+    lang: "it",
     materials: ["Smoked glass", "Champagne brass", "Cloth-bound books"],
     description: "A stack of cloth-bound editions, a smoked-glass vessel and three brass candle holders — styled, not collected.",
     roomSlug: "atrium-living",
@@ -238,7 +306,9 @@ export const PIECES: Piece[] = [
   }),
   piece({
     slug: "the-still-chair",
-    name: "The Still Chair",
+    name: "Poltrona Quieta",
+    subtitle: "The Still Chair",
+    lang: "it",
     materials: ["Cognac saddle leather", "Champagne brass"],
     description: "A single-seat lounge chair on a slim brass frame, its saddle-leather sling cut from one hide and stitched at the edge.",
     roomSlug: "atrium-living",
@@ -249,7 +319,9 @@ export const PIECES: Piece[] = [
   // Master Suite — bedroomFurniture.js (addBedroomFurniture)
   piece({
     slug: "the-monastic-bed",
-    name: "The Monastic Bed",
+    name: "Letto Monastico",
+    subtitle: "The Monastic Bed",
+    lang: "it",
     materials: ["Terracotta cotton velvet", "Solid walnut", "Washed linen"],
     description: "A channel-tufted headboard in terracotta velvet on a low walnut platform — six hand-run channels, each stuffed and closed by one maker.",
     roomSlug: "master-suite",
@@ -259,7 +331,9 @@ export const PIECES: Piece[] = [
   }),
   piece({
     slug: "the-marble-nightstand",
-    name: "The Marble Nightstand",
+    name: "Comodino Marmo",
+    subtitle: "The Marble Nightstand",
+    lang: "it",
     materials: ["Calacatta marble", "Solid walnut", "Champagne brass"],
     description: "A marble-faced nightstand with a single walnut drawer, its brass pull the only bright note in the room.",
     roomSlug: "master-suite",
@@ -270,7 +344,9 @@ export const PIECES: Piece[] = [
   // Skyline Salon — galleryFurniture.js (pavilion/skyline branch)
   piece({
     slug: "the-horizon-sofa",
-    name: "The Horizon Sofa",
+    name: "Divano Orizzonte",
+    subtitle: "The Horizon Sofa",
+    lang: "it",
     materials: ["Ivory bouclé", "Kiln-dried ash frame"],
     description: "An L-shaped sectional in heavy ivory bouclé, kept low so nothing interrupts the line of the horizon behind it.",
     roomSlug: "skyline-salon",
@@ -282,7 +358,9 @@ export const PIECES: Piece[] = [
   // Penthouse Terrace — galleryFurniture.js (else / terrace branch)
   piece({
     slug: "the-sun-lounger",
-    name: "The Sun Lounger",
+    name: "Lettino Sole",
+    subtitle: "The Sun Lounger",
+    lang: "it",
     materials: ["Burmese teak", "Outdoor linen", "Terracotta velvet"],
     description: "A slatted teak lounger left unfinished so it silvers in the weather, dressed with a linen cushion and a rolled bolster.",
     roomSlug: "penthouse-terrace",
@@ -291,7 +369,9 @@ export const PIECES: Piece[] = [
   }),
   piece({
     slug: "the-terrace-table",
-    name: "The Terrace Table",
+    name: "Tavolo Terrazza",
+    subtitle: "The Terrace Table",
+    lang: "it",
     materials: ["Weathered marble", "Blackened steel"],
     description: "A marble-topped side table between the loungers, its steel stem left to weather rather than sealed against it.",
     roomSlug: "penthouse-terrace",
@@ -300,7 +380,9 @@ export const PIECES: Piece[] = [
   }),
   piece({
     slug: "the-fire-table",
-    name: "The Fire Table",
+    name: "Braciere",
+    subtitle: "The Fire Table",
+    lang: "it",
     materials: ["Nero Marquina", "Champagne brass", "Lava stone"],
     description: "A linear gas hearth set into a Nero Marquina block, its burner bedded in lava pebbles so the flame reads as a low line of light.",
     roomSlug: "penthouse-terrace",
@@ -310,7 +392,9 @@ export const PIECES: Piece[] = [
   }),
   piece({
     slug: "the-olive-tree",
-    name: "The Olive Tree",
+    name: "Ulivo",
+    subtitle: "The Olive Tree",
+    lang: "it",
     materials: ["Fluted marble", "Mature olive"],
     description: "A single olive tree, decades old, in a fluted marble planter sized to hold it for another decade.",
     roomSlug: "penthouse-terrace",
@@ -321,7 +405,9 @@ export const PIECES: Piece[] = [
   // Wine Cellar — undergroundFurniture.js (addWineCellarFurniture)
   piece({
     slug: "the-tasting-table",
-    name: "The Tasting Table",
+    name: "Tavolo Degustazione",
+    subtitle: "The Tasting Table",
+    lang: "it",
     materials: ["Solid walnut", "Blackened steel"],
     description: "A single walnut slab on blackened steel legs, sized for a bottle, two glasses and nothing else.",
     roomSlug: "wine-cellar",
@@ -330,7 +416,9 @@ export const PIECES: Piece[] = [
   }),
   piece({
     slug: "the-tasting-stools",
-    name: "The Tasting Stools",
+    name: "Sgabello Cantina",
+    subtitle: "The Tasting Stools",
+    lang: "it",
     materials: ["Cognac saddle leather", "Blackened steel"],
     description: "A pair of backless stools in the same cognac hide as the house leather, kept low so the wine wall stays the view.",
     roomSlug: "wine-cellar",
@@ -339,7 +427,9 @@ export const PIECES: Piece[] = [
   }),
   piece({
     slug: "the-wine-wall",
-    name: "The Wine Wall",
+    name: "Parete Cantina",
+    subtitle: "The Wine Wall",
+    lang: "it",
     materials: ["Solid walnut", "Blown glass", "Champagne brass"],
     description: "A full-height cellar wall of hand-fitted walnut cubbies, backlit so the glass holds the light. Ninety-eight bottles, laid neck-out at a constant twelve degrees.",
     roomSlug: "wine-cellar",
@@ -349,7 +439,9 @@ export const PIECES: Piece[] = [
   }),
   piece({
     slug: "the-wine-shelf",
-    name: "The Wine Shelf",
+    name: "Scaffale Vino",
+    subtitle: "The Wine Shelf",
+    lang: "it",
     materials: ["Solid walnut", "Bottle glass", "Antiqued brass"],
     description: "An open walnut shelf for the bottles being poured now, set apart from the cellar archive behind it.",
     roomSlug: "wine-cellar",
@@ -358,7 +450,9 @@ export const PIECES: Piece[] = [
   }),
   piece({
     slug: "the-aging-barrels",
-    name: "The Aging Barrels",
+    name: "Botti",
+    subtitle: "The Aging Barrels",
+    lang: "it",
     materials: ["French oak", "Blackened steel bands"],
     description: "Three coopered oak barrels stacked in the corner — retired from the estate's own reserve after a full ageing cycle.",
     roomSlug: "wine-cellar",
@@ -367,7 +461,9 @@ export const PIECES: Piece[] = [
   }),
   piece({
     slug: "the-vintage-crates",
-    name: "The Vintage Crates",
+    name: "Casse d'Annata",
+    subtitle: "The Vintage Crates",
+    lang: "it",
     materials: ["Stamped pine", "Iron corner brackets"],
     description: "Original shipping crates, kept as found — stencilled vintages still legible under the dust.",
     roomSlug: "wine-cellar",
@@ -378,7 +474,9 @@ export const PIECES: Piece[] = [
   // Material Vault — undergroundFurniture.js (addMaterialVaultFurniture)
   piece({
     slug: "the-design-workbench",
-    name: "The Design Workbench",
+    name: "Werkbank",
+    subtitle: "The Design Workbench",
+    lang: "de",
     materials: ["Nero Marquina marble", "Champagne brass"],
     description: "A Nero Marquina slab on a brass-trimmed base — every material specification for the house is signed off at this table.",
     roomSlug: "material-vault",
@@ -387,7 +485,9 @@ export const PIECES: Piece[] = [
   }),
   piece({
     slug: "the-sample-racks",
-    name: "The Sample Racks",
+    name: "Musterregal",
+    subtitle: "The Sample Racks",
+    lang: "de",
     materials: ["Dark oak", "Bolt-end fabrics"],
     description: "Every fabric under consideration for the house lives here on the bolt, sorted so a whole season's palette reads in one glance.",
     roomSlug: "material-vault",
@@ -398,7 +498,9 @@ export const PIECES: Piece[] = [
   // Archive — undergroundFurniture.js (addArchiveFurniture)
   piece({
     slug: "the-bankers-lamp",
-    name: "The Banker's Lamp",
+    name: "Bankierslampe",
+    subtitle: "The Banker's Lamp",
+    lang: "de",
     materials: ["Green cased glass", "Antiqued brass"],
     description: "A classic green-glass banker's lamp, kept for the one task this room is built for: reading drawings by hand.",
     roomSlug: "archive",
@@ -407,7 +509,9 @@ export const PIECES: Piece[] = [
   }),
   piece({
     slug: "the-drafting-table",
-    name: "The Drafting Table",
+    name: "Reißbrett",
+    subtitle: "The Drafting Table",
+    lang: "de",
     materials: ["Dark oak", "Linen", "Blackened steel"],
     description: "An inclined drafting table holding the house's working drawings — the same table every floor plan in this archive was first drawn on.",
     roomSlug: "archive",
@@ -416,7 +520,9 @@ export const PIECES: Piece[] = [
   }),
   piece({
     slug: "the-archive-reading-chair",
-    name: "The Reading Chair",
+    name: "Archivsessel",
+    subtitle: "The Reading Chair",
+    lang: "de",
     materials: ["Cognac saddle leather", "Solid walnut"],
     description: "A deep leather chair and ottoman angled toward the drafting table — the only concession to comfort in a working room.",
     roomSlug: "archive",
@@ -425,7 +531,9 @@ export const PIECES: Piece[] = [
   }),
   piece({
     slug: "the-archive-cabinets",
-    name: "The Archive Cabinets",
+    name: "Archivschrank",
+    subtitle: "The Archive Cabinets",
+    lang: "de",
     materials: ["Dark oak", "Cognac leather bindings"],
     description: "Floor-to-ceiling cabinets holding every drawing, invoice and correspondence the house has produced since the first stone was laid.",
     roomSlug: "archive",

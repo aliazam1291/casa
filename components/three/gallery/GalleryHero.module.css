@@ -310,6 +310,16 @@
   line-height: 1.15;
   color: var(--fg);
 }
+/* English gloss under the Italian/German name — see lib/pieces.ts. */
+.tipSub {
+  margin-top: 3px;
+  font-family: var(--sans);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--fg-faint);
+}
 .tipMaterials {
   display: flex;
   flex-wrap: wrap;

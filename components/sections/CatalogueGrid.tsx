@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { CATALOGUE } from "@/lib/catalogue";
+import { PRODUCT_UNIVERSE } from "@/lib/product-universe";
 import { useCursor } from "@/components/cursor/CursorProvider";
 import { useReveal } from "@/hooks/useReveal";
 import { useTilt } from "@/hooks/useTilt";
@@ -11,16 +11,6 @@ import styles from "./CatalogueGrid.module.css";
 
 // Curated photography per catalogue category — editorial quality, matching
 // the aesthetic of each Wolf Casa product family. Local files only.
-const CATEGORY_IMAGES: Record<string, string> = {
-  seating: "/images/catalogue/seating-sofas.webp",
-  "bespoke-interiors": "/images/catalogue/bespoke-interiors-beds.webp",
-  "kitchen-bath": KITCHEN_BATH_IMAGES[0],
-  lighting: LIGHTING_IMAGES[0],
-  "decor-finishes": DECOR_IMAGES[0],
-  "office-outdoor": DECOR_IMAGES[1],
-  "greenery-entertainment": DECOR_IMAGES[2],
-  "lighting-smart-living": LIGHTING_IMAGES[1],
-};
 const MOOD_IMAGES = [
   "/images/editorial/materials.webp",
   "/images/editorial/light-form-atrium.webp",
@@ -84,28 +74,32 @@ export function CatalogueGrid() {
           <b>02</b> Product Universe
           <i>From SKU to room</i>
         </p>
-        <h2>Every room draws on <em>eight categories.</em></h2>
+        <h2>Every room draws on <em>twenty parts.</em></h2>
       </div>
-      <nav className={styles.grid} aria-label="Catalogue categories">
-        {CATALOGUE.map((cat, i) => {
-          const image = CATEGORY_IMAGES[cat.slug] ?? MOOD_IMAGES[moodIndex++ % MOOD_IMAGES.length];
+      {/* Was the eight invented categories. The book's Product Universe (§06)
+          is twenty parts in four stages; the grid shows the four stages, since
+          twenty cells would not read at this size. */}
+      <nav className={styles.grid} aria-label="What a room is composed from">
+        {PRODUCT_UNIVERSE.map((group, i) => {
+          const image = MOOD_IMAGES[moodIndex++ % MOOD_IMAGES.length];
           return (
             <GridCard
-              key={cat.slug}
-              href={`/catalogue/${cat.slug}`}
+              key={group.slug}
+              href="/shop"
               num={String(i + 1).padStart(2, "0")}
-              title={cat.name}
+              title={group.title}
               image={image}
             />
           );
         })}
-        {/* The terminal cell of the reference grid — the whole taxonomy
-            resolving to one thing. Brass, per "punctuation only". */}
-        <GridCard href="/the-house-and-rooms" num="09" title="The Room" terminal />
+        {/* The terminal cell — the whole list resolving to one thing, which is
+            where the book ends the Product Universe too. Brass, per
+            "punctuation only". */}
+        <GridCard href="/the-house-and-rooms" num="05" title="The Room" terminal />
       </nav>
       <div className={styles.foot}>
-        <Link href="/catalogue" onMouseEnter={() => setCursor("hover", "Browse")} onMouseLeave={resetCursor}>
-          Browse the catalogue <span aria-hidden>→</span>
+        <Link href="/shop" onMouseEnter={() => setCursor("hover", "Browse")} onMouseLeave={resetCursor}>
+          Every category, under one roof <span aria-hidden>→</span>
         </Link>
       </div>
     </section>

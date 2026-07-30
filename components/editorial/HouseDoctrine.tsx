@@ -39,22 +39,6 @@ const HOW_IT_WORKS: [string, string][] = [
   ["It stays fixable", "Reupholstery, refinishing, a piece added in five years. Same team."],
 ];
 
-// The ten rules, in plain language. They were written as brand commandments —
-// "Materials need hierarchy", "Resolved beyond price", "Content teaches" —
-// which read as notes to staff, not as anything a visitor can use. Same ten
-// ideas, said so they mean something to the person reading them.
-const STANDARD = [
-  "We sell the whole room, not the sofa.",
-  "Light gets decided before furniture.",
-  "Empty floor is part of the design.",
-  "Three materials, not eight.",
-  "If it only works in daylight, it does not work.",
-  "The cheap version of the right thing beats the expensive version of the wrong one.",
-  "Nothing in the showroom is there to fill a gap.",
-  "We will explain the reasoning, every time.",
-  "No scheme we have already built for someone else.",
-  "You should want to sit down in it.",
-];
 
 export function HouseStats() {
   return (
@@ -89,22 +73,3 @@ export function HouseFramework() {
   );
 }
 
-export function HouseStandard() {
-  const { ref, inView } = useReveal<HTMLDivElement>();
-  return (
-    <section className={styles.standard}>
-      <div ref={ref} className={`reveal ${inView ? "in" : ""}`}>
-        <p className={styles.sectionLabel}>How we work</p>
-        <h2>Ten things we will not do differently.</h2>
-      </div>
-      <div className={styles.rules}>
-        {STANDARD.map((rule, index) => (
-          <div key={rule}>
-            <b>{String(index + 1).padStart(2, "0")}</b>
-            <p>{rule}</p>
-          </div>
-        ))}
-      </div>
-    </section>
-  );
-}

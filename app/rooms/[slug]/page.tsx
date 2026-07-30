@@ -76,7 +76,8 @@ export default async function RoomPage({ params }: Props) {
             {pieces.map((p, i) => (
               <Link key={p.slug} href={`/pieces/${p.slug}`} className={styles.pieceCard}>
                 <span className={styles.pieceNum}>{String(i + 1).padStart(2, "0")}</span>
-                <h3>{p.name}</h3>
+                <h3 lang={p.lang}>{p.name}</h3>
+                <p className={styles.pieceSub}>{p.subtitle}</p>
                 <p className={styles.pieceMaterials}>{p.materials.join(" · ")}</p>
                 <span className={styles.pieceArrow}>→</span>
               </Link>
@@ -94,7 +95,7 @@ export default async function RoomPage({ params }: Props) {
           </div>
           <nav className={styles.catList}>
             {categories.map(({ category, subtype }) => (
-              <Link key={subtype.slug} href={`/catalogue/${category.slug}/${subtype.slug}`} className={styles.catChip}>
+              <Link key={subtype.slug} href="/shop" className={styles.catChip}>
                 {subtype.name}
               </Link>
             ))}

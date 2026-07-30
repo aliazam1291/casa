@@ -1,0 +1,163 @@
+.section {
+  padding: 14vh var(--gutter) 12vh;
+  border-top: 1px solid var(--line);
+  /* Sand — the book's "kraft & secondary paper, quiet grounds". The board reads
+     as paper pinned to a wall rather than another black panel. */
+  background:
+    radial-gradient(ellipse 70% 60% at 78% 12%, rgba(201, 189, 166, 0.11), transparent 66%),
+    var(--bg);
+}
+
+.head {
+  max-width: 1400px;
+  margin: 0 auto 5vh;
+}
+.label {
+  font-family: var(--sans);
+  font-size: 10px;
+  font-weight: 650;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--section-accent);
+}
+.head h2 {
+  max-width: 22ch;
+  margin: 20px 0 18px;
+  font-family: var(--serif);
+  font-size: clamp(32px, 5vw, 72px);
+  font-weight: 200;
+  line-height: 0.97;
+  letter-spacing: -0.03em;
+}
+.head h2 em {
+  font-style: italic;
+  color: var(--sand);
+}
+.head p {
+  max-width: 50ch;
+  color: var(--fg-dim);
+  font-size: 15px;
+  line-height: 1.8;
+}
+.hint {
+  display: inline-block;
+  margin-top: 22px;
+  font-family: var(--mono);
+  font-size: 9.5px;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--fg-faint);
+}
+
+/* ── The board ────────────────────────────────────────────
+   Absolute placement on a fixed aspect ratio: the tiles are hand-placed to
+   overlap at unequal sizes and angles, which is the whole point — a uniform
+   grid is what this exists instead of. */
+.board {
+  position: relative;
+  max-width: 1400px;
+  margin: 0 auto;
+  aspect-ratio: 16 / 9;
+}
+
+.tile {
+  position: absolute;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: none;
+  transform: rotate(var(--tile-rotate));
+  transform-origin: 50% 0;
+  transition:
+    transform 0.55s var(--ease-gallery),
+    filter 0.45s ease,
+    z-index 0s;
+  filter: drop-shadow(0 14px 34px rgba(0, 0, 0, 0.55));
+}
+.tile:hover {
+  /* Lift slightly and straighten a little, so it reads as pickable. */
+  transform: rotate(calc(var(--tile-rotate) * 0.35)) translateY(-8px) scale(1.03);
+  z-index: 5;
+}
+.tileLifted {
+  z-index: 6;
+  transform: rotate(0deg) translateY(-14px) scale(1.08);
+  filter: drop-shadow(0 26px 54px rgba(0, 0, 0, 0.7));
+}
+
+/* A brass pin at the top of each card — the one place brass appears here,
+   as punctuation, per the book. */
+.pin {
+  position: absolute;
+  top: -5px;
+  left: 50%;
+  width: 9px;
+  height: 9px;
+  margin-left: -4.5px;
+  border-radius: 50%;
+  background: var(--gold);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.7);
+  z-index: 2;
+}
+
+.tileImage {
+  position: relative;
+  display: block;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  /* Paper margin, like a mounted print. */
+  border: 7px solid #ece5d7;
+  background: var(--bg-2);
+}
+.tileImage img {
+  object-fit: cover;
+  filter: saturate(0.8) contrast(1.03);
+  transition: filter 0.5s ease;
+}
+.tile:hover .tileImage img,
+.tileLifted .tileImage img {
+  filter: saturate(1) contrast(1);
+}
+
+.tileLabel {
+  display: block;
+  margin-top: 9px;
+  font-family: var(--mono);
+  font-size: 8.5px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--sand-dim);
+  text-align: center;
+}
+
+@media (max-width: 900px) {
+  /* Absolute scatter collapses to a simple two-column stack: at this width the
+     overlapping layout becomes an unreadable pile. The tilt is kept — that is
+     the character — but the positioning is handed back to the grid. */
+  .board {
+    aspect-ratio: auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 26px 18px;
+  }
+  .tile {
+    position: static;
+    width: auto !important;
+    left: auto !important;
+    top: auto !important;
+  }
+  .tile:hover {
+    transform: rotate(var(--tile-rotate));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tile,
+  .tile:hover,
+  .tileLifted {
+    transform: none;
+    transition: none;
+  }
+}

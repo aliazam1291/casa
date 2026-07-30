@@ -1,0 +1,401 @@
+/* Saddle territory (see globals.css). Brass stays punctuation only, per the
+   book — it appears here as a single rule and nothing else. */
+.page {
+  background: var(--bg);
+  color: var(--fg);
+}
+
+/* ── HERO ─────────────────────────────────────────────────── */
+.hero {
+  padding: 22vh var(--gutter) 12vh;
+  /* Saddle carries the material world, so the page opens on it as a surface
+     rather than only as label colour. */
+  background:
+    radial-gradient(ellipse 70% 90% at 12% 0%, rgba(107, 66, 41, 0.5), transparent 68%),
+    var(--bg);
+  border-bottom: 1px solid var(--section-edge);
+}
+.accentRule {
+  display: block;
+  width: 54px;
+  height: 1px;
+  background: var(--gold);
+  margin-bottom: 26px;
+}
+.kicker {
+  font-family: var(--sans);
+  font-size: 10px;
+  font-weight: 650;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--section-accent);
+}
+.hero h1 {
+  max-width: 16ch;
+  margin: 22px 0 28px;
+  font-family: var(--serif);
+  font-size: clamp(44px, 8vw, 118px);
+  font-weight: 300;
+  line-height: 0.9;
+  letter-spacing: -0.03em;
+}
+.hero h1 em {
+  display: block;
+  font-style: italic;
+  color: var(--sand);
+}
+.heroBody {
+  max-width: 46ch;
+  color: var(--fg-dim);
+  font-size: 15.5px;
+  line-height: 1.8;
+}
+.heroMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 28px;
+  margin-top: 44px;
+  padding-top: 22px;
+  border-top: 1px solid var(--section-edge);
+}
+.heroMeta span {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--sand-dim);
+}
+
+/* The three rooms of the show, as an entrance-wall plan. */
+.heroJump {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 34px;
+}
+.heroJump a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 38px;
+  padding: 0 16px;
+  border: 1px solid var(--section-edge);
+  font-family: var(--sans);
+  font-size: 9.5px;
+  font-weight: 650;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--section-accent);
+  transition: background 0.3s ease, color 0.3s ease;
+}
+.heroJump a:hover {
+  background: var(--section-accent);
+  color: var(--bg);
+}
+
+/* ── THE INDEX ────────────────────────────────────────────
+   A typographic index rather than a card grid: the twenty parts are a list of
+   decisions, and a fourth page of photo cards is what made the site repetitive.
+   The layout is a ledger — name, what it does, where to see it.
+
+   This sits AFTER the rotunda and the wall. It is the catalogue you consult
+   once you have walked the show, and it used to be the whole page. */
+.indexSection {
+  border-bottom: 1px solid var(--line);
+  background:
+    radial-gradient(ellipse 60% 50% at 88% 0%, rgba(107, 66, 41, 0.28), transparent 70%),
+    var(--bg);
+}
+.indexHead {
+  padding: 13vh var(--gutter) 0;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+.indexHead h2 {
+  max-width: 18ch;
+  margin: 20px 0 18px;
+  font-family: var(--serif);
+  font-size: clamp(32px, 4.8vw, 68px);
+  font-weight: 200;
+  line-height: 0.98;
+  letter-spacing: -0.03em;
+}
+.indexHead h2 em {
+  font-style: italic;
+  color: var(--sand);
+}
+.indexHead p {
+  color: var(--fg-dim);
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.group {
+  padding: 8vh var(--gutter);
+}
+.group + .group {
+  border-top: 1px solid var(--line);
+}
+.groupHead {
+  display: grid;
+  grid-template-columns: 90px minmax(0, 1fr);
+  gap: clamp(18px, 3vw, 44px);
+  max-width: 1400px;
+  margin: 0 auto 4vh;
+}
+.groupNum {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  color: var(--section-accent);
+  padding-top: 10px;
+}
+.groupHead h3 {
+  font-family: var(--serif);
+  font-size: clamp(26px, 3.4vw, 46px);
+  font-style: italic;
+  font-weight: 200;
+  line-height: 1;
+  letter-spacing: -0.025em;
+}
+.groupHead p {
+  max-width: 52ch;
+  margin-top: 16px;
+  color: var(--fg-dim);
+  font-size: 14px;
+  line-height: 1.75;
+}
+
+.index {
+  max-width: 1400px;
+  margin: 0 auto;
+  list-style: none;
+}
+.row,
+.rowFinal {
+  display: grid;
+  grid-template-columns: minmax(0, 4fr) minmax(0, 7fr) minmax(0, 3fr);
+  gap: clamp(16px, 3vw, 44px);
+  align-items: baseline;
+  padding: 26px 0;
+  border-top: 1px solid var(--line);
+  transition: background 0.35s ease, padding-left 0.35s ease;
+}
+.row:hover {
+  background: rgba(107, 66, 41, 0.16);
+  padding-left: 14px;
+}
+.rowName {
+  font-family: var(--serif);
+  font-size: clamp(20px, 2.2vw, 30px);
+  font-weight: 300;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+}
+.rowRole {
+  color: var(--fg-dim);
+  font-size: 13.5px;
+  line-height: 1.7;
+}
+.rowRooms {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: flex-end;
+}
+.rowLink {
+  font-family: var(--sans);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--section-accent);
+  border: 1px solid var(--section-edge);
+  padding: 5px 9px;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+.rowLink:hover {
+  background: var(--section-accent);
+  color: var(--bg);
+}
+
+/* "The Room" is the twentieth entry and the point of the page — the book ends
+   the Product Universe on it deliberately. It gets the weight to match. */
+.rowFinal {
+  border-top: 1px solid var(--sand-edge);
+  background: rgba(107, 66, 41, 0.22);
+  padding: 40px 22px;
+}
+.rowFinal .rowName {
+  font-family: var(--serif);
+  font-size: clamp(28px, 3.4vw, 46px);
+  font-style: italic;
+  color: var(--sand);
+}
+.rowFinal .rowRole {
+  color: rgba(232, 225, 211, 0.78);
+  font-size: 15px;
+}
+
+/* ── IN STOCK ─────────────────────────────────────────────── */
+.stock {
+  padding: 13vh var(--gutter);
+  border-bottom: 1px solid var(--line);
+}
+.stockHead {
+  max-width: 620px;
+  margin: 0 auto 6vh;
+  text-align: center;
+}
+.stockHead h2 {
+  margin: 16px 0 14px;
+  font-family: var(--serif);
+  font-size: clamp(30px, 3.6vw, 50px);
+  font-weight: 300;
+  line-height: 1.05;
+}
+.stockHead p {
+  color: var(--fg-dim);
+  font-size: 14px;
+  line-height: 1.7;
+}
+.stockGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: clamp(16px, 1.6vw, 24px);
+  max-width: 1400px;
+  margin: 0 auto;
+}
+.stockCard {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.stockImage {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  overflow: hidden;
+  transition: border-color 0.3s ease;
+}
+.stockCard:hover .stockImage {
+  border-color: var(--section-edge);
+}
+.stockImage img {
+  object-fit: contain;
+  padding: 8px;
+  transition: transform 0.4s var(--ease-gallery);
+}
+.stockCard:hover .stockImage img {
+  transform: scale(1.05);
+}
+.stockName {
+  font-family: var(--sans);
+  font-size: 12.5px;
+  font-weight: 600;
+}
+.stockDesc {
+  margin-top: -4px;
+  color: var(--fg-faint);
+  font-size: 11.5px;
+  line-height: 1.4;
+}
+.stockPrice {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--section-accent);
+}
+.stockFoot {
+  display: flex;
+  justify-content: center;
+  margin-top: 48px;
+}
+.stockFoot a,
+.note a {
+  display: inline-flex;
+  min-height: 46px;
+  align-items: center;
+  border: 1px solid var(--fg);
+  padding: 0 22px;
+  font-family: var(--sans);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  transition: background 0.25s ease, color 0.25s ease;
+}
+.stockFoot a:hover,
+.note a:hover {
+  background: var(--fg);
+  color: var(--bg);
+}
+
+/* ── CTA — a book line, verbatim ─────────────────────────── */
+.note {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 32px;
+  padding: 17vh var(--gutter);
+  text-align: center;
+  background:
+    radial-gradient(ellipse 60% 100% at 50% 100%, rgba(107, 66, 41, 0.42), transparent 70%),
+    #0a0a08;
+}
+.note p {
+  max-width: 22ch;
+  font-family: var(--serif);
+  font-size: clamp(30px, 4.6vw, 68px);
+  font-style: italic;
+  font-weight: 200;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+}
+.noteActions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 14px;
+}
+
+@media (max-width: 900px) {
+  .groupHead {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  .groupNum {
+    padding-top: 0;
+  }
+  /* The ledger becomes a stack: three columns at this width would give the
+     role text a ~14ch measure. */
+  .row,
+  .rowFinal {
+    grid-template-columns: 1fr;
+    gap: 10px;
+    padding: 22px 0;
+  }
+  .rowRooms {
+    justify-content: flex-start;
+    margin-top: 4px;
+  }
+  .rowFinal {
+    padding: 28px 16px;
+  }
+}
+@media (max-width: 720px) {
+  .hero {
+    padding: 16vh var(--gutter) 9vh;
+  }
+  .group,
+  .stock {
+    padding: 8vh var(--gutter);
+  }
+  .stockGrid {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  }
+  .note {
+    padding: 12vh var(--gutter);
+  }
+}

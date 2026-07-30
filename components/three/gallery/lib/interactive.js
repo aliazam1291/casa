@@ -33,7 +33,15 @@ export function tagPieceById(object, id) {
     }
     return tagPiece(object, { name: id, materials: [], description: '' });
   }
-  return tagPiece(object, { name: p.name, materials: p.materials, description: p.description });
+  // `subtitle` rides along so the hover card can gloss the Italian/German name
+  // in English — see the naming note at the top of lib/pieces.ts. Consumers
+  // that only read `name` are unaffected.
+  return tagPiece(object, {
+    name: p.name,
+    subtitle: p.subtitle,
+    materials: p.materials,
+    description: p.description,
+  });
 }
 
 /** Walk up from a raycast hit to the tagged piece, if any. */

@@ -1,0 +1,208 @@
+/* Colour comes from the hovered composition via --comp-accent / --comp-glow,
+   set inline by the component. The band's ground shifts with it, so moving
+   across the eight actually changes the light in the section — the book calls
+   these "sellable moods", and eight moods rendered in one identical brass were
+   not eight of anything. */
+.band {
+  padding: 14vh var(--gutter) 12vh;
+  border-top: 1px solid var(--line);
+  background:
+    radial-gradient(ellipse 90% 80% at 50% 0%, var(--comp-glow, transparent), transparent 60%),
+    var(--bg);
+  transition: background 0.8s var(--ease-gallery);
+}
+
+.head {
+  max-width: 1400px;
+  margin: 0 auto 7vh;
+}
+.label {
+  font-family: var(--sans);
+  font-size: 10px;
+  font-weight: 650;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--comp-accent, var(--gold));
+  transition: color 0.6s ease;
+}
+.head h2 {
+  max-width: 20ch;
+  margin: 20px 0 20px;
+  font-family: var(--serif);
+  font-size: clamp(34px, 5.4vw, 78px);
+  font-weight: 200;
+  line-height: 0.96;
+  letter-spacing: -0.03em;
+}
+.head h2 em {
+  font-style: italic;
+  color: var(--comp-accent, var(--walnut));
+  transition: color 0.6s ease;
+}
+.head p {
+  max-width: 52ch;
+  color: var(--fg-dim);
+  font-size: 15px;
+  line-height: 1.8;
+}
+.head p em {
+  font-style: italic;
+  color: var(--fg);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: clamp(14px, 1.6vw, 26px);
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.tile {
+  display: block;
+  color: var(--fg);
+  /* Unhovered tiles recede so the hovered one reads as the live mood. */
+  opacity: 0.62;
+  transition: opacity 0.45s ease, transform 0.45s var(--ease-gallery);
+}
+.tile:hover,
+.tileActive {
+  opacity: 1;
+}
+.tile:hover {
+  transform: translateY(-6px);
+}
+
+.tileImage {
+  position: relative;
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  transition: border-color 0.45s ease;
+}
+.tile:hover .tileImage {
+  border-color: var(--tile-accent);
+}
+.tileImage img {
+  object-fit: cover;
+  filter: saturate(0.72) contrast(1.04);
+  transition: transform 0.9s var(--ease-gallery), filter 0.7s ease;
+}
+.tile:hover .tileImage img {
+  transform: scale(1.06);
+  filter: saturate(1.02) contrast(1);
+}
+/* The composition's own colour laid over its photograph, so the tile carries
+   the mood rather than only naming it. */
+.tileWash {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, var(--tile-accent), transparent 62%);
+  opacity: 0.42;
+  mix-blend-mode: soft-light;
+  transition: opacity 0.45s ease;
+}
+.tile:hover .tileWash {
+  opacity: 0.7;
+}
+
+.tileNum {
+  display: block;
+  margin-top: 16px;
+  font-family: var(--mono);
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  color: var(--tile-accent);
+}
+.tileName {
+  margin-top: 8px;
+  font-family: var(--serif);
+  font-size: clamp(20px, 2.1vw, 28px);
+  font-style: italic;
+  font-weight: 300;
+  line-height: 1.1;
+}
+.tileBlurb {
+  margin-top: 10px;
+  color: var(--fg-dim);
+  font-size: 12.5px;
+  line-height: 1.6;
+}
+.tileMaterials {
+  display: block;
+  margin-top: 12px;
+  font-family: var(--sans);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--fg-faint);
+}
+
+.foot {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 40px;
+  flex-wrap: wrap;
+  max-width: 1400px;
+  margin: 8vh auto 0;
+  padding-top: 34px;
+  border-top: 1px solid var(--line);
+}
+.quote {
+  max-width: 34ch;
+  font-family: var(--serif);
+  font-size: clamp(20px, 2.4vw, 32px);
+  font-style: italic;
+  font-weight: 300;
+  line-height: 1.25;
+  color: var(--comp-accent, var(--fg));
+  transition: color 0.6s ease;
+}
+.footLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 46px;
+  padding: 0 22px;
+  border: 1px solid var(--fg);
+  font-family: var(--sans);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  transition: background 0.25s ease, color 0.25s ease;
+}
+.footLink:hover {
+  background: var(--fg);
+  color: var(--bg);
+}
+
+@media (max-width: 1100px) {
+  .grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+@media (max-width: 780px) {
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .band {
+    padding: 10vh var(--gutter);
+  }
+  /* Hover has no meaning on touch, so nothing should be dimmed there. */
+  .tile {
+    opacity: 1;
+  }
+}
+@media (hover: none) {
+  .tile {
+    opacity: 1;
+  }
+  .tile:hover {
+    transform: none;
+  }
+}

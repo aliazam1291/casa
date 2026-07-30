@@ -8,10 +8,13 @@ import { useStage } from "@/components/stage/StageProvider";
 import { WolfMark } from "@/components/brand/WolfMark";
 import styles from "./Nav.module.css";
 
-function IconRooms() {
+// The crossbar-less A — Brand Book §09/§IC: "We stripped the crossbar so the
+// bare apex reads as the wolf's muzzle. The letter becomes the mark." It is the
+// book's own motif for the method, so it is what marks The Wolf Way in the nav.
+function IconApex() {
   return (
     <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.1" aria-hidden>
-      <path d="M2 7 8 2l6 5" /><path d="M3.2 6.2V14h9.6V6.2" /><path d="M6.4 14v-4.4h3.2V14" />
+      <path d="M2.6 13.4 8 2.6l5.4 10.8" />
     </svg>
   );
 }
@@ -20,14 +23,6 @@ function IconCatalogue() {
     <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.1" aria-hidden>
       <rect x="2.2" y="2.2" width="4.8" height="4.8" /><rect x="9" y="2.2" width="4.8" height="4.8" />
       <rect x="2.2" y="9" width="4.8" height="4.8" /><rect x="9" y="9" width="4.8" height="4.8" />
-    </svg>
-  );
-}
-function IconHouse() {
-  return (
-    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.1" aria-hidden>
-      <path d="M2.4 8.4 8 3.6l5.6 4.8" /><rect x="4.2" y="8" width="7.6" height="5.6" />
-      <path d="M6.8 13.6V10h2.4v3.6" />
     </svg>
   );
 }
@@ -50,14 +45,23 @@ function IconVisit() {
 // "Rooms" and "The House" were separate entries pointing at two pages that
 // have since merged into /the-house-and-rooms.
 //
-// "Products" and "Catalogue" are two genuinely different things — every piece
-// we make, versus the eight categories we compose from — but as bare nav
-// labels they were indistinguishable, and a visitor had no way to guess which
-// one they wanted. The labels now say what each actually is.
+// "All Pieces" and "By Category" were two routes onto the same 38 photographs
+// in the same grid, and the category tree behind the second was invented. Both
+// are now one destination: /shop, the book's "Interio Mall".
+//
+// THE WOLF WAY TAKES THE "ROOMS" SLOT. It is the book's own name for the
+// method — one of the five phrases §02 lists as language Wolf Casa owns, and
+// §10 files under IP alongside The Interio Mall and Composed Living — and it
+// had a full page with no way to reach it. "Rooms" was a generic furniture-site
+// word sitting in front of it. Wolf_Casa_Website_IA.md §2 lists no Rooms entry
+// either: The Wolf Way *is* the browse section in that plan.
+//
+// /the-house-and-rooms is not orphaned by this — it is the first link out of
+// The Wolf Way's closing section, it is in two footer columns, and /shop's
+// index links every one of the thirteen rooms individually.
 const LINKS = [
-  { href: "/the-house-and-rooms", label: "Rooms", cursor: "Enter", Icon: IconHouse },
-  { href: "/products", label: "All Pieces", cursor: "Enter", Icon: IconRooms },
-  { href: "/catalogue", label: "By Category", cursor: "Enter", Icon: IconCatalogue },
+  { href: "/the-wolf-way", label: "The Wolf Way", cursor: "Enter", Icon: IconApex },
+  { href: "/shop", label: "Shop", cursor: "Enter", Icon: IconCatalogue },
   { href: "/journal", label: "Journal", cursor: "Read", Icon: IconJournal },
   { href: "/visit", label: "Visit", cursor: "Visit", Icon: IconVisit },
 ];

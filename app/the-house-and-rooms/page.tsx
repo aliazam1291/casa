@@ -3,11 +3,12 @@ import Image from "next/image";
 import Link from "next/link";
 import { FLOORS } from "@/lib/rooms";
 import { ROOM_IMAGES } from "@/lib/library-images";
-import { HouseStats, HouseFramework, HouseStandard } from "@/components/editorial/HouseDoctrine";
+import { HouseStats, HouseFramework } from "@/components/editorial/HouseDoctrine";
 import { SectionNav } from "@/components/nav/SectionNav";
 import { HouseSketch } from "@/components/editorial/HouseSketch";
 import { VillaSection } from "@/components/three/villa-section/VillaSection";
 import { MaterialsBoard } from "@/components/sections/MaterialsBoard";
+import { CompositionsBand } from "@/components/sections/CompositionsBand";
 import styles from "./page.module.css";
 
 export const metadata: Metadata = {
@@ -34,20 +35,23 @@ const RATIOS = ["4/3", "1/1", "4/5", "16/9", "3/4", "4/3"] as const;
  * gating it. SectionNav gives either audience one-click access regardless, so
  * neither of the two merged pages is buried under the other.
  *
- * The dome gallery that used to sit near the top of /rooms now lives on
- * /products, which is a more natural home for it and keeps this page — already
- * long by design — from carrying a heavy drag-interaction set-piece as well.
+ * The dome gallery is no longer here. It is built from the named PIECES, not
+ * from the thirteen rooms, and /shop is now staged as a gallery — the rotunda
+ * is its centrepiece. Keeping a copy here would have put the same fourteen
+ * photographs on two pages, which is the exact failure this merge was undoing.
+ * This page keeps a link to it instead, under "The Pieces".
  */
 
 const SECTIONS = [
   { id: "the-rooms", label: "The Rooms" },
+  { id: "compositions", label: "Compositions" },
   { id: "the-villa", label: "The Villa" },
   { id: "materials", label: "Materials" },
   { id: "the-house", label: "The House" },
 ];
 export default function TheHouseAndRoomsPage() {
   return (
-    <main className={styles.page}>
+    <main className={`${styles.page} territory-walnut`}>
       <section className={styles.hero}>
         <Image
           src="/images/editorial/villa-hero.webp"
@@ -152,19 +156,23 @@ export default function TheHouseAndRoomsPage() {
         <VillaSection />
       </div>
 
+      {/* A room and a composition are different things, and nothing on the site
+          said so. The thirteen above are the house we built; the eight below are
+          the moods a customer can ask for by name. This is the join. */}
+      <CompositionsBand />
+
       <div id="materials">
         <MaterialsBoard />
       </div>
 
       <div id="the-house">
         <HouseFramework />
-        <HouseStandard />
       </div>
 
       <section className={styles.note}>
         <p>Legacy is built through care. The people behind the object matter.</p>
         <div className={styles.noteActions}>
-          <Link href="/products">See every piece</Link>
+          <Link href="/shop#dome-gallery">The pieces, in the gallery</Link>
           <Link href="/visit">Visit Wolf Casa</Link>
         </div>
       </section>

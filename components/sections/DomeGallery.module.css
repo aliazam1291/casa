@@ -1,3 +1,9 @@
+/* THE ROTUNDA.
+
+   Colour comes from the front plate: DomeGallery.tsx sets --stage-accent and
+   --stage-glow from the Brand Book palette (Brass / Walnut / Green / Saddle /
+   Sand) as the ring turns, and everything keyed to them follows. That is the
+   whole point of the section — a rotunda lit one colour is one wall. */
 .section {
   padding: 18vh 0 14vh;
   background: var(--espresso);
@@ -5,6 +11,10 @@
   overflow: hidden;
   border-top: 1px solid var(--line);
   border-bottom: 1px solid var(--line);
+  /* Fallbacks so the section still renders standalone if the tone vars are
+     ever absent (e.g. a consumer that renders the markup without the script). */
+  --stage-accent: var(--gold);
+  --stage-glow: 58, 36, 16;
 }
 
 .head {
@@ -18,9 +28,10 @@
   font-size: 10px;
   letter-spacing: 0.28em;
   text-transform: uppercase;
-  color: var(--fg-dim);
+  color: var(--stage-accent);
   display: block;
   margin-bottom: 24px;
+  transition: color 900ms var(--ease-gallery);
 }
 .heading {
   font-family: var(--serif);
@@ -28,6 +39,9 @@
   font-size: clamp(40px, 5.5vw, 84px);
   line-height: 0.98;
   letter-spacing: -0.03em;
+}
+.heading em {
+  font-style: italic;
 }
 .sub {
   margin-top: 20px;
@@ -40,13 +54,32 @@
 
 .stage {
   position: relative;
-  height: min(56vw, 620px);
+  height: min(56vw, 640px);
   perspective: 1600px;
   perspective-origin: 50% 40%;
   cursor: none;
   touch-action: pan-y;
   -webkit-user-select: none;
   user-select: none;
+}
+.stage:focus-visible {
+  outline: 1.5px solid var(--stage-accent);
+  outline-offset: -8px;
+}
+
+/* The pool of light the front plate throws onto the wall behind the ring.
+   Sized generously and blurred to nothing at the edges so it reads as a lit
+   wall rather than a coloured shape — Brass must punctuate, never fill. */
+.wash {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse 62% 58% at 50% 38%,
+    rgba(var(--stage-glow), 0.5),
+    transparent 72%
+  );
+  transition: background 900ms var(--ease-gallery);
 }
 
 .ring {
@@ -71,27 +104,90 @@
   will-change: transform, opacity, filter;
   cursor: none;
   --card-scale: 0.8;
+  /* Cull the far half of the ring. Without this you see the BACKS of the
+     plates hanging on the opposite wall through the near ones: a ghost
+     rectangle around each front plate, and — because every far-side frame's
+     bottom edge lands at roughly the same screen height — a stray hairline
+     running the full width of the stage. A real rotunda does not show you the
+     reverse of the pictures behind it. */
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+/* Matted and hairline-framed, the way a plate is hung — not a bleed card.
+   The mat is a whisper of Ivory rather than the full #E8E1D3: at full strength
+   fourteen mats become the brightest thing on a Soft Black page and the
+   photographs stop being the subject. */
+.frame {
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  padding: clamp(5px, 0.6vw, 9px);
+  background: rgba(232, 225, 211, 0.07);
+  border: 1px solid rgba(232, 225, 211, 0.12);
+  box-shadow: 0 30px 60px -20px rgba(0, 0, 0, 0.6);
+  transform: scale(var(--card-scale));
+  transition:
+    transform 200ms ease,
+    border-color 320ms ease,
+    background 320ms ease;
+}
+.card[data-front="true"] .frame,
+.card:hover .frame {
+  border-color: var(--plate-accent);
+  background: rgba(232, 225, 211, 0.11);
 }
 .cardImg {
   position: relative;
   width: 100%;
   height: 100%;
   overflow: hidden;
-  box-shadow: 0 30px 60px -20px rgba(0, 0, 0, 0.6);
-  border: 1px solid rgba(232, 225, 211, 0.1);
-  transform: scale(var(--card-scale));
-  transition: transform 200ms ease, border-color 200ms ease;
-}
-.card:hover .cardImg {
-  border-color: rgba(201, 168, 126, 0.55);
 }
 .cardImg img {
   object-fit: cover;
 }
 
+/* The wall label. Present on every plate so it never re-flows, but only the
+   front plate's is legible — walking the ring lights one label at a time. */
+.plaque {
+  position: absolute;
+  left: 50%;
+  bottom: -34px;
+  transform: translateX(-50%) scale(var(--card-scale));
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  white-space: nowrap;
+  font-family: var(--mono);
+  font-size: 9.5px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--fg-dim);
+  opacity: 0;
+  transition: opacity 420ms var(--ease-gallery);
+  pointer-events: none;
+}
+.plaque i {
+  font-style: normal;
+  color: var(--plate-accent);
+}
+.plaque b {
+  font-weight: 500;
+  color: var(--fg);
+}
+/* The English gloss on the Italian/German name — see lib/pieces.ts. */
+.plaque em {
+  font-style: normal;
+  color: var(--fg-faint);
+}
+.card[data-front="true"] .plaque {
+  opacity: 1;
+}
+
 .dragHint {
   position: absolute;
-  bottom: 6%;
+  bottom: 4%;
   left: 50%;
   transform: translateX(-50%);
   font-family: var(--sans);
@@ -102,13 +198,17 @@
   pointer-events: none;
 }
 
+/* The pool of shadow the ring stands in. The gradient is anchored to the
+   element's BOTTOM, not its top: centred at `50% 0%` the darkest row of the
+   gradient sits exactly on the element's own top edge, with nothing above it —
+   a hard alpha step that reads as a line straight across the stage. */
 .floor {
   position: absolute;
   left: 0;
   right: 0;
   bottom: -6%;
-  height: 40%;
-  background: radial-gradient(ellipse at 50% 0%, rgba(0, 0, 0, 0.55), transparent 70%);
+  height: 44%;
+  background: radial-gradient(ellipse 90% 120% at 50% 100%, rgba(0, 0, 0, 0.6), transparent 72%);
   pointer-events: none;
 }
 
@@ -124,7 +224,9 @@
   background: rgba(20, 19, 17, 0.55);
   backdrop-filter: blur(14px);
   border: 1px solid rgba(232, 225, 211, 0.14);
+  border-left: 1px solid var(--stage-accent);
   pointer-events: auto;
+  transition: border-color 900ms var(--ease-gallery);
 }
 .captionNum {
   font-family: var(--mono);
@@ -142,14 +244,34 @@
   color: var(--fg);
   margin-bottom: 6px;
 }
+/* The English gloss, directly under the Italian/German name. */
+.captionSub {
+  display: block;
+  margin-bottom: 12px;
+  font-family: var(--sans);
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--fg-faint);
+}
 .captionRoom {
   font-family: var(--sans);
   font-size: 11px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--walnut);
+  color: var(--stage-accent);
+  display: block;
+  margin-bottom: 8px;
+  transition: color 900ms var(--ease-gallery);
+}
+.captionMaterials {
   display: block;
   margin-bottom: 18px;
+  font-family: var(--sans);
+  font-size: 11.5px;
+  line-height: 1.6;
+  color: var(--fg-faint);
 }
 .captionLink {
   display: inline-block;
@@ -161,14 +283,24 @@
   color: var(--fg);
   border-bottom: 1px solid var(--line);
   padding-bottom: 4px;
-  transition: border-color 0.3s ease;
+  transition: border-color 0.3s ease, color 0.3s ease;
 }
 .captionLink span {
   margin-left: 6px;
 }
 .captionLink:hover {
-  border-color: var(--gold);
-  color: var(--gold-light);
+  border-color: var(--stage-accent);
+  color: var(--stage-accent);
+}
+
+/* Visually hidden, still announced. */
+.live {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
 
 .dots {
@@ -189,10 +321,10 @@
   transition: background 0.3s ease, transform 0.3s ease;
 }
 .dot:hover {
-  background: var(--fg-dim);
+  background: var(--dot-accent);
 }
 .dotActive {
-  background: var(--gold);
+  background: var(--dot-accent);
   transform: scale(1.4);
 }
 
@@ -212,10 +344,19 @@
   .dragHint {
     display: none;
   }
+  /* At this width the plaque collides with the caption chip; the chip already
+     names the front piece, so the wall label is the one to drop. */
+  .plaque {
+    display: none;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .ring {
+  .ring,
+  .wash,
+  .num,
+  .caption,
+  .captionRoom {
     transition: none;
   }
 }

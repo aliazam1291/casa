@@ -46,7 +46,7 @@ function GalleryCard({
         <div className={styles.img} style={{ aspectRatio: RATIOS[index % RATIOS.length] }}>
           <Image
             src={imgUrl}
-            alt={piece.name}
+            alt={piece.subtitle}
             fill
             loading="lazy"
             sizes="(max-width: 720px) 92vw, (max-width: 1200px) 45vw, 22vw"
@@ -57,7 +57,8 @@ function GalleryCard({
       <span className={styles.cardNum}>
         {String(index + 1).padStart(2, "0")} · {getRoom(piece.roomSlug)?.name}
       </span>
-      <div className={styles.cardTitle}>{piece.name}</div>
+      <div className={styles.cardTitle} lang={piece.lang}>{piece.name}</div>
+      <div className={styles.cardSub}>{piece.subtitle}</div>
     </div>
   );
 }
@@ -158,14 +159,19 @@ export function Gallery() {
                     <div className={styles.modalImageWrap}>
                       <Image
                         src={getPieceImage(selectedPiece.slug, PIECES.indexOf(selectedPiece))}
-                        alt={selectedPiece.name}
+                        alt={selectedPiece.subtitle}
                         fill
                         sizes="(max-width: 1000px) 100vw, 50vw"
                       />
                     </div>
                     <div className={styles.modalInfo}>
-                      <span className={styles.modalLabel}>Spec sheet</span>
-                      <Dialog.Title className={styles.modalTitle}>{selectedPiece.name}</Dialog.Title>
+                      <span className={styles.modalLabel}>
+                        Spec sheet · {selectedPiece.lang === "it" ? "Italiano" : "Deutsch"}
+                      </span>
+                      <Dialog.Title className={styles.modalTitle} lang={selectedPiece.lang}>
+                        {selectedPiece.name}
+                      </Dialog.Title>
+                      <p className={styles.modalSub}>{selectedPiece.subtitle}</p>
 
                       <div className={styles.metaRow}>
                         <div>

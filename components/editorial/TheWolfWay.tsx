@@ -1,20 +1,26 @@
 "use client";
 
+import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import * as Accordion from "@radix-ui/react-accordion";
+import * as Tabs from "@radix-ui/react-tabs";
 import { useCursor } from "@/components/cursor/CursorProvider";
 import { useReveal } from "@/hooks/useReveal";
 import { CompositionExhibit } from "./CompositionExhibit";
+import { FloorPlanTypes } from "./FloorPlanTypes";
 import styles from "./TheWolfWay.module.css";
 
+// Six traits, six of the book's colours. §08 gives Brass / Walnut / Green /
+// Saddle / Sand distinct jobs and the site was reaching for Brass every time,
+// so the six read as one. Colour lands as a hairline and a number here, never
+// as a fill — "Brass punctuates, never a fill."
 const DNA = [
-  { tag: "01", title: "Instinct", body: "Order felt before it is read." },
-  { tag: "02", title: "Territory", body: "Every zone is a claimed space." },
-  { tag: "03", title: "Shelter", body: "Furniture as the architecture of refuge." },
-  { tag: "04", title: "Silence", body: "Empty space is part of the value." },
-  { tag: "05", title: "Pack", body: "Pieces move as one composition." },
-  { tag: "06", title: "Precision", body: "Nothing accidental. Everything placed." },
+  { tag: "01", title: "Instinct", body: "Order felt before it is read.", tone: "#a78657" },
+  { tag: "02", title: "Territory", body: "Every zone is a claimed space.", tone: "#7d9682" },
+  { tag: "03", title: "Shelter", body: "Furniture as the architecture of refuge.", tone: "#c9a87e" },
+  { tag: "04", title: "Silence", body: "Empty space is part of the value.", tone: "#c9bda6" },
+  { tag: "05", title: "Pack", body: "Pieces move as one composition.", tone: "#c98a5e" },
+  { tag: "06", title: "Precision", body: "Nothing accidental. Everything placed.", tone: "#a78657" },
 ];
 
 // Book-exact titles (Brand Book §03 The Wolf Way — Ten Principles).
@@ -35,6 +41,7 @@ export function TheWolfWay() {
   const { setCursor, resetCursor } = useCursor();
   const { ref: dnaRef, inView: dnaIn } = useReveal<HTMLDivElement>();
   const { ref: prinRef, inView: prinIn } = useReveal<HTMLDivElement>();
+  const [principle, setPrinciple] = useState(0);
 
   return (
     <main className={styles.page}>
@@ -65,7 +72,12 @@ export function TheWolfWay() {
         </div>
         <div className={styles.dnaGrid}>
           {DNA.map((item) => (
-            <article key={item.tag}>
+            <article
+              key={item.tag}
+              style={{ "--dna-tone": item.tone } as React.CSSProperties}
+              onMouseEnter={() => setCursor("hover", item.title)}
+              onMouseLeave={resetCursor}
+            >
               <span>{item.tag}</span>
               <strong>{item.title}</strong>
               <p>{item.body}</p>
@@ -83,37 +95,80 @@ export function TheWolfWay() {
             <p className={styles.sectionLabel}>The Wolf Way / The Method</p>
           </div>
         </div>
-        {/* Radix Accordion: one principle open at a time, real keyboard
-            support (Space/Enter to toggle, Home/End to jump), correct
-            aria-expanded/aria-controls — replacing a row that used to show
-            every description at once regardless of interest. */}
-        <Accordion.Root type="single" collapsible className={styles.index}>
-          {PRINCIPLES.map((item, index) => (
-            <Accordion.Item key={item.title} value={item.title} className={styles.row}>
-              <Accordion.Header asChild>
-                <Accordion.Trigger
-                  className={styles.rowTrigger}
-                  onMouseEnter={() => setCursor("hover", String(index + 1).padStart(2, "0"))}
-                  onMouseLeave={resetCursor}
-                >
-                  <span className={styles.num}>{String(index + 1).padStart(2, "0")}</span>
-                  <span className={styles.title}>{item.title}</span>
-                  <span className={styles.rowIcon} aria-hidden>+</span>
-                </Accordion.Trigger>
-              </Accordion.Header>
-              <Accordion.Content className={styles.accordionContent}>
-                <span className={styles.desc}>{item.body}</span>
-              </Accordion.Content>
-            </Accordion.Item>
-          ))}
-        </Accordion.Root>
+
+        {/* A DIAL, NOT A LIST. This was a ten-row accordion: ten full-width
+            rows at ~90px each, so the method alone ran past a screen and a half
+            before anyone had read a single principle. The ten now sit on one
+            rail — "the index: numbers orient, they never shout" (§IC) — and one
+            principle is open at a time underneath. Same ten principles, same
+            book-exact titles, roughly a fifth of the height.
+
+            Radix Tabs rather than buttons: roving tabindex, arrow/Home/End
+            navigation and correct aria-selected/aria-controls come with it.
+            activationMode="automatic" makes arrowing along the rail change the
+            panel, which is the whole point of a dial. */}
+        <Tabs.Root
+          value={String(principle)}
+          onValueChange={(v) => setPrinciple(Number(v))}
+          activationMode="automatic"
+          className={styles.dial}
+        >
+          <Tabs.List className={styles.dialRail} aria-label="The ten principles">
+            {PRINCIPLES.map((item, index) => (
+              <Tabs.Trigger
+                key={item.title}
+                value={String(index)}
+                className={styles.dialTick}
+                onMouseEnter={() => {
+                  setPrinciple(index);
+                  setCursor("hover", item.title);
+                }}
+                onMouseLeave={resetCursor}
+              >
+                {String(index + 1).padStart(2, "0")}
+              </Tabs.Trigger>
+            ))}
+          </Tabs.List>
+
+          {/* One panel, re-keyed per principle so the reveal animation replays
+              on change. Rendering ten panels would put the other nine in the
+              accessibility tree for no reason. */}
+          <Tabs.Content value={String(principle)} asChild forceMount>
+            <div className={styles.dialPanel} key={principle}>
+              <span className={styles.dialNum}>
+                {String(principle + 1).padStart(2, "0")} / 10
+              </span>
+              <h3>{PRINCIPLES[principle].title}</h3>
+              <p>{PRINCIPLES[principle].body}</p>
+            </div>
+          </Tabs.Content>
+        </Tabs.Root>
       </section>
 
+      <FloorPlanTypes />
+
+      {/* This page is the nav's browse entry now (see components/nav/Nav.tsx),
+          so its closing section has to be a junction rather than a single CTA:
+          the method leads to the rooms it has already made, the parts those
+          rooms are composed from, and the experiences that compose yours. */}
       <section className={styles.manifesto}>
         <p>&ldquo;The wolf does not decorate. It marks territory.&rdquo;</p>
-        <Link href="/experiences" onMouseEnter={() => setCursor("hover", "Explore")} onMouseLeave={resetCursor}>
-          Explore the experiences
-        </Link>
+        <div className={styles.manifestoActions}>
+          <Link
+            href="/the-house-and-rooms"
+            className={styles.manifestoPrimary}
+            onMouseEnter={() => setCursor("hover", "Enter")}
+            onMouseLeave={resetCursor}
+          >
+            The thirteen rooms
+          </Link>
+          <Link href="/shop" onMouseEnter={() => setCursor("hover", "Enter")} onMouseLeave={resetCursor}>
+            The Interio Mall
+          </Link>
+          <Link href="/experiences" onMouseEnter={() => setCursor("hover", "Explore")} onMouseLeave={resetCursor}>
+            The experiences
+          </Link>
+        </div>
       </section>
     </main>
   );

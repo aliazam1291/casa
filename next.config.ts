@@ -46,6 +46,15 @@ const nextConfig: NextConfig = {
       // untouched and still resolve — it is only the two indexes that moved.
       { source: "/the-house", destination: "/the-house-and-rooms", permanent: true },
       { source: "/rooms", destination: "/the-house-and-rooms", permanent: true },
+      // /products and /catalogue both became /shop — "The Interio Mall", the
+      // book's own name for the format. They were two of three pages showing
+      // the same photographs in the same grid, and /catalogue's eight
+      // categories and fifty-one subtypes were invented: the brand book's
+      // Product Universe (§06) is a flat list of twenty parts, which is what
+      // /shop now sets out. The wildcard catches every retired subtype URL.
+      { source: "/products", destination: "/shop", permanent: true },
+      { source: "/catalogue", destination: "/shop", permanent: true },
+      { source: "/catalogue/:path*", destination: "/shop", permanent: true },
     ];
   },
 };

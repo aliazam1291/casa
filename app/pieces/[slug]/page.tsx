@@ -22,7 +22,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const piece = getPiece((await params).slug);
   if (!piece) return {};
   return {
-    title: `${piece.name} — Wolf Casa`,
+    // Both names in the title: the Italian/German is what the piece is called,
+    // the English is what someone actually searches for.
+    title: `${piece.name} — ${piece.subtitle} — Wolf Casa`,
     description: piece.description,
     alternates: { canonical: `/pieces/${piece.slug}` },
   };
@@ -41,6 +43,7 @@ export default async function PiecePage({ params }: Props) {
     "@context": "https://schema.org",
     "@type": "Product",
     name: piece.name,
+    alternateName: piece.subtitle,
     description: piece.description,
     material: piece.materials.join(", "),
     brand: { "@type": "Brand", name: "Wolf Casa" },
@@ -52,27 +55,32 @@ export default async function PiecePage({ params }: Props) {
 
       {/* Breadcrumb */}
       <nav className={styles.breadcrumb} aria-label="Breadcrumb">
-        <Link href="/catalogue">Catalogue</Link>
+        <Link href="/shop">Shop</Link>
         {found && (
           <>
             <span aria-hidden>/</span>
-            <Link href={`/catalogue/${found.category.slug}`}>{found.category.name}</Link>
+            <Link href="/shop">{found.category.name}</Link>
             <span aria-hidden>/</span>
-            <Link href={`/catalogue/${found.category.slug}/${found.subtype.slug}`}>{found.subtype.name}</Link>
+            <Link href="/shop">{found.subtype.name}</Link>
           </>
         )}
         <span aria-hidden>/</span>
-        <span aria-current="page">{piece.name}</span>
+        <span aria-current="page">{piece.subtitle}</span>
       </nav>
 
       {/* Cinematic split hero */}
       <section className={styles.hero}>
         <div className={styles.heroImage}>
-          <Image src={heroImage} alt={piece.name} fill priority sizes="(max-width: 900px) 100vw, 55vw" />
+          {/* alt uses the English: a screen reader reading "Schwebewaschtisch"
+              phonetically in an en-IN voice describes nothing. */}
+          <Image src={heroImage} alt={piece.subtitle} fill priority sizes="(max-width: 900px) 100vw, 55vw" />
         </div>
         <div className={styles.heroInfo}>
-          <p className={styles.kicker}>Named Piece</p>
-          <h1>{piece.name}.</h1>
+          <p className={styles.kicker}>
+            Named Piece · {piece.lang === "it" ? "Italiano" : "Deutsch"}
+          </p>
+          <h1 lang={piece.lang}>{piece.name}.</h1>
+          <p className={styles.translation}>{piece.subtitle}</p>
           <p className={styles.heroDesc}>{piece.description}</p>
           <div className={styles.matSection}>
             <span className={styles.matLabel}>Materials &amp; Finishes</span>
@@ -108,14 +116,15 @@ export default async function PiecePage({ params }: Props) {
                 <div className={styles.siblingThumb}>
                   <Image
                     src={getPieceHero(s.slug)}
-                    alt={s.name}
+                    alt={s.subtitle}
                     fill
                     loading="lazy"
                     sizes="(max-width: 720px) 48vw, 22vw"
                   />
                 </div>
                 <div className={styles.siblingInfo}>
-                  <h3>{s.name}</h3>
+                  <h3 lang={s.lang}>{s.name}</h3>
+                  <p className={styles.siblingSub}>{s.subtitle}</p>
                   <p>{s.materials.slice(0, 2).join(" · ")}</p>
                 </div>
               </Link>

@@ -23,6 +23,7 @@ type SceneHandle = {
   resetRoom: () => void;
   enablePhysics: () => void;
   nudgeZoom: (delta: number) => number;
+  fitRoom: () => void;
   readonly zoom: number;
   setFloor: (i: number) => void;
   goToFloorRoom: (floorIndex: number, roomIndex: number) => void;
@@ -52,7 +53,10 @@ type Floor = { name: string; level: string; rooms: Room[] };
 const FLOOR_LIST = FLOORS as Floor[];
 
 /** Material/description record surfaced when a furniture piece is hovered. */
-type PieceInfo = { name: string; materials: string[]; description: string };
+// `subtitle` is the English gloss on the Italian/German name — see the naming
+// note at the top of lib/pieces.ts. Optional because tagPiece() can still be
+// called with a literal object that has no piece record behind it.
+type PieceInfo = { name: string; subtitle?: string; materials: string[]; description: string };
 
 function Chevron({ dir }: { dir: "left" | "right" }) {
   return (
@@ -290,6 +294,7 @@ export function GalleryHero() {
             {piece && (
               <div ref={tipRef} className={styles.pieceTip}>
                 <h3 className={styles.tipName}>{piece.name}</h3>
+                {piece.subtitle && <p className={styles.tipSub}>{piece.subtitle}</p>}
                 {piece.materials.length > 0 && (
                   <div className={styles.tipMaterials}>
                     {piece.materials.slice(0, 3).map((m) => (
@@ -405,6 +410,15 @@ export function GalleryHero() {
                 onMouseLeave={resetCursor}
               >
                 Reset room <span aria-hidden>↺</span>
+              </button>
+              <button
+                type="button"
+                className={styles.resetBtn}
+                onClick={() => sceneRef.current?.fitRoom()}
+                onMouseEnter={() => hover("Whole room")}
+                onMouseLeave={resetCursor}
+              >
+                Whole room <span aria-hidden>⤢</span>
               </button>
               <div className={styles.zoomGroup}>
                 <button

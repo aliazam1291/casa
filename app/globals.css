@@ -29,7 +29,6 @@
   /* Accents — used sparingly, per the book's "Brass punctuates, never a fill" */
   --gold: #a78657; /* Brass */
   --gold-light: #c1a276;
-  --sand: #c9bda6; /* Sand */
   --walnut: #c9a87e; /* lightened text-legible tan — see deviation note above */
   --walnut-light: #9c7a5e;
   --walnut-panel: #5a3d2e; /* book-literal Walnut — dividers, fills, swatches only */
@@ -38,6 +37,33 @@
   --stone: #8a8376;
   --stone-dark: #a69c8c;
   --espresso: #241c15; /* deliberately richer than --bg so dark insets still read as insets */
+
+  /* ---- The rest of the book's palette, made usable ----
+     Brand Book §08 specifies seven colours. Three of them — Saddle, Green and
+     Sand — were declared above but used ZERO times anywhere in the site, which
+     is why every page came out the same Brass-and-Ivory-on-black and read as
+     monochrome. These are the legible, text-safe and surface-safe steps of
+     those three, so they can actually be reached for.
+
+     The book's own tint scale is 100 / 62 / 38 / 16. Those are the four steps
+     below; -edge is the 16 step used for hairlines and borders. */
+  --green-light: #7d9682; /* legible green for small text on black */
+  --green-mid: #3d5544; /* panels and fills */
+  --green-edge: rgba(125, 150, 130, 0.22);
+
+  --saddle-light: #c98a5e; /* legible saddle for small text on black */
+  --saddle-mid: #6b4229;
+  --saddle-edge: rgba(201, 138, 94, 0.24);
+
+  --sand: #c9bda6; /* Sand — kraft & secondary paper, quiet grounds */
+  --sand-dim: rgba(201, 189, 166, 0.62);
+  --sand-edge: rgba(201, 189, 166, 0.2);
+
+  /* Per-section tinting. Pages set --section-accent to one of the above and
+     everything keyed to it follows, so two pages built from the same layout
+     no longer look like the same page. */
+  --section-accent: var(--gold);
+  --section-edge: var(--line);
 
   --gutter: clamp(20px, 3vw, 48px);
 
@@ -291,3 +317,29 @@ section {
     display: none;
   }
 }
+
+/* ---- Section colour territories ----
+   Brand Book §08: "Black holds the space. Ivory speaks. Brass punctuates —
+   never a fill. Walnut & green carry the material world."
+
+   Every page was reaching for Brass, so nothing was distinguishable. These
+   classes assign a page or band one of the book's territories; anything keyed
+   to --section-accent picks it up. Apply to a <section> or <main>.
+
+   Brass stays punctuation — a rule, a line, one word — and is deliberately NOT
+   given a fill here. */
+.territory-brass { --section-accent: var(--gold); --section-edge: rgba(167, 134, 87, 0.24); }
+.territory-walnut { --section-accent: var(--walnut); --section-edge: rgba(201, 168, 126, 0.24); }
+.territory-green { --section-accent: var(--green-light); --section-edge: var(--green-edge); }
+.territory-saddle { --section-accent: var(--saddle-light); --section-edge: var(--saddle-edge); }
+.territory-sand { --section-accent: var(--sand); --section-edge: var(--sand-edge); }
+
+/* Utility hooks so a band can take its territory colour without every module
+   re-declaring the same three rules. */
+.accent-text { color: var(--section-accent); }
+.accent-rule {
+  width: 46px;
+  height: 1px;
+  background: var(--section-accent);
+}
+.accent-border { border-color: var(--section-edge); }

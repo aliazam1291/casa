@@ -14,6 +14,11 @@ import { findPiece } from './lib/interactive';
 import { moodForRoom, applyMood } from './lib/lightMoods';
 import { initPhysics, RoomPhysics } from './lib/physics';
 
+// Zoom range. ZOOM_MAX > 1 pulls the eye back through the room's open front so
+// the entire composition fits one frame; see setZoom().
+const ZOOM_MIN = 0.55;
+const ZOOM_MAX = 2.8;
+
 const GalleryScene = forwardRef(function GalleryScene({ onRoomChange, onFloorChange, onPieceHover, onReady }, ref) {
   const mountRef = useRef(null);
   const internals = useRef(null);
@@ -78,22 +83,38 @@ const GalleryScene = forwardRef(function GalleryScene({ onRoomChange, onFloorCha
       internals.current?.enablePhysics?.();
     },
     /**
-     * Dolly the eye in or out. Clamped: past ~1.9 you are outside the room
-     * looking into a box again, and under ~0.55 you are inside the furniture.
+     * Dolly the eye in or out along its own sight line.
+     *
+     * The range runs to 2.8, which deliberately takes the camera back OUT
+     * through the room's open front. That is the only way to get the whole
+     * room — both side walls, the ceiling and the full depth — inside one
+     * frame: the room is 12 x 10 and you cannot see all of it from inside it,
+     * whatever the lens. At full zoom-out it reads as a proscenium view of the
+     * complete composition, which is the point.
+     *
+     * The near end stops at 0.55, short of being inside the furniture.
      */
     setZoom(z) {
       const s = internals.current;
       if (!s) return 1;
-      s.zoomTarget = Math.max(0.55, Math.min(1.9, z));
+      s.zoomTarget = Math.max(ZOOM_MIN, Math.min(ZOOM_MAX, z));
       return s.zoomTarget;
     },
     nudgeZoom(delta) {
       const s = internals.current;
       if (!s) return 1;
-      s.zoomTarget = Math.max(0.55, Math.min(1.9, s.zoomTarget + delta));
+      s.zoomTarget = Math.max(ZOOM_MIN, Math.min(ZOOM_MAX, s.zoomTarget + delta));
       return s.zoomTarget;
     },
+    /** Snap straight to the widest framing — the whole room in one frame. */
+    fitRoom() {
+      const s = internals.current;
+      if (!s) return;
+      s.zoomTarget = ZOOM_MAX;
+    },
     get zoom() { return internals.current?.zoomTarget ?? 1; },
+    get zoomMin() { return ZOOM_MIN; },
+    get zoomMax() { return ZOOM_MAX; },
     // Cross-floor deep links (e.g. a room page's "Enter in 3D Walkthrough")
     // must not call setFloor() then goToRoom() back to back — the floor
     // rebuild is deferred to mid-transit, so an immediate goToRoom() would
@@ -250,7 +271,7 @@ const GalleryScene = forwardRef(function GalleryScene({ onRoomChange, onFloorCha
     scene.environment = envRT.texture;
     scene.environmentIntensity = 0.32;
 
-    const camera = new THREE.PerspectiveCamera(52, W / H, 0.1, 140);
+    const camera = new THREE.PerspectiveCamera(46, W / H, 0.1, 140);
     const initialCam = getRoomCamAnchor(1, 0);
     camera.position.set(...initialCam.p);
 
@@ -324,8 +345,25 @@ const GalleryScene = forwardRef(function GalleryScene({ onRoomChange, onFloorCha
       if (index === s.currentRoom && !s.transit) return;
       const fromAnchor = { p: [...s.camP], t: [...s.camT] };
       const toAnchor = getRoomCamAnchor(s.currentFloor, index);
+
+      // Walk through the doorway, not through the wall.
+      //
+      // A straight lerp between two anchors inside two different rooms passes
+      // clean through the partition between them, which is exactly what it
+      // looked like. Every doorway is centred on z = 0 of its room (see the
+      // partition in buildRoom.js), so a control point on that line at door
+      // height routes the camera along the run of openings — through one door
+      // for a neighbouring room, along the enfilade for a longer jump.
+      const rooms = FLOORS[s.currentFloor].rooms;
+      const fromX = rooms[s.currentRoom]?.pos?.x ?? 0;
+      const toX = rooms[index]?.pos?.x ?? 0;
+      const via = {
+        p: [(fromX + toX) / 2, 1.55, 0],
+        t: [toX, 1.2, -3.2],
+      };
+
       s.currentRoom = index;
-      s.transit = { fromAnchor, toAnchor, dur: 1.1, t: 0 };
+      s.transit = { fromAnchor, toAnchor, via, dur: 1.35, t: 0 };
       // Hand the previous room's furniture back before the camera leaves, and
       // pick up the new room's on arrival (see the transit-complete branch in
       // tick()) — mid-flight is the one moment nothing should be simulated.
@@ -557,9 +595,9 @@ const GalleryScene = forwardRef(function GalleryScene({ onRoomChange, onFloorCha
       renderer.setSize(w, h);
       camera.aspect = w / h;
       if (w / h < 1.0) {
-        camera.fov = 56 + (1.0 - w / h) * 18;
+        camera.fov = 52 + (1.0 - w / h) * 18;
       } else {
-        camera.fov = 52;
+        camera.fov = 46;
       }
       camera.updateProjectionMatrix();
     };
@@ -603,9 +641,20 @@ const GalleryScene = forwardRef(function GalleryScene({ onRoomChange, onFloorCha
         tr.t = Math.min(tr.t + dt / tr.dur, 1);
         const e = easeInOut(tr.t);
 
-        for (let k = 0; k < 3; k++) {
-          s.camP[k] = tr.fromAnchor.p[k] + (tr.toAnchor.p[k] - tr.fromAnchor.p[k]) * e;
-          s.camT[k] = tr.fromAnchor.t[k] + (tr.toAnchor.t[k] - tr.fromAnchor.t[k]) * e;
+        if (tr.via) {
+          // Quadratic Bezier: the waypoint is a control point, so the path is
+          // pulled toward the doorway without having to stop at it.
+          const u = 1 - e;
+          const a = u * u, b = 2 * u * e, c = e * e;
+          for (let k = 0; k < 3; k++) {
+            s.camP[k] = a * tr.fromAnchor.p[k] + b * tr.via.p[k] + c * tr.toAnchor.p[k];
+            s.camT[k] = a * tr.fromAnchor.t[k] + b * tr.via.t[k] + c * tr.toAnchor.t[k];
+          }
+        } else {
+          for (let k = 0; k < 3; k++) {
+            s.camP[k] = tr.fromAnchor.p[k] + (tr.toAnchor.p[k] - tr.fromAnchor.p[k]) * e;
+            s.camT[k] = tr.fromAnchor.t[k] + (tr.toAnchor.t[k] - tr.fromAnchor.t[k]) * e;
+          }
         }
 
         if (tr.rebuildFloor != null && tr.t >= 0.5) {

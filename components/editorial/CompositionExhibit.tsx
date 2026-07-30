@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { COMPOSITIONS, type Composition, type TimeOfDay } from "@/lib/compositions";
 import { useCursor } from "@/components/cursor/CursorProvider";
 import styles from "./CompositionExhibit.module.css";
@@ -100,14 +100,59 @@ function ExhibitSlide({ composition, index }: { composition: Composition; index:
  * plaque, a split-tone name, and a small sketch strip (floor plan, time of
  * day, materials) instead of more photography we don't have.
  */
+/** #golden-hour etc. — the composition named in the URL, or the first. */
+function indexFromHash(): number {
+  if (typeof window === "undefined") return 0;
+  const slug = window.location.hash.replace(/^#/, "");
+  const i = COMPOSITIONS.findIndex((c) => c.slug === slug);
+  return i < 0 ? 0 : i;
+}
+
 export function CompositionExhibit() {
   const [active, setActive] = useState(0);
   const { setCursor, resetCursor } = useCursor();
   const composition = COMPOSITIONS[active];
-  const next = () => setActive((i) => (i + 1) % COMPOSITIONS.length);
+
+  // The section used to carry id={composition.slug}, so only the ACTIVE
+  // composition had an anchor — /the-wolf-way#golden-hour resolved to nothing
+  // unless Golden Hour happened to be the one on screen. All eight slugs now
+  // exist as permanent anchors, and the exhibit follows whichever is named.
+  useEffect(() => {
+    setActive(indexFromHash());
+    const onHash = () => setActive(indexFromHash());
+    window.addEventListener("hashchange", onHash);
+    return () => window.removeEventListener("hashchange", onHash);
+  }, []);
+
+  const show = (i: number) => {
+    setActive(i);
+    // replaceState, not a hash assignment: this keeps the URL shareable without
+    // pushing a history entry per click or re-triggering anchor scrolling.
+    if (typeof window !== "undefined") {
+      window.history.replaceState(null, "", `#${COMPOSITIONS[i].slug}`);
+    }
+  };
+  const next = () => show((active + 1) % COMPOSITIONS.length);
 
   return (
-    <section className={styles.exhibit} id={composition.slug}>
+    <section
+      className={styles.exhibit}
+      id="compositions"
+      /* Each composition brings its own colour, so the eight stop sharing one
+         brass accent and the page actually changes as you move through them. */
+      style={
+        {
+          "--comp-accent": `#${composition.accent.toString(16).padStart(6, "0")}`,
+          "--comp-glow": `#${composition.emissive.toString(16).padStart(6, "0")}`,
+        } as React.CSSProperties
+      }
+    >
+      {/* Permanent anchor targets — one per composition, all eight always in
+          the DOM regardless of which is showing. */}
+      {COMPOSITIONS.map((c) => (
+        <span key={c.slug} id={c.slug} className={styles.anchor} aria-hidden />
+      ))}
+
       <div className={styles.exhibitHead}>
         <span className={styles.sectionLabel}>Eight Signature Compositions</span>
         <h2>One doctrine, eight named rooms.</h2>
@@ -133,7 +178,7 @@ export function CompositionExhibit() {
             key={c.slug}
             type="button"
             className={i === active ? styles.dotActive : styles.dot}
-            onClick={() => setActive(i)}
+            onClick={() => show(i)}
             onMouseEnter={() => setCursor("hover", c.name)}
             onMouseLeave={resetCursor}
           >

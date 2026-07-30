@@ -648,6 +648,72 @@ export function buildRoom(def, roomIndex, floorIndex, sm) {
     group.add(rightBase);
   }
 
+  // ── Partition wall with a doorway, between this room and the next ──────────
+  //
+  // This is what makes a floor read as a home rather than a row of blocks.
+  // Interior rooms used to have NO side wall — the gap between them was a
+  // missing wall, not an opening — so a wide interior lens looked straight
+  // through the full 12-unit cross-section of the neighbouring rooms. Four
+  // differently-coloured open-sided boxes in a line is exactly what a house
+  // does not look like.
+  //
+  // A real interior gives you a wall with a door-sized hole in it: you stand in
+  // one room and glimpse the next through a portal. Built as three solid pieces
+  // — a pier each side of the opening and a header above it — with real
+  // thickness, so the reveal catches light and casts a shadow.
+  //
+  // Only ONE partition per junction: each room builds the wall on its RIGHT and
+  // that same wall serves as the next room's left. Building both would put two
+  // coplanar walls in the same place and they would z-fight.
+  if (roomIndex < lastIndex) {
+    const doorW = 3.6;   // clear opening, in Z
+    const doorH = 3.05;  // clear opening, in Y
+    const thick = 0.26;
+    const x = W / 2;
+    const pierD = (D - doorW) / 2;
+
+    const partition = new THREE.Group();
+    for (const sz of [-1, 1]) {
+      const pier = new THREE.Mesh(new THREE.BoxGeometry(thick, H, pierD), matWall);
+      pier.position.set(x, H / 2, sz * (doorW / 2 + pierD / 2));
+      pier.castShadow = true;
+      pier.receiveShadow = true;
+      partition.add(pier);
+    }
+    const header = new THREE.Mesh(new THREE.BoxGeometry(thick, H - doorH, doorW), matWall);
+    header.position.set(x, doorH + (H - doorH) / 2, 0);
+    header.castShadow = true;
+    header.receiveShadow = true;
+    partition.add(header);
+
+    // A darker lining inside the opening reads as a joinery reveal and stops
+    // the doorway looking like a hole cut in cardboard.
+    const jambMat = sm.darkWood;
+    for (const sz of [-1, 1]) {
+      const jamb = new THREE.Mesh(new THREE.BoxGeometry(thick + 0.01, doorH, 0.05), jambMat);
+      jamb.position.set(x, doorH / 2, sz * (doorW / 2));
+      partition.add(jamb);
+    }
+    const lintel = new THREE.Mesh(new THREE.BoxGeometry(thick + 0.01, 0.05, doorW), jambMat);
+    lintel.position.set(x, doorH, 0);
+    partition.add(lintel);
+
+    // Skirting returns along both faces of the pier, matching the room's own.
+    for (const sz of [-1, 1]) {
+      const base = new THREE.Mesh(new THREE.BoxGeometry(thick, 0.12, pierD), sm.darkWood);
+      base.position.set(x, 0.06, sz * (doorW / 2 + pierD / 2));
+      partition.add(base);
+    }
+
+    group.add(partition);
+    tagSurface(
+      partition,
+      "Room threshold",
+      surfaceMaterials(def, ['travertine', 'stone', 'plaster', 'oak', 'walnut'], ['Plaster', 'Timber reveal']),
+      "A wide opening rather than a door. You should be able to read the next room from this one without the two becoming one space.",
+    );
+  }
+
   addArchitecturalRealism(group, W, H, D, isTerrace);
 
   // Slatted wood acoustic wall feature. The sky pavilion trades this for a

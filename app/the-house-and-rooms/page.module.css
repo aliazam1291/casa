@@ -34,7 +34,7 @@
   font-weight: 600;
   letter-spacing: 0.28em;
   text-transform: uppercase;
-  color: var(--walnut);
+  color: var(--section-accent);
 }
 .heroFrame h1 {
   max-width: 860px;
@@ -71,7 +71,7 @@
   font-weight: 650;
   letter-spacing: 0.24em;
   text-transform: uppercase;
-  color: var(--walnut);
+  color: var(--section-accent);
 }
 .roomsIntro h2 {
   max-width: 18ch;

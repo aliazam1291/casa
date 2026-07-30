@@ -37,7 +37,14 @@
 .heroInfo h1 {
   font-family: var(--serif); font-size: clamp(36px, 4.5vw, 64px);
   font-style: italic; font-weight: 200; line-height: 1.0;
-  letter-spacing: -.03em; margin-bottom: 24px;
+  letter-spacing: -.03em; margin-bottom: 10px;
+}
+/* The English, under the Italian/German. Set as a label rather than a heading:
+   it is the gloss on the name, not a second title competing with it. */
+.translation {
+  font-family: var(--sans); font-size: 11px; font-weight: 600;
+  letter-spacing: .22em; text-transform: uppercase; color: var(--fg-faint);
+  margin-bottom: 26px;
 }
 .heroDesc {
   font-family: var(--serif); font-size: 18px; line-height: 1.65;
@@ -109,12 +116,13 @@
 .siblingInfo { padding: 16px 18px; }
 .siblingInfo h3 {
   font-family: var(--serif); font-size: 18px; font-style: italic;
-  font-weight: 300; margin-bottom: 6px; line-height: 1.1;
+  font-weight: 300; margin-bottom: 3px; line-height: 1.1;
 }
 .siblingInfo p {
   font-family: var(--sans); font-size: 10px; letter-spacing: .08em;
   text-transform: uppercase; color: var(--fg-faint);
 }
+.siblingInfo p.siblingSub { color: var(--walnut); margin-bottom: 6px; }
 
 /* Note */
 .note {
