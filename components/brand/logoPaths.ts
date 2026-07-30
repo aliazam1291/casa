@@ -88,7 +88,22 @@ export const LETTERS: { char: string; row: 1 | 2; d: string }[] = [
  */
 export const WORDMARK_METRICS = {
   ROW_LIFT: 61.65,
-  WORD_GAP: 34,
+  /**
+   * WAS 34, WHICH RENDERED THE NAME AS ONE WORD. These metrics are edge-to-edge
+   * (ROW1_RIGHT is F's right edge, ROW2_LEFT is C's left edge), so 34 put
+   * exactly as much air between WOLF and CASA as there is between any two
+   * letters — the artwork's own inter-letter gaps are 29–40 units. The result
+   * read as "WOLFCASA".
+   *
+   * A word space is the letter gap PLUS a space glyph. In the source
+   * (public/logo/Wordmark_1.svg) the wordmark is Posterama 2001 at 12px with
+   * .25em tracking; scaling that space advance into artwork units (row 1 spans
+   * 211.31 units for four letters) puts the extra at roughly 20, and the
+   * letter gap is already carrying the tracking. 58 is that sum, rounded to sit
+   * just under twice a letter gap — clearly two words, without opening a hole
+   * the lockup does not have.
+   */
+  WORD_GAP: 58,
   /** Row 1's own left edge and right edge. */
   ROW1_RIGHT: 211.31,
   /** Row 2's left edge, before any shift. */

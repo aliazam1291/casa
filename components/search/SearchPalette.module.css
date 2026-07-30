@@ -3,8 +3,11 @@
 .trigger {
   display: grid;
   place-content: center;
-  width: 34px;
-  height: 34px;
+  /* 44px is the minimum comfortable touch target — scripts/visual-nav.mjs
+     flagged this at 34x34, which is a miss on a phone. The icon inside stays
+     15px; only the hit area grows. */
+  width: 44px;
+  height: 44px;
   border: 1px solid transparent;
   background: transparent;
   color: var(--fg);

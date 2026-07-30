@@ -88,8 +88,12 @@
   color: var(--fg);
   transition: color 0.25s ease, padding-left 0.25s ease;
 }
+/* Same specificity trap as the journal filters: a bare `.roomLinkActive` is
+   (0,1,0) and loses BOTH of these properties to `.roomList a` above at
+   (0,1,1), so the room highlighted on the drawing never highlighted in the
+   list. Scoping it to match the base rule fixes colour and indent together. */
 .roomList a:hover,
-.roomLinkActive {
+.roomList a.roomLinkActive {
   color: var(--gold-light);
   padding-left: 6px;
 }

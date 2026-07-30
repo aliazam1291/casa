@@ -10,7 +10,9 @@
 .categories button {
   display: inline-flex;
   align-items: center;
-  height: 38px;
+  /* 44px, not 38 — the touch minimum. These are the primary control on this
+     page and they sit close together, so the extra 6px matters on a phone. */
+  height: 44px;
   background: transparent;
   border: 1px solid var(--line);
   padding: 0 16px;
@@ -24,10 +26,21 @@
   transition: color .25s ease, border-color .25s ease, background .25s ease;
 }
 .categories button:hover { color: var(--fg); border-color: var(--fg-dim); }
-.categoryActive {
-  color: var(--bg) !important;
+/* Selected filter: dark label on brass.
+   SCOPED TO `.categories button` ON PURPOSE. `.categories button` is
+   specificity (0,1,1) — a class AND an element — while a bare `.categoryActive`
+   is only (0,1,0), so it LOSES every property the base rule also sets. That is
+   why this rule previously carried `!important` on colour and border-colour:
+   they were the two that had been noticed. `background` had no `!important`,
+   so it silently lost to `background: transparent` above and the selected tab
+   rendered as dark `var(--bg)` text on a dark ground — an invisible label
+   inside a brass border.
+   Matching the base rule's specificity fixes all three at once and lets the
+   !important markers go. */
+.categories button.categoryActive {
+  color: var(--bg);
   background: var(--gold-light);
-  border-color: var(--gold-light) !important;
+  border-color: var(--gold-light);
 }
 
 /* ---- Magazine grid: lead + two smaller ---- */

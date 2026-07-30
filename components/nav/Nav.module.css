@@ -37,11 +37,48 @@
    and read as a blob. Width matches the artwork's 65.07 × 78.83 ratio. */
 .wordmarkIcon { width: 20px; height: 24px; fill: currentColor; }
 .links { display: flex; gap: clamp(20px, 2.4vw, 42px); }
-.links a { display: inline-flex; align-items: center; gap: 7px; opacity: .64; transition: opacity .3s ease, letter-spacing .3s ease, color .3s ease; }
+/* min-height gives each link a full-height hit area inside the bar instead of
+   just the 16px the text occupies — the links sit in an 88px bar, so this
+   costs no layout and makes them far easier to hit. */
+.links a { position: relative; display: inline-flex; min-height: 44px; align-items: center; gap: 7px; opacity: .64; transition: opacity .3s ease, letter-spacing .3s ease, color .3s ease; }
 .links a:hover { opacity: 1; letter-spacing: .18em; }
 .links a svg { width: 14px; height: 14px; opacity: .8; }
-.linkActive { opacity: 1 !important; color: var(--gold); }
-.linkActive svg { opacity: 1; color: var(--gold); }
+/* ACTIVE ROUTE. This was `color: var(--gold)` and nothing else, which did not
+   read as a selection at all: --gold (#a78657) is a muted brass, and against
+   siblings sitting at --fg (#e8e1d3) with 0.64 opacity it lands at almost the
+   same luminance. The active item was a pure hue shift of near-identical
+   brightness — easy to miss entirely, and arguably quieter than the items
+   around it.
+   Now it does three things a selection should: goes brighter (--gold-light,
+   not --gold), holds full opacity while its siblings sit at .64, and carries a
+   brass rule under it. The rule is the brand's own hairline language, and it
+   is what makes the state legible at a glance rather than on inspection. */
+.linkActive { opacity: 1 !important; color: var(--gold-light); }
+.linkActive svg { opacity: 1; color: var(--gold-light); }
+/* Scoped to .links so it only applies to the desktop bar — the mobile panel's
+   links are grid rows with no positioning context, where an absolute rule
+   would anchor to the wrong box. */
+.links .linkActive::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  /* Inside the box, not below it. The link is now 44px tall for hit-area
+     reasons while the text is ~16px and centred, so a negative offset would
+     float the rule ~20px under the word instead of tucked beneath it. */
+  bottom: 8px;
+  left: 0;
+  height: 1px;
+  background: var(--gold);
+  /* Drawn from the centre out, so switching pages animates rather than snaps. */
+  animation: navRule .45s var(--ease-gallery) both;
+}
+@keyframes navRule {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .links .linkActive::after { animation: none; }
+}
 /* Search + the consultation CTA share the right-hand slot. */
 .actions { display: flex; align-items: center; gap: clamp(10px, 1.4vw, 18px); }
 .cta { border: 1px solid var(--fg); padding: 11px 18px; transition: background .35s ease, color .35s ease; }
@@ -49,6 +86,13 @@
 .menuToggle, .mobilePanel { display: none; }
 @media (max-width: 900px) {
   .bar { min-height: 76px; padding: 16px var(--gutter); }
+  /* The one-line wordmark is wide (eight tracked letters plus a word space),
+     so at the desktop cap height it took well over half a 390px screen and
+     crowded the search and menu controls. Cap height comes down on small
+     screens; the mark beside it holds its size so the lockup stays balanced. */
+  .wordmarkText { height: 11px; }
+  .wordmarkIcon { width: 17px; height: 20px; }
+  .wordmark { gap: 9px; }
   /* Was `.bar > :nth-child(3)`, which hid the whole right-hand slot. Search
      now lives in that slot and is MORE useful on a phone, not less — so only
      the consultation button is hidden here (the mobile panel carries its own),
@@ -70,5 +114,17 @@
   .mobileLinkLabel svg { width: 26px; height: 26px; flex: 0 0 auto; opacity: .7; }
   .linkActive { color: var(--gold); }
   .linkActive .mobileLinkLabel svg { opacity: 1; }
-  .mobileCta { display: flex; justify-content: space-between; margin-top: 34px; border-bottom: 1px solid var(--fg); padding-bottom: 12px; color: var(--fg); font-family: var(--sans); font-size: 11px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; }
+  /* min-height added: visual-nav flagged this at 29px tall, well under the
+     44px touch minimum, on the site's single most important mobile CTA. */
+  .mobileCta { display: flex; align-items: center; justify-content: space-between; min-height: 52px; margin-top: 34px; border-bottom: 1px solid var(--fg); padding-bottom: 12px; color: var(--fg); font-family: var(--sans); font-size: 11px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; }
+
+  /* Persistent contact, the one pattern worth taking wholesale from the
+     Amberstone reference: it keeps Call and WhatsApp reachable from the
+     header rather than only from the footer. For a showroom selling out of
+     Indore, WhatsApp is the channel an enquiry actually arrives on, so it
+     belongs beside the booking CTA and not three screens below it. */
+  .mobileContact { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 14px; }
+  .mobileContact a { display: inline-flex; min-height: 48px; align-items: center; justify-content: center; gap: 8px; border: 1px solid var(--line); color: var(--fg-dim); font-family: var(--sans); font-size: 10px; font-weight: 700; letter-spacing: .13em; text-transform: uppercase; transition: border-color .25s ease, color .25s ease; }
+  .mobileContact a:hover { border-color: var(--fg); color: var(--fg); }
+  .mobileContact a.whatsapp { border-color: var(--green-edge); color: var(--green-light); }
 }

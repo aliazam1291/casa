@@ -244,9 +244,21 @@ const GalleryScene = forwardRef(function GalleryScene({ onRoomChange, onFloorCha
       // MSAA is the first thing to give up on a small screen — at a high pixel
       // ratio the aliasing it removes is already close to invisible.
       antialias: !lowPower,
-      powerPreference: 'high-performance',
+      // WAS 'high-performance'. On a dual-GPU laptop that hint asks the browser
+      // for the DISCRETE GPU, which is exactly how a scene this size turns into
+      // heat and fan noise on a machine that would have rendered it perfectly
+      // well on the integrated one. 'default' lets the driver choose, which on
+      // laptops means the low-power GPU until it genuinely cannot cope.
+      powerPreference: 'default',
     });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, lowPower ? 1.5 : 2));
+
+    // Pixel ratio is the single biggest lever on fragment cost — it is
+    // quadratic, so DPR 2 shades four times the pixels of DPR 1. The desktop
+    // cap comes down from 2 to 1.5; beyond that the return on a scene this
+    // soft-lit is very small next to what it costs.
+    const maxDPR = lowPower ? 1 : 1.5;
+    let pixelRatio = Math.min(window.devicePixelRatio, maxDPR);
+    renderer.setPixelRatio(pixelRatio);
     renderer.setSize(W, H);
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 0.92;
@@ -287,7 +299,11 @@ const GalleryScene = forwardRef(function GalleryScene({ onRoomChange, onFloorCha
     // 4096 was well past the point of visible return even on desktop; the
     // shadows here are soft (radius 1.8) so the extra resolution was being
     // blurred away regardless.
-    dirKey.shadow.mapSize.set(lowPower ? 1024 : 2048, lowPower ? 1024 : 2048);
+    // WAS 2048 on desktop. The key light tracks the active room, so its shadow
+    // map is re-rendered every single frame — halving the map quarters that
+    // per-frame cost. At this scene's softness (shadow.radius 1.8) the
+    // difference is not visible; the heat is.
+    dirKey.shadow.mapSize.set(1024, 1024);
     dirKey.shadow.camera.near = 1;
     dirKey.shadow.camera.far = 28;
     dirKey.shadow.camera.left = -10;
@@ -619,18 +635,48 @@ const GalleryScene = forwardRef(function GalleryScene({ onRoomChange, onFloorCha
     }, { threshold: 0.01 });
     viewportObserver.observe(mount);
     let lastT = performance.now();
+    // Rolling frame-time average and the run-length of slow frames, for the
+    // adaptive resolution step inside tick().
+    let frameAvg = 0;
+    let slowFrames = 0;
 
     const tick = () => {
       // A WebGL scene has no reason to keep drawing while another section (or
       // browser tab) is visible. Poll lightly so it wakes without a costly
       // continuous render loop when the visitor comes back.
       if (!isVisible || document.hidden) {
+        // Keep the clock current while parked. Without this the first frame
+        // after the visitor scrolls back would measure the whole idle gap as
+        // one frame — harmless for `dt` (it is clamped) but it would feed the
+        // adaptive-resolution average a fake slow frame every single resume,
+        // and the scene would quietly downgrade itself for no reason.
+        lastT = performance.now();
         idleTimer = window.setTimeout(tick, 250);
         return;
       }
       const now = performance.now();
       const dt = Math.min((now - lastT) / 1000, 0.05);
       lastT = now;
+
+      // ADAPTIVE RESOLUTION. A fixed pixel-ratio cap is a guess about the
+      // visitor's machine; this measures it. If the rolling average frame time
+      // stays above ~22ms (below roughly 45fps) the renderer steps its pixel
+      // ratio down, which is the cheapest large saving available and the one
+      // that most directly reduces how hard the GPU is driven.
+      //
+      // It only ever steps DOWN. Stepping back up on recovery would oscillate:
+      // dropping resolution improves the frame time, which would immediately
+      // argue for raising it again, and the visitor would see it pulse.
+      if (dt > 0) {
+        frameAvg = frameAvg === 0 ? dt : frameAvg * 0.94 + dt * 0.06;
+        slowFrames = frameAvg > 0.022 ? slowFrames + 1 : 0;
+        if (slowFrames > 90 && pixelRatio > 0.75) {
+          pixelRatio = Math.max(0.75, pixelRatio - 0.25);
+          renderer.setPixelRatio(pixelRatio);
+          slowFrames = 0;
+          frameAvg = 0;
+        }
+      }
 
       s.pointerX += (s.ptrTx - s.pointerX) * 0.04;
       s.pointerY += (s.ptrTy - s.pointerY) * 0.04;

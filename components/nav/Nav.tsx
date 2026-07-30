@@ -8,6 +8,8 @@ import { useStage } from "@/components/stage/StageProvider";
 import { WolfMark } from "@/components/brand/WolfMark";
 import { Wordmark } from "@/components/brand/Wordmark";
 import { SearchPalette } from "@/components/search/SearchPalette";
+import { CONTACT } from "@/lib/contact";
+import { WHATSAPP_AVAILABLE, whatsappUrl } from "@/lib/whatsapp";
 import styles from "./Nav.module.css";
 
 // The crossbar-less A — Brand Book §09/§IC: "We stripped the crossbar so the
@@ -141,7 +143,21 @@ export function Nav() {
             );
           })}
         </div>
-        <Link href="/experiences/consultation" className={styles.mobileCta} onClick={() => setMenuOpen(false)}>Begin a consultation <span>→</span></Link>
+        <Link href="/experiences/consultation" className={styles.mobileCta} onClick={() => setMenuOpen(false)}>Begin a consultation <span>↗</span></Link>
+        {/* Call + WhatsApp kept one tap from anywhere on the site. */}
+        <div className={styles.mobileContact}>
+          {CONTACT.phone && <a href={`tel:${CONTACT.phone.replace(/\s/g, "")}`}>Call</a>}
+          {WHATSAPP_AVAILABLE && (
+            <a
+              className={styles.whatsapp}
+              href={whatsappUrl(`Hello ${CONTACT.brand}, I'd like to ask about composing a room.`)}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              WhatsApp
+            </a>
+          )}
+        </div>
       </div>
     </nav>
   );

@@ -67,6 +67,13 @@
 
   --gutter: clamp(20px, 3vw, 48px);
 
+  /* The fixed nav's height, as a token rather than a number re-typed per page.
+     The nav is position:fixed and therefore out of flow, so any page whose
+     first element is a thin strip (rather than a full-bleed hero deliberately
+     running under the bar) has to reserve this much room or that strip renders
+     underneath it. Kept in sync with .bar's min-height in Nav.module.css. */
+  --nav-h: 88px;
+
   /* Type — Cormorant (display/voice) + Jost (system/labels), per the Brand Book.
      --display is the book's Posterama 2001 slot: signature word only (wordmark,
      composition names set large), never body copy. Currently falls back to Jost
@@ -124,6 +131,13 @@ body {
      Lenis is running it overrides this to `auto` below — native smooth scroll
      and momentum scroll fight each other and produce a stutter. */
   scroll-behavior: smooth;
+}
+
+/* The nav shrinks at the same breakpoint Nav.module.css uses. */
+@media (max-width: 900px) {
+  :root {
+    --nav-h: 76px;
+  }
 }
 
 /* ---- Lenis ----
