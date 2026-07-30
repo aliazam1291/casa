@@ -17,6 +17,13 @@ type SceneHandle = {
   goToRoom: (i: number) => void;
   nextRoom: () => void;
   prevRoom: () => void;
+  /** Next room, rolling over to the next floor. See GalleryScene.advance(). */
+  advance: () => boolean;
+  readonly hasNext: boolean;
+  resetRoom: () => void;
+  enablePhysics: () => void;
+  nudgeZoom: (delta: number) => number;
+  readonly zoom: number;
   setFloor: (i: number) => void;
   goToFloorRoom: (floorIndex: number, roomIndex: number) => void;
 };
@@ -82,6 +89,8 @@ function readDeepLink(): { floorIdx: number; roomIdx: number } | null {
 
 export function GalleryHero() {
   const sceneRef = useRef<SceneHandle | null>(null);
+  const heroRef = useRef<HTMLElement>(null);
+  const tipRef = useRef<HTMLDivElement>(null);
   const [currentRoom, setCurrentRoom] = useState(0);
   const [currentFloor, setCurrentFloor] = useState(1);
   const [entered, setEntered] = useState(false);
@@ -94,12 +103,44 @@ export function GalleryHero() {
   const onPieceHover = useCallback((info: PieceInfo | null) => setPiece(info), []);
   const onReady = useCallback(() => setReady(true), []);
 
+  // Stepping inside is the moment worth spending the physics engine's 2.1MB on.
+  // Fetching it at page load would bill every visitor for a feature most never
+  // reach; fetching it on first grab would make that first grab miss.
+  const enter = useCallback(() => {
+    setEntered(true);
+    sceneRef.current?.enablePhysics();
+  }, []);
+
   // Safety net: if the scene never reports a first frame — no WebGL, a lost
   // context, a device that refuses the renderer — the loader must still lift
   // rather than sit over the hero permanently.
   useEffect(() => {
     const id = setTimeout(() => setReady(true), 8000);
     return () => clearTimeout(id);
+  }, []);
+
+  // The hover card used to be a 460px panel pinned to the centre of the frame,
+  // which covered the very room it was describing. It is now a compact tooltip
+  // that trails the pointer — small, near where you are already looking, and
+  // out of the way of everything else. Positioned by transform so following the
+  // pointer costs a compositor move rather than a layout.
+  useEffect(() => {
+    const hero = heroRef.current;
+    if (!hero) return;
+    const onMove = (e: PointerEvent) => {
+      const tip = tipRef.current;
+      if (!tip) return; // not rendered — nothing hovered
+      const r = hero.getBoundingClientRect();
+      const pad = 14;
+      let x = e.clientX - r.left + 20;
+      let y = e.clientY - r.top + 20;
+      // Flip rather than clip when near an edge.
+      if (x + tip.offsetWidth > r.width - pad) x = e.clientX - r.left - tip.offsetWidth - 20;
+      if (y + tip.offsetHeight > r.height - pad) y = e.clientY - r.top - tip.offsetHeight - 20;
+      tip.style.transform = `translate3d(${Math.max(pad, x)}px, ${Math.max(pad, y)}px, 0)`;
+    };
+    hero.addEventListener("pointermove", onMove, { passive: true });
+    return () => hero.removeEventListener("pointermove", onMove);
   }, []);
 
   useEffect(() => {
@@ -113,6 +154,8 @@ export function GalleryHero() {
     const timers: ReturnType<typeof setTimeout>[] = [];
     timers.push(setTimeout(() => {
       setEntered(true);
+      // A deep link skips the gate, so the gate's enablePhysics() never fires.
+      sceneRef.current?.enablePhysics();
       setCurrentFloor(deepLink.floorIdx);
       setCurrentRoom(deepLink.roomIdx);
       // GalleryScene is a dynamic ssr:false import, so its imperative handle
@@ -135,6 +178,11 @@ export function GalleryHero() {
   const room = floor.rooms[currentRoom];
   const totalRooms = floor.rooms.length;
 
+  // Derived from the same FLOOR_LIST the scene walks, rather than read off the
+  // imperative handle — the handle is a dynamic ssr:false import and is null on
+  // the first render, which would make the button flicker its label.
+  const atHouseEnd = currentFloor === FLOOR_LIST.length - 1 && currentRoom === totalRooms - 1;
+
   const onRoomChange = useCallback((idx: number) => {
     setCurrentRoom(idx);
     setDetailsOpen(false);
@@ -149,7 +197,7 @@ export function GalleryHero() {
   };
 
   return (
-    <section id="hero" className={styles.hero}>
+    <section id="hero" ref={heroRef} className={styles.hero}>
       <div className={styles.mount}>
         <GalleryScene
           ref={sceneRef}
@@ -184,7 +232,7 @@ export function GalleryHero() {
               <button
                 type="button"
                 className={styles.stepBtn}
-                onClick={() => setEntered(true)}
+                onClick={enter}
                 onMouseEnter={() => hover("Enter")}
                 onMouseLeave={resetCursor}
               >
@@ -232,21 +280,24 @@ export function GalleryHero() {
             {/* Room name */}
             {/* Hovering a furniture piece swaps the room title for that
                 piece's name, materials and description. */}
-            {piece ? (
-              <div className={styles.pieceCard}>
-                <span className={styles.pieceEyebrow}>In this room</span>
-                <h3 className={styles.pieceName}>{piece.name}</h3>
-                <div className={styles.materials}>
-                  {piece.materials.map((m) => (
-                    <span key={m}>{m}</span>
-                  ))}
-                </div>
-                <p className={styles.pieceDesc}>{piece.description}</p>
-              </div>
-            ) : (
-              <div className={styles.roomName}>
-                <span>{room.eyebrow}</span>
-                {roomNames[currentRoom]}
+            {/* The room title stays put while hovering — losing it was
+                disorienting, and the tooltip carries the piece detail. */}
+            <div className={`${styles.roomName} ${piece ? styles.roomNameMuted : ""}`}>
+              <span>{room.eyebrow}</span>
+              {roomNames[currentRoom]}
+            </div>
+
+            {piece && (
+              <div ref={tipRef} className={styles.pieceTip}>
+                <h3 className={styles.tipName}>{piece.name}</h3>
+                {piece.materials.length > 0 && (
+                  <div className={styles.tipMaterials}>
+                    {piece.materials.slice(0, 3).map((m) => (
+                      <span key={m}>{m}</span>
+                    ))}
+                  </div>
+                )}
+                <p className={styles.tipDesc}>{piece.description}</p>
               </div>
             )}
 
@@ -268,15 +319,30 @@ export function GalleryHero() {
                   <div className={styles.materials}>
                     {room.materials?.map((material) => <span key={material}>{material}</span>)}
                   </div>
-                  <button
-                    type="button"
-                    className={styles.exploreButton}
-                    onClick={() => sceneRef.current?.nextRoom()}
-                    onMouseEnter={() => hover("Explore")}
-                    onMouseLeave={resetCursor}
-                  >
-                    Explore the next room <span aria-hidden>→</span>
-                  </button>
+                  {/* advance() rather than nextRoom(): nextRoom() stops at each
+                      floor's last room, so this button was inert on the last
+                      room of every floor. */}
+                  {atHouseEnd ? (
+                    <button
+                      type="button"
+                      className={styles.exploreButton}
+                      onClick={() => sceneRef.current?.setFloor(0)}
+                      onMouseEnter={() => hover("Restart")}
+                      onMouseLeave={resetCursor}
+                    >
+                      Back to the cellar <span aria-hidden>↺</span>
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      className={styles.exploreButton}
+                      onClick={() => sceneRef.current?.advance()}
+                      onMouseEnter={() => hover("Explore")}
+                      onMouseLeave={resetCursor}
+                    >
+                      Explore the next room <span aria-hidden>→</span>
+                    </button>
+                  )}
                 </div>
               )}
             </div>
@@ -324,6 +390,44 @@ export function GalleryHero() {
                   ))}
                 </div>
               )}
+            </div>
+
+            {/* Furniture is physically draggable, which nothing on screen would
+                otherwise tell you — and once it has been shoved around there
+                needs to be a way back. */}
+            <div className={styles.roomTools}>
+              <span className={styles.dragTip}>Drag the furniture</span>
+              <button
+                type="button"
+                className={styles.resetBtn}
+                onClick={() => sceneRef.current?.resetRoom()}
+                onMouseEnter={() => hover("Reset")}
+                onMouseLeave={resetCursor}
+              >
+                Reset room <span aria-hidden>↺</span>
+              </button>
+              <div className={styles.zoomGroup}>
+                <button
+                  type="button"
+                  className={styles.zoomBtn}
+                  onClick={() => sceneRef.current?.nudgeZoom(-0.18)}
+                  onMouseEnter={() => hover("Closer")}
+                  onMouseLeave={resetCursor}
+                  aria-label="Zoom in"
+                >
+                  +
+                </button>
+                <button
+                  type="button"
+                  className={styles.zoomBtn}
+                  onClick={() => sceneRef.current?.nudgeZoom(0.18)}
+                  onMouseEnter={() => hover("Back")}
+                  onMouseLeave={resetCursor}
+                  aria-label="Zoom out"
+                >
+                  −
+                </button>
+              </div>
             </div>
 
             {/* Room indicator bars */}

@@ -69,7 +69,7 @@ export default async function RoomPage({ params }: Props) {
       {pieces.length > 0 && (
         <section className={styles.section}>
           <div className={styles.sectionHead}>
-            <span className={styles.sectionLabel}>§ What&rsquo;s Inside</span>
+            <span className={styles.sectionLabel}>What&rsquo;s inside</span>
             <h2>{pieces.length} named piece{pieces.length === 1 ? "" : "s"}, composed here.</h2>
           </div>
           <div className={styles.pieceGrid}>
@@ -89,7 +89,7 @@ export default async function RoomPage({ params }: Props) {
       {categories.length > 0 && (
         <section className={styles.section}>
           <div className={styles.sectionHead}>
-            <span className={styles.sectionLabel}>§ Categories Drawn On</span>
+            <span className={styles.sectionLabel}>Categories drawn on</span>
             <h2>What this room is built from.</h2>
           </div>
           <nav className={styles.catList}>

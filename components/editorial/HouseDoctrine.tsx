@@ -22,28 +22,38 @@ const STATS = [
   { value: "Indore", label: "& Dewas, and every home" },
 ];
 
-const FRAMEWORK: [string, string][] = [
-  ["Category", "Composed interiors, furniture, lighting & materials"],
-  ["Market role", "The Interio Mall for Composed Living"],
-  ["Customer need", "“I want my home to feel complete.”"],
-  ["Promise", "Complete living compositions under one roof"],
-  ["Difference", "We sell rooms, not SKUs"],
-  ["Proof", "Furniture + light + material + styling, composed"],
-  ["Emotional", "Feel the room before you buy it"],
-  ["Commercial", "Higher basket, faster decisions, less discounting"],
+// What used to sit here was the internal positioning framework, verbatim —
+// "Market role", "Customer need", "Commercial: higher basket, faster decisions,
+// less discounting". That is a strategy deck, and the last line is sales
+// targets. None of it belongs on a page a customer reads: it tells them how
+// they are being sold to and nothing about what they get.
+//
+// Replaced with the same information turned outward — what actually happens if
+// you work with Wolf Casa, in the order it happens.
+const HOW_IT_WORKS: [string, string][] = [
+  ["You bring a room", "A photo, a floor plan, or just the address. Whatever you have."],
+  ["We measure it", "Light, dimensions, what the windows face, where you actually sit."],
+  ["You see it whole", "One scheme — furniture, lighting, stone, joinery, plants — before you spend anything."],
+  ["You change your mind", "Twice, three times. This is the part people skip and regret."],
+  ["We build and fit", "Made in our own workshops in Indore and Dewas. We install it ourselves."],
+  ["It stays fixable", "Reupholstery, refinishing, a piece added in five years. Same team."],
 ];
 
+// The ten rules, in plain language. They were written as brand commandments —
+// "Materials need hierarchy", "Resolved beyond price", "Content teaches" —
+// which read as notes to staff, not as anything a visitor can use. Same ten
+// ideas, said so they mean something to the person reading them.
 const STANDARD = [
-  "Sell the room.",
-  "Light is direction.",
-  "Never crowd space.",
-  "Materials need hierarchy.",
-  "Always with atmosphere.",
-  "Resolved beyond price.",
-  "Showroom is not storage.",
-  "Content teaches.",
-  "Never generic.",
-  "The room is the product.",
+  "We sell the whole room, not the sofa.",
+  "Light gets decided before furniture.",
+  "Empty floor is part of the design.",
+  "Three materials, not eight.",
+  "If it only works in daylight, it does not work.",
+  "The cheap version of the right thing beats the expensive version of the wrong one.",
+  "Nothing in the showroom is there to fill a gap.",
+  "We will explain the reasoning, every time.",
+  "No scheme we have already built for someone else.",
+  "You should want to sit down in it.",
 ];
 
 export function HouseStats() {
@@ -64,11 +74,11 @@ export function HouseFramework() {
   return (
     <section className={styles.framework}>
       <div ref={ref} className={`reveal ${inView ? "in" : ""}`}>
-        <p className={styles.sectionLabel}>Positioning Framework</p>
-        <h2>Most stores sell products. We sell the decision, already composed.</h2>
+        <p className={styles.sectionLabel}>How it works</p>
+        <h2>Six steps, and you can stop at any of them.</h2>
       </div>
       <dl className={styles.defs}>
-        {FRAMEWORK.map(([term, def]) => (
+        {HOW_IT_WORKS.map(([term, def]) => (
           <div key={term}>
             <dt>{term}</dt>
             <dd>{def}</dd>
@@ -84,8 +94,8 @@ export function HouseStandard() {
   return (
     <section className={styles.standard}>
       <div ref={ref} className={`reveal ${inView ? "in" : ""}`}>
-        <p className={styles.sectionLabel}>The Wolf Casa Standard</p>
-        <h2>Ten rules we do not break.</h2>
+        <p className={styles.sectionLabel}>How we work</p>
+        <h2>Ten things we will not do differently.</h2>
       </div>
       <div className={styles.rules}>
         {STANDARD.map((rule, index) => (

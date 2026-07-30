@@ -116,7 +116,7 @@ export function DomeGallery() {
   return (
     <section className={`${styles.section} woodgrain`} id="dome-gallery">
       <div ref={ref} className={`${styles.head} reveal ${inView ? "in" : ""}`}>
-        <span className={styles.num}>§ 01 — The Dome</span>
+        <span className={styles.num}>Every piece, up close</span>
         <h2 className={styles.heading}>
           Walk the room, <em>slowly.</em>
         </h2>

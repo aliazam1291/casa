@@ -12,6 +12,7 @@ import { buildRoom, disposeGLTFCache } from './lib/buildRoom';
 
 import { findPiece } from './lib/interactive';
 import { moodForRoom, applyMood } from './lib/lightMoods';
+import { initPhysics, RoomPhysics } from './lib/physics';
 
 const GalleryScene = forwardRef(function GalleryScene({ onRoomChange, onFloorChange, onPieceHover, onReady }, ref) {
   const mountRef = useRef(null);
@@ -34,11 +35,65 @@ const GalleryScene = forwardRef(function GalleryScene({ onRoomChange, onFloorCha
       if (!s) return;
       if (s.currentRoom > 0) s.beginRoom?.(s.currentRoom - 1);
     },
+    // Walks the whole house rather than one floor. nextRoom() deliberately
+    // stops at each floor's last room, which left the "Explore the next room"
+    // button doing nothing at all once you reached it — a dead control on
+    // 4 of the 13 rooms. This rolls over to the next floor instead, and
+    // reports whether there was anywhere left to go so the caller can stop
+    // offering the action at the end of the house.
+    advance() {
+      const s = internals.current;
+      if (!s) return false;
+      if (s.currentRoom < FLOORS[s.currentFloor].rooms.length - 1) {
+        s.beginRoom?.(s.currentRoom + 1);
+        return true;
+      }
+      if (s.currentFloor < FLOORS.length - 1) {
+        s.pendingRoom = 0;
+        s.beginFloor?.(s.currentFloor + 1);
+        return true;
+      }
+      return false;
+    },
+    /** True when there is another room anywhere above this one in the house. */
+    get hasNext() {
+      const s = internals.current;
+      if (!s) return false;
+      return (
+        s.currentRoom < FLOORS[s.currentFloor].rooms.length - 1 ||
+        s.currentFloor < FLOORS.length - 1
+      );
+    },
     setFloor(floorIndex) {
       const s = internals.current;
       if (!s) return;
       s.beginFloor?.(Math.max(0, Math.min(FLOORS.length - 1, floorIndex)));
     },
+    /** Put the furniture back where it was placed, after it has been dragged about. */
+    resetRoom() {
+      internals.current?.physics?.reset();
+    },
+    /** Begin fetching the physics engine. Called once the visitor steps inside. */
+    enablePhysics() {
+      internals.current?.enablePhysics?.();
+    },
+    /**
+     * Dolly the eye in or out. Clamped: past ~1.9 you are outside the room
+     * looking into a box again, and under ~0.55 you are inside the furniture.
+     */
+    setZoom(z) {
+      const s = internals.current;
+      if (!s) return 1;
+      s.zoomTarget = Math.max(0.55, Math.min(1.9, z));
+      return s.zoomTarget;
+    },
+    nudgeZoom(delta) {
+      const s = internals.current;
+      if (!s) return 1;
+      s.zoomTarget = Math.max(0.55, Math.min(1.9, s.zoomTarget + delta));
+      return s.zoomTarget;
+    },
+    get zoom() { return internals.current?.zoomTarget ?? 1; },
     // Cross-floor deep links (e.g. a room page's "Enter in 3D Walkthrough")
     // must not call setFloor() then goToRoom() back to back — the floor
     // rebuild is deferred to mid-transit, so an immediate goToRoom() would
@@ -155,8 +210,22 @@ const GalleryScene = forwardRef(function GalleryScene({ onRoomChange, onFloorCha
     const W = mount.clientWidth;
     const H = mount.clientHeight;
 
-    const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    // Device tier. A phone was previously asked for exactly the same work as a
+    // desktop: a 4096x4096 shadow map (64MB of GPU memory) rendered every frame
+    // at up to 2x pixel ratio, which on a DPR-3 handset is four times the pixels
+    // of a 1.5x cap. This is the single biggest reason the hero felt heavy on
+    // mobile.
+    const lowPower =
+      window.matchMedia('(max-width: 820px)').matches ||
+      window.matchMedia('(hover: none)').matches;
+
+    const renderer = new THREE.WebGLRenderer({
+      // MSAA is the first thing to give up on a small screen — at a high pixel
+      // ratio the aliasing it removes is already close to invisible.
+      antialias: !lowPower,
+      powerPreference: 'high-performance',
+    });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, lowPower ? 1.5 : 2));
     renderer.setSize(W, H);
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 0.92;
@@ -181,7 +250,7 @@ const GalleryScene = forwardRef(function GalleryScene({ onRoomChange, onFloorCha
     scene.environment = envRT.texture;
     scene.environmentIntensity = 0.32;
 
-    const camera = new THREE.PerspectiveCamera(42, W / H, 0.1, 140);
+    const camera = new THREE.PerspectiveCamera(52, W / H, 0.1, 140);
     const initialCam = getRoomCamAnchor(1, 0);
     camera.position.set(...initialCam.p);
 
@@ -194,7 +263,10 @@ const GalleryScene = forwardRef(function GalleryScene({ onRoomChange, onFloorCha
     const dirKey = new THREE.DirectionalLight(0xffead0, 3.25);
     dirKey.position.set(5, 8.5, 4.2);
     dirKey.castShadow = true;
-    dirKey.shadow.mapSize.set(4096, 4096);
+    // 4096 was well past the point of visible return even on desktop; the
+    // shadows here are soft (radius 1.8) so the extra resolution was being
+    // blurred away regardless.
+    dirKey.shadow.mapSize.set(lowPower ? 1024 : 2048, lowPower ? 1024 : 2048);
     dirKey.shadow.camera.near = 1;
     dirKey.shadow.camera.far = 28;
     dirKey.shadow.camera.left = -10;
@@ -239,6 +311,8 @@ const GalleryScene = forwardRef(function GalleryScene({ onRoomChange, onFloorCha
       camT: [...initialCam.t],
       pointerX: 0, pointerY: 0, ptrTx: 0, ptrTy: 0,
       isDragging: false, dragStartX: 0, dragDelta: 0,
+      // 1 = the framing authored in galleryData. Range is clamped in setZoom().
+      zoom: 1, zoomTarget: 1,
       roomsGroup,
       transit: null,
     };
@@ -252,6 +326,11 @@ const GalleryScene = forwardRef(function GalleryScene({ onRoomChange, onFloorCha
       const toAnchor = getRoomCamAnchor(s.currentFloor, index);
       s.currentRoom = index;
       s.transit = { fromAnchor, toAnchor, dur: 1.1, t: 0 };
+      // Hand the previous room's furniture back before the camera leaves, and
+      // pick up the new room's on arrival (see the transit-complete branch in
+      // tick()) — mid-flight is the one moment nothing should be simulated.
+      s.physics?.dispose();
+      s.physics = null;
       onRoomChange?.(index);
     };
 
@@ -262,9 +341,74 @@ const GalleryScene = forwardRef(function GalleryScene({ onRoomChange, onFloorCha
       s.transit = { fromAnchor, toAnchor, dur: 1.5, t: 0, rebuildFloor: floorIndex };
     };
 
+    // Guards the async physics init below: the effect can be torn down before
+    // the WASM module resolves, and attaching a world to a disposed scene
+    // would leak it.
+    let disposed = false;
+
+    // ─── Physics: only ever the room you are standing in ───────────────────
+    // Rapier is WASM and loads async. Attaching bodies to all thirteen rooms
+    // would simulate furniture nobody is looking at, so the world is torn down
+    // and rebuilt around the active room on every move.
+    s.attachPhysics = () => {
+      if (!s.RAPIER) return;
+      s.physics?.dispose();
+      s.physics = null;
+
+      const roomGroup = s.roomsGroup.children[s.currentRoom];
+      if (!roomGroup) return;
+
+      const def = FLOORS[s.currentFloor]?.rooms[s.currentRoom];
+      const pos = def?.pos || { x: 0, y: 0, z: 0 };
+      const physics = new RoomPhysics(s.RAPIER, scene);
+      // Room shells are 12 x 4.5 x 10 (buildRoom.js), and the floors now butt
+      // together, so the side bounds sit just past each threshold rather than
+      // on it: you can shove a stool into the opening and it stops, instead of
+      // hitting an invisible wall flush with the doorway.
+      //
+      // They are deliberately closed even though the rooms are open to each
+      // other. Physics only exists for the room you are in, so a piece dragged
+      // next door would be left behind un-simulated the moment you followed it.
+      // Containing it is the lesser evil.
+      physics.addRoom(roomGroup, {
+        centre: { x: pos.x, z: pos.z },
+        width: 12.6,
+        depth: 10.6,
+        height: 4.5,
+        floorY: pos.y,
+      });
+      s.physics = physics;
+    };
+
     rebuildRooms(s);
     onFloorChange?.(s.currentFloor);
     onRoomChange?.(0);
+
+    // Rapier is ~2.1MB of WASM. It is NOT fetched on page load: most visitors
+    // never get past the gate, and making all of them pull two megabytes for a
+    // feature they will not reach — on a phone, on Indian mobile data — is not
+    // a trade worth making. enablePhysics() is called when the visitor actually
+    // steps inside. Never awaited: the room draws on the first frame regardless,
+    // and simply has no draggable furniture until this lands.
+    s.enablePhysics = () => {
+      if (s.physicsRequested) return;
+      // Not on touch. Two independent reasons, either of which is sufficient:
+      // 2.1MB of WASM over mobile data for a feature that is awkward on a
+      // phone anyway, and a genuine gesture conflict — a finger drag already
+      // means "next room", so grab-and-drag has nothing unambiguous to bind to.
+      if (window.matchMedia('(hover: none)').matches) return;
+      s.physicsRequested = true;
+      initPhysics()
+        .then((RAPIER) => {
+          if (disposed) return;
+          s.RAPIER = RAPIER;
+          s.attachPhysics();
+        })
+        .catch(() => {
+          // No physics (old browser, blocked WASM) — the walkthrough still
+          // works, furniture just stays where it was placed.
+        });
+    };
 
     // Furniture hover: raycast against the active room and surface the piece's
     // name / materials / description. Throttled so we don't test every pixel.
@@ -290,6 +434,14 @@ const GalleryScene = forwardRef(function GalleryScene({ onRoomChange, onFloorCha
       s.ptrTx = (e.clientX / window.innerWidth) * 2 - 1;
       s.ptrTy = (e.clientY / window.innerHeight) * 2 - 1;
 
+      // A grab needs the pointer every frame, not on the 90ms hover throttle.
+      if (s.physics?.isGrabbing) {
+        if (pointerOnDragPlane(e.clientX, e.clientY, dragPoint)) {
+          s.physics.moveGrab(dragPoint);
+        }
+        return;
+      }
+
       const now = performance.now();
       if (now - lastPick < 90 || s.transit) return;
       lastPick = now;
@@ -301,11 +453,48 @@ const GalleryScene = forwardRef(function GalleryScene({ onRoomChange, onFloorCha
         onPieceHover?.(piece ? piece.userData.pieceInfo : null);
       }
     };
+    // Where a grabbed piece follows the pointer: a horizontal plane at the
+    // height the grab started, so dragging slides furniture across the floor
+    // rather than lifting it toward the camera.
+    const dragPlane = new THREE.Plane();
+    const dragPoint = new THREE.Vector3();
+
+    const pointerOnDragPlane = (clientX, clientY, out) => {
+      const rect = mount.getBoundingClientRect();
+      ndc.x = ((clientX - rect.left) / rect.width) * 2 - 1;
+      ndc.y = -((clientY - rect.top) / rect.height) * 2 + 1;
+      raycaster.setFromCamera(ndc, camera);
+      return raycaster.ray.intersectPlane(dragPlane, out);
+    };
+
     const onPointerDown = (e) => {
+      // A pointer-down on a piece grabs the piece; anywhere else is a room
+      // swipe. Without this split, dragging a chair would also flick you into
+      // the next room.
+      if (s.physics && !s.transit) {
+        const piece = pickPiece(e.clientX, e.clientY);
+        const item = piece?.userData?.physicsItem;
+        if (item) {
+          const t = item.body.translation();
+          dragPlane.set(new THREE.Vector3(0, 1, 0), -t.y);
+          if (pointerOnDragPlane(e.clientX, e.clientY, dragPoint)) {
+            s.physics.beginGrab(piece, dragPoint);
+            mount.style.cursor = 'grabbing';
+            mount.setPointerCapture?.(e.pointerId);
+            return;
+          }
+        }
+      }
       s.isDragging = true;
       s.dragStartX = e.clientX;
     };
     const onPointerUp = (e) => {
+      if (s.physics?.isGrabbing) {
+        s.physics.endGrab();
+        mount.style.cursor = 'grab';
+        mount.releasePointerCapture?.(e.pointerId);
+        return;
+      }
       if (s.isDragging && !s.transit) {
         const dx = e.clientX - s.dragStartX;
         const max = FLOORS[s.currentFloor].rooms.length - 1;
@@ -368,9 +557,9 @@ const GalleryScene = forwardRef(function GalleryScene({ onRoomChange, onFloorCha
       renderer.setSize(w, h);
       camera.aspect = w / h;
       if (w / h < 1.0) {
-        camera.fov = 48 + (1.0 - w / h) * 18;
+        camera.fov = 56 + (1.0 - w / h) * 18;
       } else {
-        camera.fov = 42;
+        camera.fov = 52;
       }
       camera.updateProjectionMatrix();
     };
@@ -424,6 +613,10 @@ const GalleryScene = forwardRef(function GalleryScene({ onRoomChange, onFloorCha
           s.currentRoom = 0;
           tr.rebuildFloor = null;
           rebuildRooms(s);
+          // rebuildRooms() replaced every room group, so the old world points
+          // at freed objects.
+          s.physics?.dispose();
+          s.physics = null;
           onFloorChange?.(s.currentFloor);
           onRoomChange?.(0);
           if (s.pendingRoom != null) {
@@ -435,16 +628,32 @@ const GalleryScene = forwardRef(function GalleryScene({ onRoomChange, onFloorCha
         // beginRoom() above (if fired) already replaced s.transit with a
         // fresh in-progress transit — only retire it here if it's still the
         // same transit object this frame started with.
-        if (tr.t >= 1 && s.transit === tr) s.transit = null;
+        if (tr.t >= 1 && s.transit === tr) {
+          s.transit = null;
+          // Arrived: the room you are now standing in gets the physics world.
+          s.attachPhysics?.();
+        }
+      }
+
+      if (s.physics) {
+        s.physics.step(dt);
+        s.physics.sync();
       }
 
       const idleX = Math.sin(s.time * 0.11) * 0.055;
       const idleY = Math.sin(s.time * 0.085 + 1.7) * 0.025;
       const idleZ = Math.cos(s.time * 0.075) * 0.04;
 
-      camera.position.x = s.camP[0] + s.pointerX * 0.14 + idleX;
-      camera.position.y = s.camP[1] + s.pointerY * -0.045 + idleY;
-      camera.position.z = s.camP[2] + idleZ;
+      // Zoom pulls the eye along the line from its aim point, so zooming out
+      // backs away through the room rather than widening the lens (which would
+      // distort). Eased toward the target so the buttons feel like a dolly.
+      s.zoom += (s.zoomTarget - s.zoom) * Math.min(1, dt * 6);
+      const zx = s.camP[0] - s.camT[0];
+      const zy = s.camP[1] - s.camT[1];
+      const zz = s.camP[2] - s.camT[2];
+      camera.position.x = s.camT[0] + zx * s.zoom + s.pointerX * 0.14 + idleX;
+      camera.position.y = s.camT[1] + zy * s.zoom + s.pointerY * -0.045 + idleY;
+      camera.position.z = s.camT[2] + zz * s.zoom + idleZ;
 
       const activeRoomDef = FLOORS[s.currentFloor]?.rooms[s.currentRoom];
       const rPos = activeRoomDef?.pos || { x: 0, y: 0, z: 0, ry: 0 };
@@ -479,6 +688,11 @@ const GalleryScene = forwardRef(function GalleryScene({ onRoomChange, onFloorCha
     return () => {
       cancelAnimationFrame(raf);
       clearTimeout(idleTimer);
+      disposed = true;
+      // Before the geometry sweep below: dispose() hands each dragged piece
+      // back to its room group, so scene.traverse() still reaches it.
+      s.physics?.dispose();
+      s.physics = null;
       viewportObserver.disconnect();
       renderer.domElement.removeEventListener('webglcontextlost', onContextLost);
       mount.removeEventListener('pointermove', onPointerMove);

@@ -71,7 +71,33 @@
   .stats {
     grid-template-columns: 1fr 1fr;
   }
+  .stat {
+    padding: 44px var(--gutter);
+  }
   .stat:nth-child(2) {
     border-right: none;
+  }
+}
+
+/* Two columns stop working before this: the labels are 10px at 0.24em
+   tracking, so "Established — Indore & Dewas" in a ~150px cell wraps to four
+   ragged lines beside a 48px numeral. One column per stat instead. */
+@media (max-width: 560px) {
+  .stats {
+    grid-template-columns: 1fr;
+  }
+  .stat {
+    padding: 34px var(--gutter);
+    border-right: none;
+    border-bottom: 1px solid var(--line);
+  }
+  .stat:last-child {
+    border-bottom: none;
+  }
+  .val {
+    font-size: 44px;
+  }
+  .lbl {
+    margin-top: 12px;
   }
 }

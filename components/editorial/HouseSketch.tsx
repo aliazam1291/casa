@@ -22,7 +22,7 @@ export function HouseSketch() {
   return (
     <section className={`${styles.section} plaster`} aria-label="An axonometric sketch of the villa">
       <div className={styles.head}>
-        <span className={styles.num}>§ The Villa, In Section</span>
+        <span className={styles.num}>The villa, in section</span>
         <h2>
           Four floors, <em>one house.</em>
         </h2>

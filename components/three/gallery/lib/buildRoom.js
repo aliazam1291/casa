@@ -5,6 +5,7 @@ import { FLOORS } from '../galleryData.js';
 import { createFlutedCylinderGeometry, createRoundedBoxGeometry } from './geometries.js';
 import { addContactShadow } from './shadows.js';
 import { getSurfBundle, getArtTexture, addFramedArt } from './textures.js';
+import { tagPiece } from './interactive.js';
 import * as furniture from './furniture/index.js';
 
 const gltfLoader = typeof window !== 'undefined' ? new GLTFLoader() : null;
@@ -112,48 +113,57 @@ function addArchitecturalRealism(group, W, H, D, isTerrace) {
 // Small recessed can lights near the room's four corners — the detail whose
 // absence most reads as "a render" rather than a photographed interior. Kept
 // clear of the ceiling tray's beams/crossbars by sitting on the flat field.
+// Returns the four fittings as one group so the caller can tag them.
 function addDownlights(group, sm, W, H, D) {
   const y = H - 0.015;
   const insetX = Math.min(2.0, W / 2 - 0.6);
   const insetZ = Math.min(1.8, D / 2 - 0.6);
+  const lights = new THREE.Group();
   for (const sx of [-1, 1]) {
     for (const sz of [-1, 1]) {
       const trim = new THREE.Mesh(new THREE.TorusGeometry(0.052, 0.01, 8, 20), sm.metalDark);
       trim.rotation.x = Math.PI / 2;
       trim.position.set(sx * (W / 2 - insetX), y, sz * (D / 2 - insetZ));
-      group.add(trim);
+      lights.add(trim);
       const bulb = new THREE.Mesh(new THREE.CircleGeometry(0.045, 16), sm.glowDim);
       bulb.rotation.x = Math.PI / 2;
       bulb.position.set(sx * (W / 2 - insetX), y - 0.004, sz * (D / 2 - insetZ));
-      group.add(bulb);
+      lights.add(bulb);
     }
   }
+  group.add(lights);
+  return lights;
 }
 
 // Paired wall sconces flanking the hero painting — the human-scale fixture a
 // real evening room is lit by, rather than the ceiling alone.
+// Returns the pair as one group so the caller can tag it — a raycast onto
+// either sconce should report the fitting, not nothing.
 function addWallSconces(group, sm, W, D, H) {
   const y = 2.32;
   const z = -D / 2 + 0.07;
+  const sconces = new THREE.Group();
   for (const sx of [-1.15, 1.15]) {
     const back = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.16, 0.03), sm.metalDark);
     back.position.set(sx, y, z);
-    group.add(back);
+    sconces.add(back);
     const arm = new THREE.Mesh(new THREE.CylinderGeometry(0.012, 0.012, 0.14, 8), sm.metal);
     arm.rotation.x = Math.PI / 2;
     arm.position.set(sx, y, z + 0.08);
-    group.add(arm);
+    sconces.add(arm);
     const shade = new THREE.Mesh(
       new THREE.CylinderGeometry(0.05, 0.075, 0.16, 14, 1, true, 0, Math.PI),
       new THREE.MeshBasicMaterial({ color: 0xfff3dc, transparent: true, opacity: 0.72, side: THREE.DoubleSide })
     );
     shade.rotation.y = sx < 0 ? Math.PI / 2 : -Math.PI / 2;
     shade.position.set(sx, y, z + 0.16);
-    group.add(shade);
+    sconces.add(shade);
     const glowDisc = new THREE.Mesh(new THREE.CircleGeometry(0.11, 16), sm.glowDim);
     glowDisc.position.set(sx, y, z + 0.01);
-    group.add(glowDisc);
+    sconces.add(glowDisc);
   }
+  group.add(sconces);
+  return sconces;
 }
 
 // A single wall switch plate by the entry corner — the kind of throwaway
@@ -308,7 +318,7 @@ export function disposeGLTFCache() {
   gltfCache.clear();
 }
 
-export function addCommonDecor(group, sm, matAccent, W, H, D, seed, name = '') {
+export function addCommonDecor(group, sm, matAccent, W, H, D, seed, name = '', def = { materials: [] }) {
   let st = (seed * 2654435761 + 12345) >>> 0;
   const rnd = () => { st = (st * 1664525 + 1013904223) >>> 0; return st / 4294967296; };
   const side = rnd() < 0.5 ? -1 : 1;
@@ -318,16 +328,19 @@ export function addCommonDecor(group, sm, matAccent, W, H, D, seed, name = '') {
   if (lounge) {
     // Woven Linen Area Rug under seating area
     const rugW = 4.5, rugD = 3.2;
+    // Rug, border and fringe as one group so hovering any part of it — including
+    // a single fringe strand — reports the rug rather than nothing.
+    const rugGroup = new THREE.Group();
     const rug = new THREE.Mesh(new THREE.PlaneGeometry(rugW, rugD), sm.rugMat);
     rug.rotation.x = -Math.PI / 2;
     rug.position.set(-0.5, 0.005, 0.2);
     rug.receiveShadow = true;
-    group.add(rug);
+    rugGroup.add(rug);
     // Rug border trim
     const rugBorder = new THREE.Mesh(new THREE.PlaneGeometry(rugW + 0.06, rugD + 0.06), new THREE.MeshStandardMaterial({ color: 0x8a7a64, roughness: 0.9, transparent: true, opacity: 0.25 }));
     rugBorder.rotation.x = -Math.PI / 2;
     rugBorder.position.set(-0.5, 0.004, 0.2);
-    group.add(rugBorder);
+    rugGroup.add(rugBorder);
     // Hand-knotted fringe along the rug's short edges
     const fringeMat = new THREE.MeshStandardMaterial({ color: 0xd9c9a8, roughness: 0.95 });
     for (const fz of [0.2 - rugD / 2, 0.2 + rugD / 2]) {
@@ -336,9 +349,16 @@ export function addCommonDecor(group, sm, matAccent, W, H, D, seed, name = '') {
         const strand = new THREE.Mesh(new THREE.CylinderGeometry(0.006, 0.006, 0.1, 4), fringeMat);
         strand.rotation.x = Math.PI / 2;
         strand.position.set(fx, 0.006, fz + (fz > 0.2 ? 0.05 : -0.05));
-        group.add(strand);
+        rugGroup.add(strand);
       }
     }
+    group.add(rugGroup);
+    tagSurface(
+      rugGroup,
+      "Hand-knotted rug",
+      surfaceMaterials(def, ['linen', 'wool', 'textile', 'jute'], ['Hand-loomed wool']),
+      "Big enough that the front legs of every seat land on it. A rug the seating floats around is the commonest mistake in a room like this.",
+    );
 
     // Upholstered ottomans on the rug
     const poufGeo = new THREE.SphereGeometry(0.42, 18, 12);
@@ -422,6 +442,34 @@ export function addCommonDecor(group, sm, matAccent, W, H, D, seed, name = '') {
   }
 }
 
+/**
+ * Tag a surface — floor, panelling, rug, artwork, light fitting — so hovering
+ * it reports what it is.
+ *
+ * Only furniture was ever tagged, so hovering the floor, a rug, a painting, the
+ * panelling or any light returned nothing: most of what is actually on screen
+ * was dead to the pointer. These are not sellable named pieces, so they get
+ * their own plain-language records rather than entries in lib/pieces.ts, and
+ * the materials come off the room's own `materials` list so a surface can never
+ * claim something the room page contradicts.
+ *
+ * `pick` selects from that list by keyword, falling back to a sensible default,
+ * because the lists are per-room and unordered.
+ */
+function surfaceMaterials(def, keywords, fallback) {
+  const list = def.materials || [];
+  const hit = list.filter((m) => keywords.some((k) => m.toLowerCase().includes(k)));
+  return hit.length ? hit : fallback;
+}
+
+function tagSurface(object, name, materials, description) {
+  const tagged = tagPiece(object, { name, materials, description });
+  // Hoverable but not draggable. Physics only picks up loose furniture; a floor
+  // or a wall light that could be dragged across the room would be absurd.
+  if (tagged) tagged.userData.isSurface = true;
+  return tagged;
+}
+
 export function buildRoom(def, roomIndex, floorIndex, sm) {
   const group = new THREE.Group();
   const W = 12, H = 4.5, D = 10;
@@ -474,6 +522,16 @@ export function buildRoom(def, roomIndex, floorIndex, sm) {
   floor.rotation.x = -Math.PI / 2;
   floor.receiveShadow = true;
   group.add(floor);
+  tagSurface(
+    floor,
+    isTerrace ? "Stone paving" : marbleFloor ? "Stone floor" : "Herringbone timber floor",
+    surfaceMaterials(def, ["marble", "travertine", "stone", "calacatta", "oak", "walnut", "timber"], ["Natural stone"]),
+    isTerrace
+      ? "Riven stone paving, laid loose-jointed so rain drains and the surface stays matte underfoot."
+      : marbleFloor
+        ? "Large-format stone, honed rather than polished — it holds the light without throwing it back at you."
+        : "Timber laid in herringbone. The direction of the blocks is what makes the room feel longer than it is.",
+  );
 
   if (isFoyer) {
     // A brass-inlaid marble medallion underfoot, mirroring the ceiling
@@ -527,7 +585,12 @@ export function buildRoom(def, roomIndex, floorIndex, sm) {
     ceil.position.y = H;
     group.add(ceil);
     addFalseCeiling(group, sm, W, H, D, roomName);
-    addDownlights(group, sm, W, H, D);
+    tagSurface(
+      addDownlights(group, sm, W, H, D),
+      "Recessed ceiling lights",
+      ["Blackened trim", "Warm 2700K lamp"],
+      "Set back from the walls on purpose. Pushed to the edges they would graze the plaster and show every imperfection in it.",
+    );
   }
 
   // Walls — the terrace opens to a view behind a glass balustrade instead.
@@ -594,13 +657,23 @@ export function buildRoom(def, roomIndex, floorIndex, sm) {
     const slatGap = 0.035;
     const slatW = (W - slatGap * (slatCount + 1)) / slatCount;
     const slatH = H - 0.5;
+    // Grouped so the whole wall answers as one surface — 18 separately tagged
+    // slats would report the same thing 18 times as the pointer crossed them.
+    const slatWall = new THREE.Group();
     for (let i = 0; i < slatCount; i++) {
       const sx = -W / 2 + slatGap + slatW / 2 + i * (slatW + slatGap);
       const slat = new THREE.Mesh(new THREE.BoxGeometry(slatW, slatH, 0.04), matPanel);
       slat.position.set(sx, H / 2, -D / 2 + 0.025);
       slat.castShadow = true;
-      group.add(slat);
+      slatWall.add(slat);
     }
+    group.add(slatWall);
+    tagSurface(
+      slatWall,
+      "Slatted timber wall",
+      surfaceMaterials(def, ["walnut", "oak", "timber", "wood"], ["Solid timber"]),
+      "Vertical battens on a dark reveal. They soften the echo in the room and give the wall a grain to catch the light.",
+    );
   }
 
   if (floorIndex === 3 && !isTerrace) {
@@ -656,8 +729,19 @@ export function buildRoom(def, roomIndex, floorIndex, sm) {
 
     // Hero Framed Painting
     const heroTex = getArtTexture(`${floorIndex}-${roomIndex}-hero`, floorIndex * 17 + roomIndex * 3 + 1);
-    addFramedArt(group, sm, heroTex, { x: 0, y: 2.1, z: -D / 2 + 0.05, w: 1.8, h: 2.2 });
-    addWallSconces(group, sm, W, D, H);
+    const art = addFramedArt(group, sm, heroTex, { x: 0, y: 2.1, z: -D / 2 + 0.05, w: 1.8, h: 2.2 });
+    tagSurface(
+      art,
+      "Framed artwork",
+      ["Cotton rag paper", "Blackened oak frame", "Museum glass"],
+      "Hung a little lower than instinct says, so it belongs to the room rather than to the wall above it.",
+    );
+    tagSurface(
+      addWallSconces(group, sm, W, D, H),
+      "Wall sconces",
+      surfaceMaterials(def, ["brass", "metal", "bronze"], ["Brushed brass"]),
+      "Light thrown up the wall instead of down at the floor. This is what stops the room going flat after dark.",
+    );
 
     // Console Ledge
     const ledge = new THREE.Mesh(new THREE.BoxGeometry(2.2, 0.05, 0.35), sm.marble);
@@ -707,7 +791,7 @@ export function buildRoom(def, roomIndex, floorIndex, sm) {
     else furniture.addHallFurniture(group, sm, matAccent, W, H, D);
   }
 
-  addCommonDecor(group, sm, matAccent, W, H, D, floorIndex * 10 + roomIndex, (def.name || '').toLowerCase());
+  addCommonDecor(group, sm, matAccent, W, H, D, floorIndex * 10 + roomIndex, (def.name || '').toLowerCase(), def);
   softenBoxGeometry(group);
   return group;
 }

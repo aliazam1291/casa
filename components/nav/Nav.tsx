@@ -48,12 +48,16 @@ function IconVisit() {
 }
 
 // "Rooms" and "The House" were separate entries pointing at two pages that
-// have since merged into /the-house-and-rooms; "Products" is the new home for
-// the full piece list and the dome.
+// have since merged into /the-house-and-rooms.
+//
+// "Products" and "Catalogue" are two genuinely different things — every piece
+// we make, versus the eight categories we compose from — but as bare nav
+// labels they were indistinguishable, and a visitor had no way to guess which
+// one they wanted. The labels now say what each actually is.
 const LINKS = [
-  { href: "/the-house-and-rooms", label: "House & Rooms", cursor: "Enter", Icon: IconHouse },
-  { href: "/products", label: "Products", cursor: "Enter", Icon: IconRooms },
-  { href: "/catalogue", label: "Catalogue", cursor: "Enter", Icon: IconCatalogue },
+  { href: "/the-house-and-rooms", label: "Rooms", cursor: "Enter", Icon: IconHouse },
+  { href: "/products", label: "All Pieces", cursor: "Enter", Icon: IconRooms },
+  { href: "/catalogue", label: "By Category", cursor: "Enter", Icon: IconCatalogue },
   { href: "/journal", label: "Journal", cursor: "Read", Icon: IconJournal },
   { href: "/visit", label: "Visit", cursor: "Visit", Icon: IconVisit },
 ];

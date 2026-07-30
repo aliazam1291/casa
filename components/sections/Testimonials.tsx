@@ -55,7 +55,7 @@ export function Testimonials() {
       <div className={styles.inner}>
         <div ref={revealRef} className={`${styles.head} reveal ${inView ? "in" : ""}`}>
           <div>
-            <p className={styles.eyebrow}>§ 05 — In Their Words</p>
+            <p className={styles.eyebrow}>In their words</p>
             <h2 className={styles.heading}>
               <span className="upright">Clients about</span> <em>our work.</em>
             </h2>

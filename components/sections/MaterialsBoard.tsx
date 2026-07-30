@@ -81,7 +81,7 @@ export function MaterialsBoard() {
   return (
     <section className={`${styles.section} plaster`} id="materials-knowledge">
       <div ref={ref} className={`${styles.head} reveal ${inView ? "in" : ""}`}>
-        <span className={styles.num}>§ Material Knowledge</span>
+        <span className={styles.num}>Knowing the materials</span>
         <h2 className={styles.heading}>
           Stone, timber &amp; textile —<br />
           <em>resolved as one decision.</em>

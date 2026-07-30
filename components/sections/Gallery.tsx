@@ -101,7 +101,7 @@ export function Gallery() {
           <svg viewBox="0 0 120 40"><circle cx="60" cy="6" r="3" /><path d="M14 40 L60 9 L106 40" fill="none" /></svg>
         </div>
         <div className={styles.plaque}>
-          <span className={styles.num}>§ 03 — Curation Gallery</span>
+          <span className={styles.num}>The pieces</span>
           <h2 className={styles.heading}>
             <span className="upright">{PIECES.length}</span> <em>composed pieces.</em>
           </h2>
@@ -164,7 +164,7 @@ export function Gallery() {
                       />
                     </div>
                     <div className={styles.modalInfo}>
-                      <span className={styles.modalLabel}>§ Curation Spec Sheets</span>
+                      <span className={styles.modalLabel}>Spec sheet</span>
                       <Dialog.Title className={styles.modalTitle}>{selectedPiece.name}</Dialog.Title>
 
                       <div className={styles.metaRow}>

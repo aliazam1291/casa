@@ -44,6 +44,16 @@
   .rules { grid-template-columns: 1fr; }
 }
 
+/* "Indore" set at up to 58px italic serif does not survive a half-width cell
+   on a phone, and neither does "& Dewas, and every home" underneath it. */
+@media (max-width: 560px) {
+  .stats { grid-template-columns: 1fr; }
+  .stats article { border-right: 0; border-bottom: 1px solid var(--line); padding: 26px var(--gutter); }
+  .stats article:last-child { border-bottom: 0; }
+  .stats strong { font-size: 34px; }
+  .stats span { margin-top: 10px; }
+}
+
 @media (max-width: 720px) {
   .hero { min-height: 78svh; }
   .heroFrame { min-height: 78svh; padding: 18vh var(--gutter) 6vh; }

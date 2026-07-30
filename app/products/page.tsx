@@ -32,7 +32,7 @@ export default function ProductsPage() {
   return (
     <main className={styles.page}>
       <section className={styles.hero}>
-        <p className={styles.kicker}>§ Everything We Make &amp; Stock</p>
+        <p className={styles.kicker}>Everything we make and stock</p>
         <h1>Every piece, in one place.</h1>
         <p>
           {STOCK_PIECES.length} accent pieces on the Indore floor this week, priced and ready — and the{" "}

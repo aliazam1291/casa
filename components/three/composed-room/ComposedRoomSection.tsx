@@ -57,7 +57,7 @@ export function ComposedRoomSection() {
       <div className="curtain" />
       <div className={styles.head}>
         <span className={styles.num}>
-          § 02 — The Maquette
+          The maquette
           <div className={styles.caption}>A composition, modelled.</div>
         </span>
         <h2 className={styles.heading}>

@@ -99,7 +99,7 @@ export default async function PiecePage({ params }: Props) {
       {siblings.length > 0 && (
         <section className={styles.section}>
           <div className={styles.sectionHead}>
-            <span className={styles.sectionLabel}>§ Also In This Room</span>
+            <span className={styles.sectionLabel}>Also in this room</span>
             <h2>The rest of {room?.name}.</h2>
           </div>
           <div className={styles.siblingGrid}>

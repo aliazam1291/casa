@@ -11,7 +11,7 @@ export function Manifesto() {
   return (
     <section id="manifesto" ref={ref} className={`${styles.manifesto} reveal ${inView ? "in" : ""}`}>
       <div className="curtain" />
-      <span className={styles.num}>§ 01 — The Composition</span>
+      <span className={styles.num}>What we actually do</span>
       <div className={styles.layout}>
         <div className={styles.copy}>
           <h2 className={styles.heading}>

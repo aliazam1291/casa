@@ -39,7 +39,7 @@ export function VillaSection() {
   return (
     <section className={styles.section}>
       <div ref={headRef} className={`${styles.head} reveal ${inView ? "in" : ""}`}>
-        <span className={styles.num}>§ 02 — The Villa, In Section</span>
+        <span className={styles.num}>The villa, in section</span>
         <h2 className={styles.heading}>
           One house, <em>drawn through.</em>
         </h2>

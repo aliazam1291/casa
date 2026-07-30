@@ -4,6 +4,7 @@ import Link from "next/link";
 import { FLOORS } from "@/lib/rooms";
 import { ROOM_IMAGES } from "@/lib/library-images";
 import { HouseStats, HouseFramework, HouseStandard } from "@/components/editorial/HouseDoctrine";
+import { SectionNav } from "@/components/nav/SectionNav";
 import { HouseSketch } from "@/components/editorial/HouseSketch";
 import { VillaSection } from "@/components/three/villa-section/VillaSection";
 import { MaterialsBoard } from "@/components/sections/MaterialsBoard";
@@ -24,15 +25,26 @@ const RATIOS = ["4/3", "1/1", "4/5", "16/9", "3/4", "4/3"] as const;
  * ten rules) and /rooms (the villa, the floors, the thirteen rooms). Both
  * redirect here; see next.config.ts.
  *
- * The order is an argument rather than a concatenation: who we are, then what
- * we believe, then the house that holds it, then the rooms as the proof, then
- * what they are made of. The doctrine deliberately precedes the rooms so the
- * thirteen plates read as evidence for the ten rules instead of a gallery.
+ * ORDER IS DELIBERATE AND WAS REVISED. The first cut ran doctrine → villa →
+ * rooms, on the argument that the thirteen plates then read as evidence for
+ * the ten rules. That is good editorial logic and bad user flow: someone who
+ * clicks "House & Rooms" wants rooms, and it made them scroll a positioning
+ * framework and a manifesto before reaching one. The rooms now come first and
+ * the doctrine follows as the "why" — it supports the product rather than
+ * gating it. SectionNav gives either audience one-click access regardless, so
+ * neither of the two merged pages is buried under the other.
  *
  * The dome gallery that used to sit near the top of /rooms now lives on
  * /products, which is a more natural home for it and keeps this page — already
  * long by design — from carrying a heavy drag-interaction set-piece as well.
  */
+
+const SECTIONS = [
+  { id: "the-rooms", label: "The Rooms" },
+  { id: "the-villa", label: "The Villa" },
+  { id: "materials", label: "Materials" },
+  { id: "the-house", label: "The House" },
+];
 export default function TheHouseAndRoomsPage() {
   return (
     <main className={styles.page}>
@@ -47,7 +59,7 @@ export default function TheHouseAndRoomsPage() {
         />
         <div className={styles.heroShade} />
         <div className={styles.heroFrame}>
-          <p className={styles.kicker}>§ The House &amp; Its Rooms</p>
+          <p className={styles.kicker}>The house and its rooms</p>
           <h1>The house, and the thirteen rooms inside it.</h1>
           <p>
             Established 2024, Wolf Casa makes homes through a close relationship with craft, international
@@ -57,22 +69,16 @@ export default function TheHouseAndRoomsPage() {
         </div>
       </section>
 
+      <SectionNav items={SECTIONS} />
+
       <HouseStats />
-      <HouseFramework />
-      <HouseStandard />
 
-      <HouseSketch />
-      {/* The floor plans live inside VillaSection, beside the drawing — the
-          standalone <FloorPlans /> repeated the same four plans a screen
-          further down. That component is kept for reuse elsewhere. */}
-      <VillaSection />
-
-      <section className={styles.roomsIntro}>
+      <section className={styles.roomsIntro} id="the-rooms">
         <p className={styles.sectionLabel}>The Thirteen</p>
-        <h2>Every rule above, resolved as a room.</h2>
+        <h2>Four floors. Thirteen composed rooms.</h2>
         <p className={styles.roomsIntroBody}>
-          Four floors, thirteen compositions. Seating, joinery, lighting, stone and greenery settled as one
-          decision rather than assembled from a shelf.
+          Seating, joinery, lighting, stone and greenery settled as one decision rather than assembled
+          from a shelf. Open any room to see what it is made of.
         </p>
       </section>
 
@@ -135,7 +141,25 @@ export default function TheHouseAndRoomsPage() {
         );
       })}
 
-      <MaterialsBoard />
+      {/* The villa and its plans sit after the rooms: they answer "how do these
+          thirteen fit together", which is a question you only have once you
+          have seen them. */}
+      <div id="the-villa">
+        <HouseSketch />
+        {/* The floor plans live inside VillaSection, beside the drawing — the
+            standalone <FloorPlans /> repeated the same four plans a screen
+            further down. That component is kept for reuse elsewhere. */}
+        <VillaSection />
+      </div>
+
+      <div id="materials">
+        <MaterialsBoard />
+      </div>
+
+      <div id="the-house">
+        <HouseFramework />
+        <HouseStandard />
+      </div>
 
       <section className={styles.note}>
         <p>Legacy is built through care. The people behind the object matter.</p>

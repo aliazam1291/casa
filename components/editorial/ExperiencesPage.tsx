@@ -104,7 +104,7 @@ export function ExperiencesPage() {
         />
         <div className={styles.heroShade} />
         <div className={styles.heroFrame}>
-          <p className={styles.kicker}>§ The Rituals</p>
+          <p className={styles.kicker}>Things you can book</p>
           <h1>Experiences.</h1>
           <p>Not a warehouse. A sequence of composed territories — a showroom designed to help people decide, not browse.</p>
         </div>
@@ -113,7 +113,7 @@ export function ExperiencesPage() {
       {/* Showroom journey numbered flow */}
       <section className={styles.journey}>
         <div ref={journeyRef} className={`reveal ${journeyIn ? "in" : ""} ${styles.journeyHead}`}>
-          <span className={styles.sectionLabel}>§ Showroom Experience</span>
+          <span className={styles.sectionLabel}>At the showroom</span>
           <h2>Seven territories, in one visit.</h2>
         </div>
         <div className={styles.rail}>
@@ -130,7 +130,7 @@ export function ExperiencesPage() {
       {/* Pinterest masonry gallery of compositions */}
       <section className={styles.gallery}>
         <div ref={galleryRef} className={`reveal ${galleryIn ? "in" : ""} ${styles.galleryHead}`}>
-          <span className={styles.sectionLabel}>§ Named Compositions</span>
+          <span className={styles.sectionLabel}>Named schemes</span>
           <h2>Ready to enter.</h2>
         </div>
         <div className={styles.masonry}>
